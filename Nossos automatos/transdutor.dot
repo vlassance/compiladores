@@ -1,0 +1,41 @@
+digraph finite_state_machine {
+    rankdir=LR;
+    size="8.5"
+//    node [shape = doublecircle]; LR_0 LR_3 LR_4 LR_8;
+    INVISIBLENODE [shape = none, label = ""];
+    node [shape = circle,];
+    
+
+    INVISIBLENODE -> Q_0 [ label = " " ];
+    Q_0  -> INT  [ label = "C_NUMBER"];
+    INT  -> INT  [ label = "C_NUMBER"];
+    INT  -> Q_0  [ label = "&#949;/number"];
+    INT  -> FLOAT [ label = "."];
+    Q_0  -> FLOAT [ label = "."];
+    FLOAT -> FLOAT_2 [ label = "C_NUMBER" ];
+    FLOAT_2 -> FLOAT_2 [ label = "C_NUMBER" ];
+    FLOAT_2 -> Q_0 [ label = "&#949;/float" ];
+    Q_0 -> IDENT [ label = "C_LETTER"];
+    IDENT -> IDENT_2 [ label = "C_LETTER|C_NUMBER" ];
+    IDENT_2 -> Q_0 [ label = "&#949;/identifier" ];
+    Q_0 -> OPER [ label = "C_OPER" ];
+    OPER -> OPER_2 [ label = "=" ];
+    OPER_2 -> Q_0  [ label = "&#949;/operator"];
+    Q_0 -> SPACE [ label = "C_SPACE" ];
+    SPACE -> Q_0 [ label = "&#949;/spaces" ];
+    Q_0 -> DELIM [ label = "C_DELIM" ];
+    DELIM -> Q_0 [ label = "&#949;/delimiter" ];
+    Q_0 -> STR [ label = "\""];
+    STR -> STR_2 [ label = "\""];
+    STR -> STR [ label = "\\\""];
+    STR -> STR [ label = "[^\"]"];
+    STR_2 -> Q_0 [ label = "&#949;/string"];
+    Q_0 -> CHAR [ label = "'"];
+    CHAR -> CHAR_2 [ label = "\\"];
+    CHAR_2 -> CHAR_3 [ label = "[abtnvfre\\\\]" ];
+    CHAR_3 -> CHAR_4 [ label = "'" ];
+    CHAR -> CHAR_3 [ label = "[\x20-\x5B\x5D-\x7E]" ];
+    CHAR_4 -> Q_0 [ label = "&#949;/char" ];
+
+
+}
