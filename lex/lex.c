@@ -24,7 +24,6 @@ void add_mask_to_state(state** from, state** to, long* mask) {
     (*from)->transitions[(*from)->number_of_transitions++] = *to;
 }
 
-
 void print_state(state* st) {
     int i;
     long maskterm, maskdepl, cod;
@@ -75,24 +74,114 @@ int lex_parser_read_char(FILE* f) {
 
     long masktermsize = sizeof(long) * 8; // number of byts on a long
 
-    if (scanf(" %c", &sep) == EOF || sep == EOF) {
+    if (fscanf(f, " %c", &sep) == EOF || sep == EOF) {
         return 0;
     }
      
     mask = malloc(ENCODING_MAX_CHAR_NUM / (8));
     for (i = 0; i < ENCODING_MAX_CHAR_NUM / (8 * sizeof(long)); i++) {
-        mask[i] = 0L;
+        mask[i] = (sep == '@')?(-1L):(0L);
     }
-    while (scanf("%c", &c) && c != sep && c != EOF) {
+
+    while (fscanf(f, "%c", &c) && c != sep && c != EOF) {
         cod = (long) c;
         maskterm = cod / masktermsize;
         maskdepl = cod % masktermsize;
         mask[maskterm] |= (1L<<maskdepl);
     }
-    scanf(" %s", fromname);
+    fscanf(f, " %s", fromname);
     state_from_name(fromname, &from);
-    scanf(" %s", toname);
+    fscanf(f, " %s", toname);
     state_from_name(toname, &to);
     add_mask_to_state(&from, &to, mask);
+    return 1;
+}
+
+void print_token(token* t){
+    printf("[%s]\n", t->origin_state->name);
+    printf(" >>%s<<\n", t->str);
+    printf(" at (%d, %d), with size %d\n", t->line, t->column, t->size);
+}
+
+void find_next_state_from_char(char c, state** from, state** to) {
+    long masktermsize = sizeof(long) * 8; // number of byts on a long
+    long cod, maskterm, maskdepl;
+    int i;
+    cod = (long) c;
+    maskterm = cod / masktermsize;
+    maskdepl = cod % masktermsize;
+    for (i = 0; i < (*from)->number_of_transitions; i++) {            
+        if ((*from)->masks[i][maskterm] & (1L<<maskdepl)) {
+            (*to) = (*from)->transitions[i];
+            break; 
+        }
+    }
+}
+
+int next_token(FILE* f, token** t){
+    static state *current_state = NULL;
+    static long cline = 0;
+    static long ccolumn = -1;
+    static long line = 0;
+    static long column = 0;
+    static char tmpend = 1;
+    int i;
+    long masktermsize = sizeof(long) * 8; // number of byts on a long
+    long cod;
+    long maskterm, maskdepl;
+    char next_c;
+
+    state* next_state; 
+
+    if (tmpend == EOF) {
+        (*t) = NULL;
+        return 1;
+    }
+    if (current_state == NULL) {
+        state_from_name("Q0", &current_state);
+        buff_token_end = 0; 
+        buff_token[0] = '\0';
+    }     
+    do {
+        tmpend = fscanf(f, "%c", &next_c); 
+        if (next_c == '\n') {
+            cline++;
+            ccolumn = -ccolumn;
+        } else {
+            if (ccolumn < 0) {
+                ccolumn = 0;
+            } else {
+                ccolumn++;
+            }
+        }
+        next_state = NULL;
+        find_next_state_from_char(next_c, &current_state, &next_state);
+        if (next_state != NULL && strcmp(next_state->name, "Q0") == 0){
+            (*t) = malloc(sizeof(token));
+            (*t)->str = malloc(sizeof(char) * (strlen(buff_token) + 1L));
+            strcpy((*t)->str, buff_token);
+            (*t)->line = line;
+            (*t)->column = column;
+            (*t)->origin_state = current_state;
+            (*t)->size = strlen(buff_token);
+            find_next_state_from_char(next_c, &next_state, &current_state);
+            column = ccolumn;
+            line = cline;
+            buff_token[0] = next_c;
+            buff_token[1] = '\0';
+            buff_token_end = 1;
+            return 1;
+        } else {
+            buff_token[buff_token_end++] = next_c;
+            buff_token[buff_token_end] = '\0';
+        }
+
+        if (next_state == NULL) {
+            printf("buff_token: <%s> (%d), error at line %d column %d\n", buff_token, line, column);
+            return 0; // oops, something wrong happened TODO(gpgouveia) put this on stderr
+        }
+        current_state = next_state;
+    } while (tmpend != EOF);
+    (*t) = NULL;
     return 1;
 }

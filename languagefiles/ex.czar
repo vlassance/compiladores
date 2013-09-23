@@ -1,0 +1,5 @@
+int main() {
+    zhis = 2;
+    print(zhis);
+    return 0;
+}
