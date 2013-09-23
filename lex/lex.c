@@ -30,8 +30,8 @@ void print_state(state* st) {
     long maskterm, maskdepl, cod;
     long masktermsize = sizeof(long) * 8;
     printf("[%s]\n", st->name);
-    printf(" ");
     for (i = 0; i < st->number_of_transitions; i++) {   
+        printf(" ");
         for (cod = 0; cod < ENCODING_MAX_CHAR_NUM; cod++) {
             maskterm = cod / masktermsize;
             maskdepl = cod % masktermsize;
@@ -69,13 +69,13 @@ int lex_parser_read_char(FILE* f) {
     long cod;
     long maskterm, maskdepl;
     int i;
+    long readbytes;
     state *from;
     state *to;
 
     long masktermsize = sizeof(long) * 8; // number of byts on a long
 
-    scanf(" %c", &sep);
-    if (sep == EOF) {
+    if (scanf(" %c", &sep) == EOF || sep == EOF) {
         return 0;
     }
      
