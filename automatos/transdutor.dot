@@ -16,7 +16,7 @@ digraph finite_state_machine {
     FLOAT_2 -> FLOAT_2 [ label = "C_NUMBER" ];
     FLOAT_2 -> Q_0 [ label = "&#949;/float" ];
     Q_0 -> IDENT [ label = "C_LETTER"];
-    IDENT -> IDENT_2 [ label = "C_LETTER|C_NUMBER" ];
+    IDENT -> IDENT_2 [ label = "C_LETTER | C_NUMBER" ];
     IDENT_2 -> Q_0 [ label = "&#949;/identifier" ];
     Q_0 -> OPER [ label = "C_OPER" ];
     OPER -> OPER_2 [ label = "=" ];
@@ -31,10 +31,10 @@ digraph finite_state_machine {
     STR -> STR [ label = "[^\"]"];
     STR_2 -> Q_0 [ label = "&#949;/string"];
     Q_0 -> CHAR [ label = "'"];
-    CHAR -> CHAR_2 [ label = "\\"];
+    CHAR -> CHAR_2 [ label = "[\\\\]"];
     CHAR_2 -> CHAR_3 [ label = "[abtnvfre\\\\]" ];
     CHAR_3 -> CHAR_4 [ label = "'" ];
-    CHAR -> CHAR_3 [ label = "[\x20-\x5B\x5D-\x7E]" ];
+    CHAR -> CHAR_3 [ label = "[\\x20-\\x5B\\x5D-\\x7E]" ];
     CHAR_4 -> Q_0 [ label = "&#949;/char" ];
 
 
