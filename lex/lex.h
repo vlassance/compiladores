@@ -9,6 +9,7 @@
 
 typedef struct State {
     char* name;
+	char* class_name;
     int number_of_transitions;
     long* masks[MAX_NUM_TRANSITIONS];
     struct State* transitions[MAX_NUM_TRANSITIONS];
@@ -30,7 +31,7 @@ long buff_token_end;
 
 int lex_parser_read_char(FILE* f);
 void print_all_states();
-int next_token(FILE* f, Token** t);
+int next_useful_token(FILE* f, Token** t);
 void print_token(Token* t);
 
 #endif
