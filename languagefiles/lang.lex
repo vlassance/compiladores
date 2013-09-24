@@ -16,7 +16,11 @@
 + +                             Q0      SPACE
 +	+                       Q0      SPACE
 +
-+                               Q0      SPACE 
++                               Q0      SPACE
++ +                             SPACE   SPACE
++	+                       SPACE   SPACE
++
++                               SPACE   SPACE 
 +()[]{};+                       Q0      DELIM
 +"+                             Q0      STR
 +\+                             STR     SESCAPE

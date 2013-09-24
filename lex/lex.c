@@ -107,6 +107,7 @@ void find_next_state_from_char(char c, state** from, state** to) {
     long masktermsize = sizeof(long) * 8; // number of byts on a long
     long cod, maskterm, maskdepl;
     int i;
+    (*to) = NULL;
     cod = (long) c;
     maskterm = cod / masktermsize;
     maskdepl = cod % masktermsize;
@@ -118,12 +119,15 @@ void find_next_state_from_char(char c, state** from, state** to) {
     }
 }
 
+void happy_token(token* t) { 
+}
+
 int next_token(FILE* f, token** t){
     static state *current_state = NULL;
-    static long cline = 0;
-    static long ccolumn = -1;
-    static long line = 0;
-    static long column = 0;
+    static long cline = 1;
+    static long ccolumn = 0;
+    static long line = 1;
+    static long column = 1;
     static char tmpend = 1;
     int i;
     long masktermsize = sizeof(long) * 8; // number of byts on a long
@@ -149,7 +153,7 @@ int next_token(FILE* f, token** t){
             ccolumn = -ccolumn;
         } else {
             if (ccolumn < 0) {
-                ccolumn = 0;
+                ccolumn = 1;
             } else {
                 ccolumn++;
             }
@@ -170,6 +174,15 @@ int next_token(FILE* f, token** t){
             buff_token[0] = next_c;
             buff_token[1] = '\0';
             buff_token_end = 1;
+            if (current_state == NULL) {    
+                printf(
+                    "buff_token: <%s>, error at line %d column %d\n", 
+                    buff_token, 
+                    cline, 
+                    ccolumn
+                );
+                return 0; 
+            }
             return 1;
         } else {
             buff_token[buff_token_end++] = next_c;
@@ -177,7 +190,12 @@ int next_token(FILE* f, token** t){
         }
 
         if (next_state == NULL) {
-            printf("buff_token: <%s> (%d), error at line %d column %d\n", buff_token, line, column);
+           printf(
+                "buff_token: <%s>, error at line %d column %d\n", 
+                buff_token, 
+                cline, 
+                ccolumn
+            );
             return 0; // oops, something wrong happened TODO(gpgouveia) put this on stderr
         }
         current_state = next_state;

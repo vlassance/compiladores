@@ -1,5 +1,10 @@
 int main() {
     zhis = 2;
     print(zhis);
+    ozer = "another";
+    print(ozer);
+    eis = 'I';
+    e = '\n';
+    cerr = 'i';
     return 0;
 }
