@@ -107,7 +107,7 @@ int lex_parser_read_char(FILE* f) {
 }
 
 void print_token(Token* t) {
-    printf("> [%s]", t->origin_state->class_name);
+    printf("> [%s]", t->class_name);
     printf(" >>%s<<", t->str);
     printf(" at (%ld, %ld), with size %ld\n", t->line, t->column, t->size);
 }
@@ -129,14 +129,41 @@ void find_next_state_from_char(char c, State** from, State** to) {
 }
 
 int next_useful_token(FILE* f, Token** t) {
-    int res;
+    int res, i;
     
     do {
         res = next_token(f, t);
-    } while(*t != NULL && res && strcmp((*t)->origin_state->class_name, "SPACE") == 0);
-    // Verificar se strcmp((*t)->origin_state->class_name, "IDENT") == 0 && <palavra_reservada> => devolver classe RESERVADA
-    // Também guardar na tabela de símbolos os IDENTs
-    
+    } while(
+        *t != NULL && 
+        res && 
+        strcmp((*t)->origin_state->class_name, "SPACE") == 0
+    );
+
+    if (!res || *t == NULL){
+        return res;
+    }
+
+    if (strcmp((*t)->origin_state->class_name, "IDENT") == 0) {
+        for (i = 0; i < vkeywords_size; i++) {
+            if (strcmp((*t)->str, vkeywords[i]) == 0) {       
+                break;
+            }
+        }
+        if (i == vkeywords_size) {
+            (*t)->class_name = malloc(6 * sizeof(char));
+            strcpy((*t)->class_name, "IDENT");
+        } else {
+            (*t)->class_name = malloc(9 * sizeof(char));
+            strcpy((*t)->class_name, "RESERVED");
+        }
+    } else {
+        (*t)->class_name = malloc(
+            (strlen((*t)->origin_state->class_name) + 1) * sizeof(char)
+        );
+        strcpy((*t)->class_name, (*t)->origin_state->class_name);
+    }
+    // to be sure that this will not be used
+    (*t)->origin_state = NULL;
     return res;
 }
 
@@ -219,12 +246,18 @@ int next_token(FILE* f, Token** t) {
 }
 
 void initialize_lex() {
-	FILE *lex_file, *keywords_file;
-	lex_file = fopen("../languagefiles/lang.lex", "r");
-	keywords_file = fopen("../languagefiles/keywords.txt", "r");
-	//keywords_file
-	
-	while (lex_parser_read_char(lex_file)) {
-	}
-	//print_all_states();
+    FILE *lex_file, *keywords_file;
+    vkeywords_size = 0;
+
+    lex_file = fopen("../languagefiles/lang.lex", "r");
+    keywords_file = fopen("../languagefiles/keywords.txt", "r");
+    //keywords_file
+
+    while (lex_parser_read_char(lex_file)) {
+    }
+    while (fscanf(keywords_file, " %s", buff_token) != EOF) {
+        vkeywords[vkeywords_size] = malloc(sizeof(char) * (strlen(buff_token) + 1L));
+        strcpy(vkeywords[vkeywords_size++], buff_token);
+    }
+    //print_all_states();
 }

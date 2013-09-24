@@ -11,7 +11,7 @@
 +abcdefghijklmnopqrstuvxywz+    IDENT   IDENT
 +ABCDEFGHIJKLMNOPQRSTUVXYWZ+    IDENT   IDENT
 +_+                             IDENT   IDENT
-#-+*/=#                         Q0      OPER
+#!><-+*/=#                      Q0      OPER
 #=#                             OPER    OPER_2
 + +                             Q0      SPACE
 +	+                       Q0      SPACE

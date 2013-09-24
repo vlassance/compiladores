@@ -2,6 +2,12 @@ int main() {
     zhis = 2;
     print(zhis);
     ozer = "another";
+    while ( a >= 0 ) {
+        if ( b == 0 ) {
+            b = a;
+        }
+        a = a - 1;
+    }
     print(ozer);
     eis = 'I';
     e = '\n';
