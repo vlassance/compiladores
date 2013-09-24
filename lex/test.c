@@ -2,15 +2,18 @@
 #include "lex.h"
 
 int main() {
-    FILE* lexfile;
-    token* tk;
+    FILE *lex_file, *input_file;
+    Token* tk;
     _number_of_states = 0;
-    lexfile = fopen("./languagefiles/lang.lex", "r");
-    while (lex_parser_read_char(lexfile)) {
+    lex_file = fopen("./languagefiles/lang.lex", "r");
+    while (lex_parser_read_char(lex_file)) {
     }
     print_all_states();
-    while (next_token(stdin, &tk) && tk != NULL) {
+    
+	input_file = fopen(".languagefiles/ex.czar", "r");
+	while (next_token(input_file, &tk) && tk != NULL) {
        print_token(tk); 
     }
+	
     return 0;
 }

@@ -3,7 +3,7 @@
 #include <malloc.h>
 #include "lex.h"
 
-void state_from_name(char* statename, state** st) {
+void state_from_name(char* statename, State** st) {
     int i;
     for (i = 0; i < _number_of_states; i++) {
         if (strcmp(statename, state_table[i]->name) == 0) {
@@ -11,7 +11,7 @@ void state_from_name(char* statename, state** st) {
             return;
         }
     }
-    state_table[_number_of_states] = malloc(sizeof(state));
+    state_table[_number_of_states] = malloc(sizeof(State));
     state_table[_number_of_states]->name = malloc(
         sizeof(char) * (strlen(statename) + 1)
     );
@@ -19,12 +19,12 @@ void state_from_name(char* statename, state** st) {
     *st = state_table[_number_of_states++];
 }
 
-void add_mask_to_state(state** from, state** to, long* mask) {
+void add_mask_to_state(State** from, State** to, long* mask) {
     (*from)->masks[(*from)->number_of_transitions] = mask;
     (*from)->transitions[(*from)->number_of_transitions++] = *to;
 }
 
-void print_state(state* st) {
+void print_state(State* st) {
     int i;
     long maskterm, maskdepl, cod;
     long masktermsize = sizeof(long) * 8;
@@ -69,8 +69,8 @@ int lex_parser_read_char(FILE* f) {
     long maskterm, maskdepl;
     int i;
     long readbytes;
-    state *from;
-    state *to;
+    State *from;
+    State *to;
 
     long masktermsize = sizeof(long) * 8; // number of byts on a long
 
@@ -97,13 +97,13 @@ int lex_parser_read_char(FILE* f) {
     return 1;
 }
 
-void print_token(token* t){
+void print_token(Token* t) {
     printf("[%s]\n", t->origin_state->name);
     printf(" >>%s<<\n", t->str);
     printf(" at (%d, %d), with size %d\n", t->line, t->column, t->size);
 }
 
-void find_next_state_from_char(char c, state** from, state** to) {
+void find_next_state_from_char(char c, State** from, State** to) {
     long masktermsize = sizeof(long) * 8; // number of byts on a long
     long cod, maskterm, maskdepl;
     int i;
@@ -119,11 +119,11 @@ void find_next_state_from_char(char c, state** from, state** to) {
     }
 }
 
-void happy_token(token* t) { 
+void happy_token(Token* t) { 
 }
 
-int next_token(FILE* f, token** t){
-    static state *current_state = NULL;
+int next_token(FILE* f, Token** t){
+    static State *current_state = NULL;
     static long cline = 1;
     static long ccolumn = 0;
     static long line = 1;
@@ -135,7 +135,7 @@ int next_token(FILE* f, token** t){
     long maskterm, maskdepl;
     char next_c;
 
-    state* next_state; 
+    State* next_state; 
 
     if (tmpend == EOF) {
         (*t) = NULL;
@@ -161,7 +161,7 @@ int next_token(FILE* f, token** t){
         next_state = NULL;
         find_next_state_from_char(next_c, &current_state, &next_state);
         if (next_state != NULL && strcmp(next_state->name, "Q0") == 0){
-            (*t) = malloc(sizeof(token));
+            (*t) = malloc(sizeof(Token));
             (*t)->str = malloc(sizeof(char) * (strlen(buff_token) + 1L));
             strcpy((*t)->str, buff_token);
             (*t)->line = line;
