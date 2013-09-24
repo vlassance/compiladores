@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include "lex.h"
 
 void state_from_name(char* statename, State** st) {
@@ -44,7 +44,7 @@ void print_state(State* st) {
             maskterm = cod / masktermsize;
             maskdepl = cod % masktermsize;
             if (st->masks[i][maskterm] & (1L<<maskdepl)) {
-                printf("%d ", cod);
+                printf("%ld ", cod);
             }
         }
         printf(" -> %s\n", st->transitions[i]->name);
@@ -68,7 +68,6 @@ int lex_parser_read_char(FILE* f) {
     long cod;
     long maskterm, maskdepl;
     int i;
-    long readbytes;
     State *from;
     State *to;
 
@@ -100,7 +99,7 @@ int lex_parser_read_char(FILE* f) {
 void print_token(Token* t) {
     printf("[%s]\n", t->origin_state->name);
     printf(" >>%s<<\n", t->str);
-    printf(" at (%d, %d), with size %d\n", t->line, t->column, t->size);
+    printf(" at (%ld, %ld), with size %ld\n", t->line, t->column, t->size);
 }
 
 void find_next_state_from_char(char c, State** from, State** to) {
@@ -119,9 +118,6 @@ void find_next_state_from_char(char c, State** from, State** to) {
     }
 }
 
-void happy_token(Token* t) { 
-}
-
 int next_token(FILE* f, Token** t){
     static State *current_state = NULL;
     static long cline = 1;
@@ -129,10 +125,6 @@ int next_token(FILE* f, Token** t){
     static long line = 1;
     static long column = 1;
     static char tmpend = 1;
-    int i;
-    long masktermsize = sizeof(long) * 8; // number of byts on a long
-    long cod;
-    long maskterm, maskdepl;
     char next_c;
 
     State* next_state; 
@@ -176,7 +168,7 @@ int next_token(FILE* f, Token** t){
             buff_token_end = 1;
             if (current_state == NULL) {    
                 printf(
-                    "buff_token: <%s>, error at line %d column %d\n", 
+                    "buff_token: <%s>, error at line %ld column %ld\n", 
                     buff_token, 
                     cline, 
                     ccolumn
@@ -191,7 +183,7 @@ int next_token(FILE* f, Token** t){
 
         if (next_state == NULL) {
            printf(
-                "buff_token: <%s>, error at line %d column %d\n", 
+                "buff_token: <%s>, error at line %ld column %ld\n", 
                 buff_token, 
                 cline, 
                 ccolumn

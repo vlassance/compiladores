@@ -28,13 +28,9 @@ State* state_table[MAX_NUM_STATES];
 char buff_token[MAX_SIZE_OF_A_TOKEN];
 long buff_token_end;
 
-void state_from_name(char* statename, State** st);
-void add_mask_to_state(State** from, State** to, long* mask);
-void print_state(State* st);
-void print_all_states();
 int lex_parser_read_char(FILE* f);
-void print_token(Token* t);
-void find_next_state_from_char(char c, State** from, State** to);
+void print_all_states();
 int next_token(FILE* f, Token** t);
+void print_token(Token* t);
 
 #endif
