@@ -1,0 +1,9 @@
+int
+float
+string
+char
+for
+do
+while
+if
+else

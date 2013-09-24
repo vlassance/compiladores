@@ -29,8 +29,7 @@ State* state_table[MAX_NUM_STATES];
 char buff_token[MAX_SIZE_OF_A_TOKEN];
 long buff_token_end;
 
-int lex_parser_read_char(FILE* f);
-void print_all_states();
+void initialize_lex();
 int next_useful_token(FILE* f, Token** t);
 void print_token(Token* t);
 

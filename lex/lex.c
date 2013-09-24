@@ -218,3 +218,14 @@ int next_token(FILE* f, Token** t) {
     (*t) = NULL;
     return 1;
 }
+
+void initialize_lex() {
+	FILE *lex_file, *keywords_file;
+	lex_file = fopen("../languagefiles/lang.lex", "r");
+	keywords_file = fopen("../languagefiles/keywords.txt", "r");
+	//keywords_file
+	
+	while (lex_parser_read_char(lex_file)) {
+	}
+	//print_all_states();
+}
