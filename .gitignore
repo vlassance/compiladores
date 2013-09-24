@@ -30,5 +30,6 @@
 *.vrb
 *.xdy
 *.tdo
+*.brf
 .DS_STORE
 *.o
