@@ -5,7 +5,7 @@
 
 void state_from_name(char* statename, State** st) {
     int i, size;
-	char* pch;
+    char* pch;
     for (i = 0; i < _number_of_states; i++) {
         if (strcmp(statename, state_table[i]->name) == 0) {
             *st = state_table[i];
@@ -16,16 +16,17 @@ void state_from_name(char* statename, State** st) {
     state_table[_number_of_states]->name = malloc(
         sizeof(char) * (strlen(statename) + 1)
     );
-	strcpy(state_table[_number_of_states]->name, statename);
+    strcpy(state_table[_number_of_states]->name, statename);
     state_table[_number_of_states]->class_name = malloc(
         sizeof(char) * (strlen(statename) + 1)
     );
     pch = strrchr(statename, '_');
-	if (!pch)
-		size = strlen(statename);
-	else
-		size = pch - statename;
-	strncpy(state_table[_number_of_states]->class_name, statename, size);
+    if (!pch) {
+        size = strlen(statename);
+    } else {
+        size = pch - statename;
+    }
+    strncpy(state_table[_number_of_states]->class_name, statename, size);
     *st = state_table[_number_of_states++];
 }
 
@@ -59,7 +60,6 @@ void print_state(State* st) {
         }
         printf(" -> %s\n", st->transitions[i]->name);
     }
-
 }
 
 void print_all_states() {
@@ -107,8 +107,8 @@ int lex_parser_read_char(FILE* f) {
 }
 
 void print_token(Token* t) {
-	printf("> [%s]", t->origin_state->class_name);
-	printf(" >>%s<<", t->str);
+    printf("> [%s]", t->origin_state->class_name);
+    printf(" >>%s<<", t->str);
     printf(" at (%ld, %ld), with size %ld\n", t->line, t->column, t->size);
 }
 
@@ -129,16 +129,15 @@ void find_next_state_from_char(char c, State** from, State** to) {
 }
 
 int next_useful_token(FILE* f, Token** t) {
-	int res;
-	
-	do {
-		res = next_token(f, t);
-	} while(*t != NULL && res && strcmp((*t)->origin_state->class_name, "SPACE") == 0);
-	// Verificar se strcmp((*t)->origin_state->class_name, "IDENT") == 0 && <palavra_reservada> => devolver classe RESERVADA
-	// Também guardar na tabela de símbolos os IDENTs
-	
-	return res;
-	
+    int res;
+    
+    do {
+        res = next_token(f, t);
+    } while(*t != NULL && res && strcmp((*t)->origin_state->class_name, "SPACE") == 0);
+    // Verificar se strcmp((*t)->origin_state->class_name, "IDENT") == 0 && <palavra_reservada> => devolver classe RESERVADA
+    // Também guardar na tabela de símbolos os IDENTs
+    
+    return res;
 }
 
 int next_token(FILE* f, Token** t) {
