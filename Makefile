@@ -2,15 +2,19 @@ CC=gcc
 LEXFOLDER=./lex
 CFLAGS=-g
 
-all: lex.o test
+all: lex.o testall
 
 
-lex.o: 
+lex.o:
 	${CC} -c ${LEXFOLDER}/lex.c ${CFLAGS} -o $@
 
-test: 
+testall: lextest lex.o 
+	echo "===== TESTING ====="
+	./lextest ./languagefiles/ex.czar 
+
+lextest:  
 	${CC} ${LEXFOLDER}/test.c lex.o ${CFLAGS} -o $@
 
 clean:
-	rm -f test lex.o 
+	rm -f lextest lex.o 
 

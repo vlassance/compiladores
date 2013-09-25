@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     while (next_useful_token(input_file, &tk) && tk != NULL) {
        print_token(tk); 
     }
-    if (tk != NULL) 
+    if (tk == NULL) 
         return 0;
     return 1;
 }
