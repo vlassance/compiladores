@@ -100,15 +100,15 @@
 	\caption{Autômato finito FLOAT}
 \end{figure}
 
-\item CHAR: \verb!/'(?:\\[abtnvfre\\]|[\x20-\x5B\x5D-\x7E])?'/!
+\item CHAR: \verb!/'(?:\\[0abtnvfre\\'"]|[\x20-\x5B\x5D-\x7E])'/!
 
 \begin{figure}[H]
 	\centering
-	\begin{tikzpicture}[shorten >=1pt,node distance=3cm,on grid,auto] 
+	\begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto] 
 	   \node[state,initial] (q0)   {$q_0$}; 
 	   \node[state] (q1) [right=of q0] {$q_1$}; 
 	   \node[state] (q2) [right=of q1] {$q_2$}; 
-	   \node[state] (q3) [right=of q2] {$q_3$}; 
+	   \node[state] (q3) [right=of q2,xshift=+2cm] {$q_3$}; 
 	   \node[state, accepting] (q4) [right=of q3] {$q_4$}; 
 	    \path[->] 
 	    (q0) edge  node {$`$} (q1)
@@ -116,9 +116,8 @@
 	        [$\backslash$x20-$\backslash$x5B$\backslash$x5D-$\backslash$x7E]
 	    } (q3)
 	    (q1) edge node {$\backslash$} (q2)
-	    (q2) edge node {[abtnvfre$\backslash\backslash$]} (q3)
-	    (q3) edge node {$`$} (q4)
-		(q1) edge[bend right=30] node {$`$} (q4);
+	    (q2) edge node {[0abtnvfre$\backslash\backslash$"']} (q3)
+	    (q3) edge node {$`$} (q4);
 	\end{tikzpicture}
 	\caption{Autômato finito CHAR}
 \end{figure}

@@ -2,8 +2,15 @@ int
 float
 string
 char
+bool
 for
 do
 while
 if
 else
+read
+print
+and
+or
+main
+return

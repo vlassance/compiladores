@@ -1,7 +1,8 @@
 int main() {
     zhis = 2;
     print(zhis);
-    ozer = "another";
+    ozer = "a\"nother";
+    abc = '\r';
     while ( a >= 0 ) {
         if ( b == 0 ) {
             b = a;

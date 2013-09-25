@@ -29,7 +29,7 @@
 @@                              STR     STR
 +'+                             Q0      CHAR
 +\+                             CHAR    CESCAPE
-@@                              CESCAPE CHAR_2
++0abtnvfre\’"+                  CESCAPE CHAR_2
 @@                              CHAR    CHAR_2
 +'+                             CHAR_2   CHAR_3
 

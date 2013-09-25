@@ -15,7 +15,6 @@
 \usepackage{color}				% Controle das cores
 \usepackage{graphicx}			% Inclusão de gráficos
 \usepackage{pdfpages}
-%\usepackage[paperwidth=10in, paperheight=10in]{geometry}
 \usepackage{tikz}
 \usetikzlibrary{automata,positioning}
 
@@ -38,7 +37,7 @@
 }
 \makeatother
 
-\autor{Gustavo Pacianotto Gouveia (NUSP 6482819), Victor Lassance (NUSP 6431325)}
+\autor{Gustavo P. Gouveia (6482819), Victor Lassance (6431325)}
 \title{Relatório de Compiladores - Primeira Etapa - Construção de um analisador léxico}
 \orientador[Professor:]{Ricardo Luis de Azevedo da Rocha}
 \preambulo{Texto apresentado à Escola Politécnica da Universidade de São Paulo como requisito para a aprovação na disciplina Linguagens e Compiladores no quinto módulo acadêmico do curso de graduação em Engenharia de Computação, junto ao Departamento de Engenharia de Computação e Sistemas Digitais (PCS).}
@@ -97,12 +96,15 @@
 \includepdf[pages={1}]{automatos/transdutor.pdf}
 
 \chapter{Código em C da sub-rotina do Analisador Léxico}
-\label{app:codigo}
-\lstinputlisting[frame=single,language=C,numbers=left]{../lex/lex.c}
+\label{app:codigo-lexico}
+\textbf{\emph{lex.h}}
+\lstinputlisting[frame=single,language=C,numbers=left,breaklines=true]{../lex/lex.h}
+\textbf{\emph{lex.c}}
+\lstinputlisting[frame=single,language=C,numbers=left,breaklines=true]{../lex/lex.c}
 
 \chapter{Código em C do método principal do Analisador Léxico}
-\label{app:codigo}
-\lstinputlisting[frame=single,language=C,numbers=left]{../lex/test.c}
+\label{app:codigo-principal}
+\lstinputlisting[frame=single,language=C,numbers=left,breaklines=true]{../lex/test.c}
 
 \end{apendicesenv}
 

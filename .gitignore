@@ -34,3 +34,5 @@
 .DS_STORE
 *.o
 *.swp
+lextest
+*.dSYM

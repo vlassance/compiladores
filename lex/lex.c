@@ -217,7 +217,7 @@ int next_token(FILE* f, Token** t) {
             buff_token[0] = next_c;
             buff_token[1] = '\0';
             buff_token_end = 1;
-            if (current_state == NULL && next_c != '\0') {    
+            if (current_state == NULL) {    
                 fprintf(
                     stderr,
                     "buff_token: <%s>, error at line %ld column %ld\n", 
@@ -255,7 +255,6 @@ void initialize_lex() {
 
     lex_file = fopen("./languagefiles/lang.lex", "r");
     keywords_file = fopen("./languagefiles/keywords.txt", "r");
-    //keywords_file
 
     while (lex_parser_read_char(lex_file)) {
     }
