@@ -33,3 +33,4 @@
 *.brf
 .DS_STORE
 *.o
+*.swp

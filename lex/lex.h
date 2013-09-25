@@ -1,6 +1,7 @@
 #ifndef LEX_PCS2056
 
 # define LEX_PCS2056
+
 # define MAX_NUM_TRANSITIONS 50
 # define MAX_NUM_STATES 50
 # define MAXLENGTHSTATESTR 50

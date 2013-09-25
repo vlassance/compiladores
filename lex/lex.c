@@ -216,7 +216,8 @@ int next_token(FILE* f, Token** t) {
             buff_token[1] = '\0';
             buff_token_end = 1;
             if (current_state == NULL && next_c != '\0') {    
-                printf(
+                fprintf(
+                    stderr,
                     "buff_token: <%s>, error at line %ld column %ld\n", 
                     buff_token, 
                     cline, 
@@ -231,26 +232,27 @@ int next_token(FILE* f, Token** t) {
         }
 
         if (next_state == NULL) {
-           printf(
+           fprintf(
+               stderr,
                 "buff_token: <%s>, error at line %ld column %ld\n", 
                 buff_token, 
                 cline, 
                 ccolumn
             );
-            return 0; // oops, something wrong happened TODO(gpgouveia) put this on stderr
+            return 1; 
         }
         current_state = next_state;
     } while (tmpend != EOF);
     (*t) = NULL;
-    return 1;
+    return 0;
 }
 
 void initialize_lex() {
     FILE *lex_file, *keywords_file;
     vkeywords_size = 0;
 
-    lex_file = fopen("../languagefiles/lang.lex", "r");
-    keywords_file = fopen("../languagefiles/keywords.txt", "r");
+    lex_file = fopen("./languagefiles/lang.lex", "r");
+    keywords_file = fopen("./languagefiles/keywords.txt", "r");
     //keywords_file
 
     while (lex_parser_read_char(lex_file)) {
