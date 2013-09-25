@@ -2,4 +2,12 @@
 
 \textbf{Quais as vantagens e desvantagens da implementação do analisador léxico como uma fase separada do processamento da linguagem de programação em relação à sua implementação como sub-rotina que vai extraindo um átomo a cada chamada?}
 
-TODO
+Geralmente, o gargalo encontrado durante a compilação de um programa sem otimização é a leitura de arquivos e a análise léxica. Separando-se o analisador léxico do resto do compilador, é possivel otimizar esse módulo e obter um analisador léxico genérico que serviria a princípio para qualquer linguagem.
+
+A desvantagem de se separar os dois é o desacoplamento da lógica e, por conseguinte, das informações disponíveis ao analizador sintático e semântico, informações estas que podem ser importantes no reconhecimento das classes dos tokens encontrados dependendo da linguagem a ser compilada.
+
+Exemplo: Shell Script - O primeiro \'echo\' refere-se ao comando echo e o segundo refere-se ao primeiro argumento do comando.
+
+\begin{lstlisting}[frame=single,language=bash,numbers=left]
+	echo echo
+\end{lstlisting}

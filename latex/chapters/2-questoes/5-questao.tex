@@ -2,4 +2,55 @@
 
 \textbf{Crie um autômato único que aceite todas essas linguagens a partir de um mesmo estado inicial, mas que apresente um estado final diferenciado para cada uma delas.}
 
-TODO
+    
+\begin{itemize}
+    \item C\_DELIM $= [91, 93, 123, 125, 40, 41, 59]$
+    \item C\_SPACE $= [32, 9, 10, 11, 12, 13]$
+    \item C\_OPER  $= [42, 37, 60, 62, 43, 61, 33, 47, 45]$
+    \item C\_LETTERS  $= [65, \dots, 90, 97, \dots, 122, 95]$
+    \item C\_NUMBERS  $= [48, 57]$ 
+\end{itemize}
+
+\begin{tikzpicture}[shorten >=1pt,node distance=4cm,on grid,auto] 
+    \node[state,initial] (q0)   {$q_0$}; 
+    \node[state,accepting](delim) [right=of q0, yshift=100, xshift=-100] {delim};
+    \node[state,accepting](space) [right=of q0, yshift=100, xshift=20] {space};
+    \node[state,accepting](oper) [right=of q0, yshift=20, xshift=40] {oper};
+    \node[state,accepting](oper2) [right=of oper] {$oper_2$};
+    \node[state,accepting](ident) [right=of q0, yshift=-30, xshift=40] {$ident$};
+    \node[state,accepting](ident2) [right=of ident] {$ident_2$};
+    \node[state,accepting](integ) [right=of q0, yshift=-100, xshift=-100] {$int$};
+    \node[state](float) [right=of integ, xshift=20] {$float$};
+    \node[state,accepting](float2) [right=of float] {$float_2$};
+    \node[state] (char1) [left=of q0, yshift=-60] {$char$}; 
+    \node[state] (char2) [below=of char1] {$char_2$}; 
+    \node[state] (char3) [below=of char2] {$char_3$}; 
+    \node[state, accepting] (char4) [right=of char3] {$char_4$}; 
+    \node[state] (str1) [left=of q0, yshift=60] {$str_1$}; 
+    \node[state, accepting] (str2) [above=of str1] {$str_2$};
+    \path[->] 
+
+    (q0) edge node {C\_DELIM} (delim)
+    (q0) edge node {C\_SPACE} (space)
+    (q0) edge node {C\_OPER} (oper)
+    (oper) edge node {$=$} (oper2)
+    (q0) edge node {C\_LETTERS} (ident)
+    (ident) edge [bend left=19] node {C\_LETTERS $|$ C\_NUMBERS} (ident2)
+    (q0) edge [bend right=19] node {C\_NUMBERS} (integ)
+    (integ) edge [loop below] node {C\_NUMBERS} (integ)
+    (q0) edge  [bend left=19] node {$.$} (float)
+    (integ) edge node {$.$} (float)
+    (float) edge  node {C\_NUMBERS} (float2)
+    (float2) edge [loop below] node {C\_NUMBERS} (float2)
+    (q0) edge  node {$'$} (char1)
+    (char1) edge[bend left=60] node { %
+        [$\backslash$x20-$\backslash$x5B$\backslash$x5D-$\backslash$x7E] %
+    } (char3) 
+    (char1) edge node {$\backslash$} (char2)
+    (char2) edge node {[abtnvfre$\backslash\backslash$]} (char3)
+    (char3) edge  node {$'$} (char4)
+    (q0) edge  node {$"$} (str1)
+    (str1) edge [loop left] node {$[\hat{~}"]$} (str1)
+           edge [loop right] node {$\backslash"$} (str1)
+           edge  node {$"$} (str2);
+\end{tikzpicture}
