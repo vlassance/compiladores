@@ -2,4 +2,36 @@
 
 \textbf{Relate detalhadamente o funcionamento do analisador léxico assim construído, incluindo no relatório: descrição teórica do programa; descrição da sua estrutura; descrição de seu funcionamento; descrição dos testes realizados e das saídas obtidas.}
 
-TODO gpg
+O analisador léxico lê um arquivo de configuração da máquina de estados
+(transdutor) o mesmo pode ser comparado à seguinte regex:
+
+\verb!(.)([^\1]*)\1\s*([A-Za-z]+(:?_[0-9]+)?)\s*([A-Za-z]+(:?_[0-9]+)?)!
+
+Cada linha possui uma lista de caracteres delimitados por um caractere
+especial (por exemplo `+' ou `\verb!#!') e dois identificadores que designam os
+estados inicial e final da transição. O caractere \verb!@! designa todas as
+transições, este é usado principalmente para encaminhar qualquer aceitação
+final de um sub-autômato ao estado \verb!Q0!, para então ser tratado
+normalmente.
+
+Ex:
+\begin{lstlisting}
++abcdefghijklmnopqrstuvxywz+    Q0      IDENT
++ABCDEFGHIJKLMNOPQRSTUVXYWZ+    Q0      IDENT
++_+                             Q0      IDENT
+\end{lstlisting}
+Este exemplo vai reconhecer todos os caracteres a-b e A-B mais o underscore
+(\_) como transições do estado \verb!Q0! e \verb!IDENT!.
+
+Após a leitura do arquivo de configuração (e de um arquivo com
+    \emph{keywords}). Faz-se a leitura do arquivo fonte, por meio do
+transdutor, percorre-se o arquivo fonte token a token. Uma função
+\verb!next_useful_token! oferece o não retorno dos tokens de espaço, tal qual a
+quebra de linha e espaços normais. O motor do lex também substitui classes
+\verb!IDENT! em \verb!RESERVED! se a palavra se encontra na lista de
+identificadores reservados. 
+
+Uma \verb+hashtable+ está sendo desenvolvida e será integrada nas próximas versões do
+compilador. 
+
+
