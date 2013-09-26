@@ -16,16 +16,18 @@ void state_from_name(char* statename, State** st) {
     state_table[_number_of_states]->name = malloc(
         sizeof(char) * (strlen(statename) + 1)
     );
+
     strcpy(state_table[_number_of_states]->name, statename);
-    state_table[_number_of_states]->class_name = malloc(
-        sizeof(char) * (strlen(statename) + 1)
-    );
+
     pch = strrchr(statename, '_');
     if (!pch) {
         size = strlen(statename);
     } else {
         size = pch - statename;
     }
+    state_table[_number_of_states]->class_name = malloc(
+        sizeof(char) * (size + 1)
+    );
     strncpy(state_table[_number_of_states]->class_name, statename, size);
     *st = state_table[_number_of_states++];
 }

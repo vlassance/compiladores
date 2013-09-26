@@ -10,8 +10,11 @@
     \item C\_LETTERS  $= [65, \dots, 90, 97, \dots, 122, 95]$
     \item C\_NUMBERS  $= [48, 57]$ 
 \end{itemize}
+\resizebox{400px}{400px}{
+    \centering
+\begin{tikzpicture}[shorten >=1pt,node distance=5cm,on grid,auto] 
 
-\begin{tikzpicture}[shorten >=1pt,node distance=4cm,on grid,auto] 
+
     \node[state,initial] (q0)   {$q_0$}; 
     \node[state,accepting](delim) [right=of q0, yshift=100, xshift=-100] {delim};
     \node[state,accepting](space) [right=of q0, yshift=100, xshift=20] {space};
@@ -54,3 +57,4 @@
            edge [loop right] node {$\backslash"$} (str1)
            edge  node {$"$} (str2);
 \end{tikzpicture}
+}
