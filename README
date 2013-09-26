@@ -7,7 +7,7 @@ Lex:
     $ make 
 
     deve deletar arquivos antigos e compilar o projeto, rodando os testes em cima
-    do arquivo ./languagefiles/ex.czar 
+    do arquivo ./ENTRADA.txt 
 
     Este arquivo possui cadeias de caractéres que seriam reconhecidas pelo lexer.
 

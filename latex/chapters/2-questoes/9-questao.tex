@@ -3,7 +3,7 @@
 \textbf{Relate detalhadamente o funcionamento do analisador léxico assim construído, incluindo no relatório: descrição teórica do programa; descrição da sua estrutura; descrição de seu funcionamento; descrição dos testes realizados e das saídas obtidas.}
 
 O analisador léxico lê um arquivo de configuração da máquina de estados
-(transdutor) o mesmo pode ser comparado à seguinte regex:
+(transdutor). O mesmo pode ser comparado à seguinte regex:
 
 \verb!(.)([^\1]*)\1\s*([A-Za-z]+(:?_[0-9]+)?)\s*([A-Za-z]+(:?_[0-9]+)?)!
 
@@ -20,18 +20,16 @@ Ex:
 +ABCDEFGHIJKLMNOPQRSTUVXYWZ+    Q0      IDENT
 +_+                             Q0      IDENT
 \end{lstlisting}
-Este exemplo vai reconhecer todos os caracteres a-b e A-B mais o underscore
+Este exemplo vai reconhecer todos os caracteres a-z e A-Z mais o underscore
 (\_) como transições do estado \verb!Q0! e \verb!IDENT!.
 
-Após a leitura do arquivo de configuração (e de um arquivo com
-    \emph{keywords}). Faz-se a leitura do arquivo fonte, por meio do
-transdutor, percorre-se o arquivo fonte token a token. Uma função
+Após a leitura do arquivo de configuração e de um arquivo com
+    \emph{keywords}, faz-se a leitura do arquivo fonte, por meio do
+transdutor, percorrendo-se o arquivo fonte token a token. Uma função
 \verb!next_useful_token! oferece o não retorno dos tokens de espaço, tal qual a
-quebra de linha e espaços normais. O motor do lex também substitui classes
-\verb!IDENT! em \verb!RESERVED! se a palavra se encontra na lista de
+quebra de linha e espaços normais, além de ignorar comentários. O motor do lex também substitui classes
+\verb!IDENT! para \verb!RESERVED! se a palavra se encontra na lista de
 identificadores reservados. 
 
 Uma \verb+hashtable+ está sendo desenvolvida e será integrada nas próximas versões do
-compilador. 
-
-
+compilador.

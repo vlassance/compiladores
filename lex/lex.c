@@ -154,8 +154,8 @@ int next_useful_token(FILE* f, Token** t) {
     } while(
         *t != NULL && 
         res && 
-        strcmp((*t)->origin_state->class_name, "SPACE") == 0
-        // ignore SPACES 
+        (strcmp((*t)->origin_state->class_name, "SPACE") == 0 || // ignore SPACES 
+		 strcmp((*t)->origin_state->class_name, "COMMENTS") == 0) // ignore COMMENTS
     );
 
     if (!res || *t == NULL){

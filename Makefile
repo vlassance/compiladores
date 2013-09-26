@@ -10,7 +10,7 @@ lex.o:
 
 testall: lextest lex.o 
 	echo "===== TESTING ====="
-	./lextest ./languagefiles/ex.czar 
+	./lextest ./ENTRADA.txt 
 
 lextest:  
 	${CC} ${LEXFOLDER}/test.c lex.o ${CFLAGS} -o $@
