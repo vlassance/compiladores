@@ -16,7 +16,9 @@
 
 
     \node[state,initial] (q0)   {$q_0$}; 
-    \node[state,accepting](delim) [right=of q0, yshift=100, xshift=-100] {delim};
+    \node[state,accepting](delim) [right=of q0, yshift=130, xshift=-100] {delim};
+    \node[state](comm) [right=of q0, yshift=100, xshift=-210] {comm};
+    \node[state,accepting](comm2) [above=of comm, yshift=-30] {$comm_2$};
     \node[state,accepting](space) [right=of q0, yshift=100, xshift=20] {space};
     \node[state,accepting](oper) [right=of q0, yshift=20, xshift=40] {oper};
     \node[state,accepting](oper2) [right=of oper] {$oper_2$};
@@ -33,6 +35,9 @@
     \node[state, accepting] (str2) [above=of str1] {$str_2$};
     \path[->] 
 
+    (q0) edge node {$\$$} (comm)
+    (comm) edge [loop left] node {$[\hat{~}\backslash{}n]$} (comm)
+    (comm) edge node {$\backslash{}n$} (comm2)
     (q0) edge node {C\_DELIM} (delim)
     (q0) edge node {C\_SPACE} (space)
     (q0) edge node {C\_OPER} (oper)
