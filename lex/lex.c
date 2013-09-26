@@ -3,40 +3,9 @@
 #include <stdlib.h>
 #include "lex.h"
 
-void state_from_name(char* statename, State** st) {
-    int i, size;
-    char* pch;
-    for (i = 0; i < _number_of_states; i++) {
-        if (strcmp(statename, state_table[i]->name) == 0) {
-            *st = state_table[i];
-            return;
-        }
-    }
-    state_table[_number_of_states] = malloc(sizeof(State));
-    state_table[_number_of_states]->name = malloc(
-        sizeof(char) * (strlen(statename) + 1)
-    );
-
-    strcpy(state_table[_number_of_states]->name, statename);
-
-    pch = strrchr(statename, '_');
-    if (!pch) {
-        size = strlen(statename);
-    } else {
-        size = pch - statename;
-    }
-    state_table[_number_of_states]->class_name = malloc(
-        sizeof(char) * (size + 1)
-    );
-    strncpy(state_table[_number_of_states]->class_name, statename, size);
-    *st = state_table[_number_of_states++];
-}
-
-void add_mask_to_state(State** from, State** to, long* mask) {
-    (*from)->masks[(*from)->number_of_transitions] = mask;
-    (*from)->transitions[(*from)->number_of_transitions++] = *to;
-}
-
+/**
+ * Printing procedures
+ */
 void print_state(State* st) {
     int i;
     long maskterm, maskdepl, cod;
@@ -71,6 +40,54 @@ void print_all_states() {
     }
 }
 
+void print_token(Token* t) {
+    printf("> [%s]", t->class_name);
+    printf(" >>%s<<", t->str);
+    printf(" at (%ld, %ld), with size %ld\n", t->line, t->column, t->size);
+}
+
+/**
+ * This is a very dummy implementation for a search'n'insert operation on 
+ * a 'set'. 
+ */
+void state_from_name(char* statename, State** st) {
+    int i, size;
+    char* pch;
+    // find a state that matchs, if so, return it within st
+    for (i = 0; i < _number_of_states; i++) {
+        if (strcmp(statename, state_table[i]->name) == 0) {
+            *st = state_table[i];
+            return;
+        }
+    }
+    // malloc size of State, here we do not care about freeing states, 
+    // since the lex parser will run until the life span of the compiler run,
+    // the memory will be used until the end. No need to free it. 
+    state_table[_number_of_states] = malloc(sizeof(State));
+    state_table[_number_of_states]->name = malloc(
+        sizeof(char) * (strlen(statename) + 1) // +1 for the \0 
+    );
+
+    strcpy(state_table[_number_of_states]->name, statename);
+    // we should cut the '_' they are just different variations of the same class 
+    pch = strrchr(statename, '_');
+    if (!pch) {
+        size = strlen(statename);
+    } else {
+        size = pch - statename;
+    }
+    state_table[_number_of_states]->class_name = malloc(
+        sizeof(char) * (size + 1)
+    );
+    strncpy(state_table[_number_of_states]->class_name, statename, size);
+    *st = state_table[_number_of_states++];
+}
+
+void add_mask_to_state(State** from, State** to, long* mask) {
+    (*from)->masks[(*from)->number_of_transitions] = mask;
+    (*from)->transitions[(*from)->number_of_transitions++] = *to;
+}
+
 int lex_parser_read_char(FILE* f) {
     char fromname[MAXLENGTHSTATESTR];
     char toname[MAXLENGTHSTATESTR];
@@ -88,31 +105,29 @@ int lex_parser_read_char(FILE* f) {
     if (fscanf(f, " %c", &sep) == EOF || sep == EOF) {
         return 0;
     }
-     
+    // complete mask of chars 
     mask = malloc(ENCODING_MAX_CHAR_NUM / (8));
     for (i = 0; i < ENCODING_MAX_CHAR_NUM / (8 * sizeof(long)); i++) {
+        // operator that means "all transitions" (in order to simulate the 'transductor')
         mask[i] = (sep == '@')?(-1L):(0L);
     }
-
+    // for each char different from sep, insert a transition 
     while (fscanf(f, "%c", &c) && c != sep && c != EOF) {
         cod = (long) c;
         maskterm = cod / masktermsize;
         maskdepl = cod % masktermsize;
         mask[maskterm] |= (1L<<maskdepl);
     }
+    // origin state 
     fscanf(f, " %s", fromname);
     state_from_name(fromname, &from);
+    // destiny state 
     fscanf(f, " %s", toname);
     state_from_name(toname, &to);
     add_mask_to_state(&from, &to, mask);
     return 1;
 }
 
-void print_token(Token* t) {
-    printf("> [%s]", t->class_name);
-    printf(" >>%s<<", t->str);
-    printf(" at (%ld, %ld), with size %ld\n", t->line, t->column, t->size);
-}
 
 void find_next_state_from_char(char c, State** from, State** to) {
     long masktermsize = sizeof(long) * 8; // number of byts on a long
@@ -123,6 +138,7 @@ void find_next_state_from_char(char c, State** from, State** to) {
     maskterm = cod / masktermsize;
     maskdepl = cod % masktermsize;
     for (i = 0; i < (*from)->number_of_transitions; i++) {            
+        // search for mathing out states.
         if ((*from)->masks[i][maskterm] & (1L<<maskdepl)) {
             (*to) = (*from)->transitions[i];
             break; 
@@ -139,14 +155,17 @@ int next_useful_token(FILE* f, Token** t) {
         *t != NULL && 
         res && 
         strcmp((*t)->origin_state->class_name, "SPACE") == 0
+        // ignore SPACES 
     );
 
     if (!res || *t == NULL){
-        return res;
+        return res; // if error or no token, return it to the caller. 
     }
 
     if (strcmp((*t)->origin_state->class_name, "IDENT") == 0) {
         for (i = 0; i < vkeywords_size; i++) {
+            // dummy search for keywords, this should become a hashtable
+            // for the next project 
             if (strcmp((*t)->str, vkeywords[i]) == 0) {       
                 break;
             }
@@ -156,6 +175,7 @@ int next_useful_token(FILE* f, Token** t) {
             strcpy((*t)->class_name, "IDENT");
         } else {
             (*t)->class_name = malloc(9 * sizeof(char));
+            // name it RESERVED in case it is
             strcpy((*t)->class_name, "RESERVED");
         }
     } else {
@@ -179,30 +199,38 @@ int next_token(FILE* f, Token** t) {
     char next_c;
 
     State* next_state; 
-
+    // tmpend is static, if i read something that was 
+    // EOF in the last step, this is the end and I should set t to null 
     if (tmpend == EOF) {
         (*t) = NULL;
         return 1;
     }
+
     if (current_state == NULL) {
+        // current_state is null, it means that this is initialization 
+        // change it to Q0 and set the buffer to ""
         state_from_name("Q0", &current_state);
         buff_token_end = 0; 
         buff_token[0] = '\0';
-    }     
+    }
+
     do {
+        // get char, lookahead
         tmpend = fscanf(f, "%c", &next_c); 
-        if (next_c == '\n') {
+        if (next_c == '\n') { // column management 
             cline++;
             ccolumn = 0;
         } else {
-            if (ccolumn < 0) {
-                ccolumn = 1;
-            } else {
-                ccolumn++;
-            }
+            ccolumn++;
         }
+
         next_state = NULL;
+        // let's see if there's a defined next state 
         find_next_state_from_char(next_c, &current_state, &next_state);
+        // if next state is Q0, it means that this is acceptation, 
+        // we should stop, go to Q0 and reevaluate the transition. 
+        //  Since the transductor have an empty transition to Q0, we are
+        //  obligated to do so.
         if (next_state != NULL && strcmp(next_state->name, "Q0") == 0){
             (*t) = malloc(sizeof(Token));
             (*t)->str = malloc(sizeof(char) * (strlen(buff_token) + 1L));
@@ -214,13 +242,16 @@ int next_token(FILE* f, Token** t) {
             find_next_state_from_char(next_c, &next_state, &current_state);
             column = ccolumn;
             line = cline;
+            // memorize next_c 
             buff_token[0] = next_c;
             buff_token[1] = '\0';
             buff_token_end = 1;
-            if (current_state == NULL) {    
+            // no current_state but no end of file either, this seams to be a
+            // problem.
+            if (current_state == NULL && tmpend != EOF) {    
                 fprintf(
                     stderr,
-                    "buff_token: <%s>, error at line %ld column %ld\n", 
+                    "buff_token (1): <%s>, error at line %ld column %ld\n", 
                     buff_token, 
                     cline, 
                     ccolumn
@@ -232,11 +263,11 @@ int next_token(FILE* f, Token** t) {
             buff_token[buff_token_end++] = next_c;
             buff_token[buff_token_end] = '\0';
         }
-
+        // no next state, raise error. 
         if (next_state == NULL) {
            fprintf(
                stderr,
-                "buff_token: <%s>, error at line %ld column %ld\n", 
+                "buff_token (2): <%s>, error at line %ld column %ld\n", 
                 buff_token, 
                 cline, 
                 ccolumn
@@ -252,15 +283,17 @@ int next_token(FILE* f, Token** t) {
 void initialize_lex() {
     FILE *lex_file, *keywords_file;
     vkeywords_size = 0;
+    _number_of_states = 0;
 
     lex_file = fopen("./languagefiles/lang.lex", "r");
     keywords_file = fopen("./languagefiles/keywords.txt", "r");
 
+    // parse the configuration file 
     while (lex_parser_read_char(lex_file)) {
     }
+    // read keywords file 
     while (fscanf(keywords_file, " %s", buff_token) != EOF) {
         vkeywords[vkeywords_size] = malloc(sizeof(char) * (strlen(buff_token) + 1L));
         strcpy(vkeywords[vkeywords_size++], buff_token);
     }
-    //print_all_states();
 }
