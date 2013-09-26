@@ -5,7 +5,6 @@ int main(int argc, char *argv[]) {
     FILE *input_file;
     Token* tk;
     _number_of_states = 0;
-	char abc = '';
 
     if (argc <= 1) {
         fprintf(stderr, "Usage:\n");
