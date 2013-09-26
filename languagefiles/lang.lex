@@ -31,9 +31,14 @@
 +\+                             CHAR    CESCAPE
 +0abtnvfre\’"+                  CESCAPE CHAR_2
 @@                              CHAR    CHAR_2
-+'+                             CHAR_2   CHAR_3
++'+                             CHAR_2  CHAR_3
++$+                             Q0      COMMENTS
++
++                               COMMENTS COMMENTS_2
+@@                              COMMENTS COMMENTS
 
 
+@@                              COMMENTS_2 Q0
 @@                              INT     Q0
 @@                              IDENT   Q0
 @@                              FLOAT_2  Q0
