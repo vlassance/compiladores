@@ -36,6 +36,10 @@ digraph finite_state_machine {
     CHAR_3 -> CHAR_4 [ label = "'" ];
     CHAR -> CHAR_3 [ label = "[\\x20-\\x5B\\x5D-\\x7E]" ];
     CHAR_4 -> Q_0 [ label = "&#949;/char" ];
+    Q_0 -> COMMENT [ label = "#" ];
+    COMMENT -> COMMENT [ label = "[^\\n]" ];
+    COMMENT -> COMMENT_2 [ label = "\\n" ];
+    COMMENT_2 -> Q_0 [ label = "&#949;/comment"]
 
 
 }
