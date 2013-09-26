@@ -35,7 +35,7 @@
     \node[state, accepting] (str2) [above=of str1] {$str_2$};
     \path[->] 
 
-    (q0) edge node {$\$$} (comm)
+    (q0) edge node {$\#$} (comm)
     (comm) edge [loop left] node {$[\hat{~}\backslash{}n]$} (comm)
     (comm) edge node {$\backslash{}n$} (comm2)
     (q0) edge node {C\_DELIM} (delim)
