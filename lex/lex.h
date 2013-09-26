@@ -8,6 +8,7 @@
 # define ENCODING_MAX_CHAR_NUM 256 
 # define MAX_SIZE_OF_A_TOKEN 2048
 # define MAX_NUMBER_OF_KEYWORDS 256
+# define MAX_NUMBER_OF_IDENTIFIERS 2048
 
 typedef struct State {
     char* name;
@@ -35,6 +36,8 @@ long buff_token_end;
 
 char* vkeywords[MAX_NUMBER_OF_KEYWORDS];
 long vkeywords_size;
+char* videntifiers[MAX_NUMBER_OF_IDENTIFIERS];
+long videntifiers_size;
 
 void initialize_lex();
 int next_useful_token(FILE* f, Token** t);

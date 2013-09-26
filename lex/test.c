@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
     while (next_useful_token(input_file, &tk) && tk != NULL) {
        print_token(tk); 
     }
+	
+	print_identifiers();
 
     if (tk == NULL) 
         return 0;
