@@ -2,7 +2,7 @@ int main() {
     zhis = 2;
     print(zhis);
     ozer = "a\"nother";
-    abc = '\r';    $ this is a comment
+    abc = '\r';    # this is a comment
     while ( a >= 0 ) {
         if ( b == 0 ) {
             b = a;

@@ -32,7 +32,7 @@
 +0abtnvfre\’"+                  CESCAPE CHAR_2
 @@                              CHAR    CHAR_2
 +'+                             CHAR_2  CHAR_3
-+$+                             Q0      COMMENTS
++#+                             Q0      COMMENTS
 +
 +                               COMMENTS COMMENTS_2
 @@                              COMMENTS COMMENTS
