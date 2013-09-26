@@ -9,7 +9,7 @@ while
 if
 else
 read
-print
+write
 and
 or
 main

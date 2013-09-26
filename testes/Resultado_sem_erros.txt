@@ -1,0 +1,81 @@
+> [RESERVED] >>int<< at (1, 1), with size 3
+> [RESERVED] >>main<< at (1, 5), with size 4
+> [DELIM] >>(<< at (1, 9), with size 1
+> [DELIM] >>)<< at (1, 10), with size 1
+> [DELIM] >>{<< at (1, 12), with size 1
+> [IDENT] >>zhis<< at (2, 5), with size 4
+> [OPER] >>=<< at (2, 10), with size 1
+> [INT] >>2<< at (2, 12), with size 1
+> [DELIM] >>;<< at (2, 13), with size 1
+> [IDENT] >>print<< at (3, 5), with size 5
+> [DELIM] >>(<< at (3, 10), with size 1
+> [IDENT] >>zhis<< at (3, 11), with size 4
+> [DELIM] >>)<< at (3, 15), with size 1
+> [DELIM] >>;<< at (3, 16), with size 1
+> [IDENT] >>ozer<< at (4, 5), with size 4
+> [OPER] >>=<< at (4, 10), with size 1
+> [STR] >>"a\"nother"<< at (4, 12), with size 11
+> [DELIM] >>;<< at (4, 23), with size 1
+> [IDENT] >>abc<< at (5, 5), with size 3
+> [OPER] >>=<< at (5, 9), with size 1
+> [CHAR] >>'\r'<< at (5, 11), with size 4
+> [DELIM] >>;<< at (5, 15), with size 1
+> [RESERVED] >>while<< at (6, 5), with size 5
+> [DELIM] >>(<< at (6, 11), with size 1
+> [IDENT] >>a<< at (6, 13), with size 1
+> [OPER] >>>=<< at (6, 15), with size 2
+> [INT] >>0<< at (6, 18), with size 1
+> [DELIM] >>)<< at (6, 20), with size 1
+> [DELIM] >>{<< at (6, 22), with size 1
+> [RESERVED] >>if<< at (7, 9), with size 2
+> [DELIM] >>(<< at (7, 12), with size 1
+> [IDENT] >>b<< at (7, 14), with size 1
+> [OPER] >>==<< at (7, 16), with size 2
+> [INT] >>0<< at (7, 19), with size 1
+> [DELIM] >>)<< at (7, 21), with size 1
+> [DELIM] >>{<< at (7, 23), with size 1
+> [IDENT] >>b<< at (8, 13), with size 1
+> [OPER] >>=<< at (8, 15), with size 1
+> [IDENT] >>a<< at (8, 17), with size 1
+> [DELIM] >>;<< at (8, 18), with size 1
+> [DELIM] >>}<< at (9, 9), with size 1
+> [IDENT] >>a<< at (10, 9), with size 1
+> [OPER] >>=<< at (10, 11), with size 1
+> [IDENT] >>a<< at (10, 13), with size 1
+> [OPER] >>-<< at (10, 15), with size 1
+> [INT] >>1<< at (10, 17), with size 1
+> [DELIM] >>;<< at (10, 18), with size 1
+> [DELIM] >>}<< at (11, 5), with size 1
+> [IDENT] >>print<< at (12, 5), with size 5
+> [DELIM] >>(<< at (12, 10), with size 1
+> [IDENT] >>ozer<< at (12, 11), with size 4
+> [DELIM] >>)<< at (12, 15), with size 1
+> [DELIM] >>;<< at (12, 16), with size 1
+> [IDENT] >>eis<< at (13, 5), with size 3
+> [OPER] >>=<< at (13, 9), with size 1
+> [CHAR] >>'I'<< at (13, 11), with size 3
+> [DELIM] >>;<< at (13, 14), with size 1
+> [IDENT] >>e<< at (14, 5), with size 1
+> [OPER] >>=<< at (14, 7), with size 1
+> [CHAR] >>'\n'<< at (14, 9), with size 4
+> [DELIM] >>;<< at (14, 13), with size 1
+> [IDENT] >>cerr<< at (15, 5), with size 4
+> [OPER] >>=<< at (15, 10), with size 1
+> [CHAR] >>'i'<< at (15, 12), with size 3
+> [DELIM] >>;<< at (15, 15), with size 1
+> [RESERVED] >>return<< at (16, 5), with size 6
+> [INT] >>0<< at (16, 12), with size 1
+> [DELIM] >>;<< at (16, 13), with size 1
+> [DELIM] >>}<< at (17, 1), with size 1
+
+Lista de identificadores:
+
+>> zhis
+>> print
+>> ozer
+>> abc
+>> a
+>> b
+>> eis
+>> e
+>> cerr
