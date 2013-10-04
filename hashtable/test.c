@@ -7,8 +7,8 @@ int main() {
     Hashtable* ht = newStrHashTable();     
     int i;
     char str[10] = "thisis0";
-    for (i = 0; i < 9; i++) {
-        str[6] = '0'+i;
+    for (i = 0; i < 900; i++) {
+        str[6] = '0'+(i%10);
         strhh_insert(ht, str);
     }
     printAll(ht);

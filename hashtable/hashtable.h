@@ -2,6 +2,26 @@
 #ifndef HASHTABLE_S
 # define HASHTABLE_S
 
+// Call gcc with -D VERBOSITY_HASH to activate verbose mode
+# ifdef VERBOSITY_HASH 
+char* NODE_P__ptr;
+#  define LOG_HASH(...); fprintf(stderr, __VA_ARGS__);
+
+# else  
+#  define LOG_HASH(...); 
+# endif
+
+
+# define NODE_PRINT(__Htable__,__struct__,__size__);  \
+    NODE_P__ptr = __Htable__->tostrfunc(__struct__,__size__); \
+    LOG_HASH("%s", NODE_P__ptr); \
+    __Htable__->posttostrfunc(__struct__,__size__,NODE_P__ptr);
+
+# define NODE_REPRINT(__Htable__,__struct__,__size__,...);  \
+    NODE_P__ptr = __Htable__->tostrfunc(__struct__,__size__); \
+    LOG_HASH(__VA_ARGS__,NODE_P__ptr); \
+    __Htable__->posttostrfunc(__struct__,__size__,NODE_P__ptr);
+
 # define HASHBITSIZE_S 16
 # define INITIAL_SIZE_LL_POLL 4
 
@@ -20,6 +40,8 @@ typedef struct Hashtable {
     LLHashTable* vector[1<<HASHBITSIZE_S];
     int size;
     int (*cmpfunc)(void* a, void* b, size_t sizea, size_t sizeb);
+    char* (*tostrfunc)(void* a, size_t size);
+    void (*posttostrfunc)(void* a, size_t size, char* str);
 } Hashtable;
 
 LLHashTable* __LL_pool__;
