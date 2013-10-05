@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdint.h>
 #ifndef HASHTABLE_S
 # define HASHTABLE_S
 
@@ -23,8 +24,7 @@ char* NODE_P__ptr;
 # endif
 
 
-
-# define HASHBITSIZE_S 2
+# define HASHBITSIZE_S 20
 # define INITIAL_SIZE_LL_POLL 4
 
 typedef enum {WAS_THERE, NOT_IN_HASH_TABLE, INSERTED} hh_results;
@@ -35,23 +35,40 @@ typedef struct LLHashTable {
     void* content;
     size_t size;
     size_t contentsize;
+
     struct LLHashTable* next;
 } LLHashTable;
 
 typedef struct Hashtable {
     LLHashTable* vector[1<<HASHBITSIZE_S];
-    int size;
+    uint64_t size;
     int (*cmpfunc)(void* a, void* b, size_t sizea, size_t sizeb);
     char* (*tostrfunc)(void* a, size_t size);
     void (*posttostrfunc)(void* a, size_t size, char* str);
+    void (*freevar)(void* var, size_t size);
+    void (*freecontent)(void* content, size_t size);
 } Hashtable;
 
 LLHashTable* __LL_pool__;
+LLHashTable* __ptr_LL_pool__[70];
+int __nptr_LL_pool__;
 
-int __hh_doaction(Hashtable* H, void* structure, size_t size, int action);
+int __hh_doaction(
+    Hashtable* H, 
+    void** structure, 
+    size_t* size, 
+    void** content, 
+    size_t* contentsize, 
+    int action
+);
+
+void freehashtable(Hashtable* H);
+
+void freepool();
 
 void __LL_pool_release(LLHashTable* node);
 
 LLHashTable* __LL_pool_get();
+
 
 #endif  
