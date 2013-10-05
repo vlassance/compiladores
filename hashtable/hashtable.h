@@ -24,8 +24,8 @@ char* NODE_P__ptr;
 # endif
 
 
-# define HASHBITSIZE_S 20
-# define INITIAL_SIZE_LL_POLL 4
+# define HASHBITSIZE_S 25
+# define INITIAL_SIZE_LL_POLL 4096
 
 typedef enum {WAS_THERE, NOT_IN_HASH_TABLE, INSERTED} hh_results;
 typedef enum {HH_INSERT, HH_REMOVE, HH_FIND} hh_action;

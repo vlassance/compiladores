@@ -19,9 +19,7 @@ void gen_random(char *s, const int len) {
     s[len] = 0;
 }
 
-
-
-int main() {
+int main(int argc, char *argv[]) {
     Hashtable* ht = newStrHashTable();
     char buff[100];
     int i;
@@ -59,17 +57,12 @@ int main() {
     printf("Test\n");
     printAll(ht);
 
-    
-
-    for (i = 0; i < 90000; i++) {
+    for (i = 0; i < 10000; i++) {
         gen_random(buff, 90);
         strhh_insert(ht, buff, (void**)&object, &sizeobject);
     }
 
     strhh_remove(ht, "|||blubla##", (void**)&object, &sizeobject);
-    
-
-
     
     freehashtable(ht);
     freepool();

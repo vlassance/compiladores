@@ -2,22 +2,22 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+
 #include <stdint.h>
 
 int __hh_calchash(void* structure, size_t size) {
-    // verrrryyy dummmmyy hash! but it works better than expected.
-    // it is faster than the magic 31 * hash + c for random strings
-    int hash = 0;
+    int hash = 7;
     size_t i;
     for (i = 0; i < size; i++) {
-        hash ^= *((char*)(structure + i));
-        hash<<= 2;
+        hash = ((hash << 5) + hash) + (*((char*)(structure+i)));
     }
     LOG_HASH("Size of hashtable is: %ld\n", 1L<<HASHBITSIZE_S);
     return (hash) & ((1L<<HASHBITSIZE_S) - 1L);
 }
 
-
+inline uint64_t max(uint64_t a, uint64_t b) {
+    return a>b?a:b;
+}
 int __hh_doaction(
     Hashtable* H, 
     void** structure, 
@@ -180,9 +180,9 @@ void freepool() {
 }
 
 
-void freelinkedlist(Hashtable* H, LLHashTable* node) {
+uint64_t freelinkedlist(Hashtable* H, LLHashTable* node) {
     if (node != NULL) {
-        freelinkedlist(H, node->next);
+        uint64_t ret = freelinkedlist(H, node->next);
 
         H->freevar(node->var, node->size);
         node->var = NULL;
@@ -193,18 +193,25 @@ void freelinkedlist(Hashtable* H, LLHashTable* node) {
         node->contentsize = 0;
 
         __LL_pool_release(node);
+        return ret + 1L;
     }
+    return 1L;
 }
 
 void freehashtable(Hashtable* H) {
     size_t i;
     uint64_t numberempty = 0;
+    uint64_t lmax = 0;
     for (i = 0; i < (1LL<<HASHBITSIZE_S); i++) {
         if (H->vector[i] == NULL) {
             numberempty++;
         }
-        freelinkedlist(H, H->vector[i]);
+        lmax = max(freelinkedlist(H, H->vector[i]), lmax);
     }
-    LOG_HASH("There were %ld empty slots on the hashtable\n", numberempty);
+    printf(
+        "There were %ld empty slots, linked list reached %ld\n", 
+        numberempty, 
+        lmax
+    );
     free(H);
 }
