@@ -3,14 +3,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+
 int __hh_calchash(void* structure, size_t size) {
+    // verrrryyy dummmmyy hash!
     int hash = 0;
     size_t i;
     for (i = 0; i < size; i++) {
         hash ^= *((char*)(structure + i));
         hash ^= i;
     }
-    return hash & ((1<<HASHBITSIZE_S) - 1L);
+    LOG_HASH("Size of hashtable is: %ld\n", 1L<<HASHBITSIZE_S);
+    return hash & ((1L<<HASHBITSIZE_S) - 1L);
 }
 
 int __hh_doaction(Hashtable* H, void* structure, size_t size, int action) {
@@ -59,11 +62,19 @@ int __hh_doaction(Hashtable* H, void* structure, size_t size, int action) {
             }
             return NOT_IN_HASH_TABLE;
         }
+        backptr = list;
+        list = list->next;
     }
     if (action == HH_REMOVE) {
         LOG_HASH("REMOVING %lX\n", (uint64_t)list->var);
-        backptr = list->next; // TODO isso nao funciona
-        __LL_pool_release(list);
+        if (backptr == list) {
+            // this is the first element
+            H->vector[hash] = list->next;
+        } else {
+            backptr->next = list->next; // TODO isso nao funciona
+        }
+        list->next = NULL;
+        __LL_pool_release(list); // give it up to the pool
     }
     LOG_HASH("It (%lX) was there\n", (uint64_t)list->var);
     return WAS_THERE;

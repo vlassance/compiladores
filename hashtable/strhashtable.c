@@ -47,7 +47,7 @@ int strhh_remove(Hashtable* H, char* str) {
 }
 
 int strhh_contains(Hashtable* H, char* str) {
-    return __hh_doaction(H, str, strlen(str), HH_FIND);
+    return __hh_doaction(H, str, strlen(str), HH_FIND) == WAS_THERE;
 }
 
 void printAll(Hashtable* H) {
