@@ -1,0 +1,23 @@
+PROGRAM         = HEADERS DECLARATIONS PROGRAM_BLOCS MAIN_BLOCK.
+HEADERS         = { "<" IDENT ">" }. 
+DECLARATIONS    = { TYPE IDENT [ "=" EXPR ] ";"}. 
+TYPE            = IDENT {'*'} {"["NUMBER"]"}. 
+PROGRAM_BLOCS   = { FUNCTION_BLOC | STACK_BLOC }. 
+FUNCTION_BLOC   = "function" IDENT STACK_BLOC. 
+MAIN_BLOC       = "main" STACK_BLOC.
+STACK_BLOC      = "(" [ ARG  { ","  ARG  } [","] ] ")" "{" DECLARATIONS { INSTR } "}". 
+ARG             = TYPE [OUT_MODIF] VARSPEC. 
+INSTR           = ATRIB | FUNCTION_CALL | FLOW_CONTROL.
+IN_MODIF        = ">".
+OUT_MODIF       = "*".
+FLOW_CONTROL    = WHILE_CONTROL | IF_CONTROL | IFELSE_CONTROL .
+WHILE_CONTROL   = "while" "(" CONDITION ")" STACK_BLOC . 
+IF_CONTROL      = "if" "(" CONDITION ")" STACK_BLOC .
+IFELSE_CONTROL  = "ifelse" "(" CONDITION ")" STACK_BLOC .
+ATRIB           = VARSPEC "=" EXPR ";". 
+FUNCTION_CALL   = "^" IDENT [ ":" IDENT ] "(" [ VARSPEC { "," VARSPEC } [","] ] ")" ";". 
+INTEG_EXPR      = INTEG_TERM { ("+"|"-") INTEG_TERM }.
+INTEG_TERM      = ( "(" INTEG_EXPR ")" | VARSPEC | NUMBER ) { ("*"|"/") INTEG_TERM }. 
+VARSPEC         = IDENT | IDENT { "[" NUMBER "]" } .
+CONDITION       = "????".
+EXPR            = "????".
