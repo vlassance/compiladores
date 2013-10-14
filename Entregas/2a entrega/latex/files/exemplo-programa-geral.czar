@@ -1,0 +1,51 @@
+import <math>;
+import <io>;
+
+struct nome_struct {
+  nome_struct eu_mesmo;
+  int a;
+  char b;
+};
+
+const int SOU_CONSTANTE_INT = 10;
+const string SOU_CONSTANTE_STRING = "CONSTANTE_STRING";
+string sou_variavel = "valor inicial da variavel";
+
+void soma_como_procedimento (int a, int b, ref int soma) {
+  soma = a + b;
+}
+
+int soma_como_funcao (int a, int b) {
+  if (a == 0) {
+      return b;
+  }
+  return a + b;
+}
+
+string concatena_chars(int n_chars, char[] caracteres) {
+  string retorno = "";
+  for(int i = 0; i < n_chars; i += 1) {
+      retorno += caracteres[i];
+  }
+  return retorno;
+}
+
+void proc_exemplo (char a, int b, int c, int d) {
+  int tmp;
+  char[32] buff;
+  soma_como_procedimento(b, c, tmp);
+  d = soma_como_funcao(tmp, c) + 5;
+  d = math.exp(SOU_CONSTANTE_INT, 2);
+  io.print(a);
+  io.int_to_str(d, buff);
+  io.print(" gives ");
+  io.print(buff);
+  io.print(" \n pointer to a is: ");
+  buff = a + "caracter";
+  io.print(buff);
+  io.print("bye");
+}
+
+void main () {
+  proc_exemplo('x', 3, -6, -15);
+}

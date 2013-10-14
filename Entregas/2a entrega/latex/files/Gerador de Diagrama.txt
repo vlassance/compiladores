@@ -1,3 +1,4 @@
+http://karmin.ch/ebnf.php?syntax="Diagrama de Sintaxe da Linguagem CZAR"{
 PROGRAM         = IMPORTS DECLS_GLOBAIS DEF_PROCS_FUNCS DEF_MAIN.
 IMPORTS         = { "import" "<" IDENT ">" { "," "<" IDENT ">" } ";" }.
 DECLS_GLOBAIS   = { DEF_TIPO | DECL_CONST | DECL_VAR }.
@@ -25,17 +26,19 @@ IDENT           = (LETRA_MIN | LETRA_MAI | "_") {LETRA_MIN | LETRA_MAI | "_" | "
 FUNCTION_CALL   = IDENT "(" [ EXPR ] { "," EXPR } ")".
 COND            = (EXPR OPER_COMP EXPR) | COND OPER_BOOL COND | ("not" COND) | IDENT_CHAVES | BOOL.
 BOOL            = "true" | "false".
-OPER_ATRIB      = ["+" | "-" | "*" | "/" | "%"] "=".
+OPER_ATRIB      = ["%2B" | "-" | "*" | "/" | "%25"] "=".
 OPER_BOOL       = "and" | "or".
 OPER_COMP       = ("=" | "!" | "<" | ">") "=".
-OPER_ARIT       = "+" | "-" | "*" | "/" | "%".
+OPER_ARIT       = "%2B" | "-" | "*" | "/" | "%25".
 EXPR            = (EXPR OPER_ARIT EXPR) | FUNCTION_CALL | INT | STRING | CHAR | DOUBLE | BOOL | IDENT_CHAVES.
-STRING          = "\"" (LETRA_MIN | LETRA_MAI | DIGITO | "_" | ".") "\"".
+STRING          = "aspas_duplas" (LETRA_MIN | LETRA_MAI | DIGITO | "_" | ".") "aspas_duplas".
 CHAR            = "'" (CHAR_COM_BARRA | LETRA_MIN | LETRA_MAI | DIGITO | "_" | ".") "'".
-CHAR_COM_BARRA  = "\\" ("0" | LETRA_MIN | "\\" | "'").
+CHAR_COM_BARRA  = "barra_invertida" ("0" | LETRA_MIN | "barra_invertida" | "'").
 LETRA_MIN       = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z".
 LETRA_MAI       = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z".
 INT             = [ "-" ] INT_POSITIVO.
 INT_POSITIVO    = DIGITO { DIGITO }.
 FLOAT           = [ INT ] "." INT_POSITIVO.
 DIGITO          = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9".
+}"Linguagem CZAR criada por Gustavo Gouveia e Victor Lassance"
+
