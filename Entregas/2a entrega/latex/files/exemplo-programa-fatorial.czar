@@ -1,14 +1,15 @@
-import <io>;
+<io>
 
 const int fat_10_rec = 10;
 const int fat_10_iter = 10;
 int retorno;
 
 int fatorial_recursivo(int n) {
-    if (n <= 1) {
-        return 1;
+    int retorno = 1;
+	if (n > 1) {
+        retorno = n * fatorial_recursivo (n - 1);
     }
-    return n * fatorial_recursivo (n - 1);
+    return retorno;
 }
 
 int fatorial_iterativo(int n) {
@@ -20,10 +21,10 @@ int fatorial_iterativo(int n) {
     return fatorial;
 }
 
-void main () {
+main () {
     retorno = fatorial_recursivo(fat_10_rec);
 
-    io.print_int(retorno);
-    io.print(" ");
-    io.print_int(fatorial_iterativo(fat_10_iter));
+    io_print_int(retorno);
+    io_print(" ");
+    io_print_int(fatorial_iterativo(fat_10_iter));
 }

@@ -9,13 +9,12 @@ O programa é composto por quatro partes, explicadas abaixo de forma simplificad
 		\end{itemize}
 	\item Inclusão de bibliotecas:
 		\begin{itemize}
-			\item \verb$IMPORTS = { IMPORT }.$
-			\item \verb$IMPORT = `import' `<' IDENT `>' { `,' `<' IDENT `>' } `;'.$
+			\item \verb$IMPORTS = { `<' IDENT `>' }.$
 		\end{itemize}
 	\item Declaração de tipos, variáveis e constantes de escopo global:
 		\begin{itemize}
 			\item \verb$DECLS_GLOBAIS = { DEF_TIPO | DECL }.$
-			\item \verb$DEF_TIPO = `struct' IDENT `{' { DECL } `}' `;'.$
+			\item \verb$DEF_TIPO = `struct' IDENT `{' { DECL } `}'.$
 			\item \verb$DECL = [ `const' ] TIPO IDENT [ `=' EXPR ]$\\
 				\verb${ `,' IDENT [ `=' EXPR ] } `;'.$
 		\end{itemize}
@@ -23,7 +22,7 @@ O programa é composto por quatro partes, explicadas abaixo de forma simplificad
 		\begin{itemize}
 			\item \verb$DEF_PROCS_FUNCS = { PROC | FUNC }.$
 			\item \verb$FUNC = TIPO IDENT LIST_PARAMS$\\
-				\verb$`{' { INSTR_SEM_RET | ( "return" EXPR ";" ) } `}'.$
+				\verb$`{' { INSTR_SEM_RET } "return" EXPR [ ";" ] `}'.$
 			\item \verb$PROC = `void' IDENT LIST_PARAMS `{' { INSTR_SEM_RET } `}'.$
 			\item \verb$LIST_PARAMS = `(' [ [ `ref' ] TIPO IDENT ]$\\
 				\verb${ `,' [ `ref' ] TIPO IDENT } `)'.$

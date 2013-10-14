@@ -1,41 +1,45 @@
 PROGRAM         = IMPORTS DECLS_GLOBAIS DEF_PROCS_FUNCS DEF_MAIN.
-IMPORTS         = { "import" "<" IDENT ">" { "," "<" IDENT ">" } ";" }.
+
+IMPORTS         = { "<" IDENT ">" }.
+
 DECLS_GLOBAIS   = { DEF_TIPO | DECL_CONST | DECL_VAR }.
-DEF_TIPO        = "struct" IDENT "{" { DECL_CONST | DECL_VAR } "}" ";".
+DEF_TIPO        = "struct" IDENT "{" { DECL_CONST | DECL_VAR } "}".
 DECL_CONST      = "const" DECL_VAR.
 DECL_VAR        = TIPO IDENT [ "=" EXPR ] { "," IDENT [ "=" EXPR ] } ";".
+
 DEF_PROCS_FUNCS = { PROC | FUNC }.
-FUNC            = TIPO IDENT LIST_PARAMS "{" { INSTR } "}".
+FUNC            = TIPO IDENT LIST_PARAMS "{" { INSTR_SEM_RET } "return" EXPR [ ";" ] "}".
 PROC            = "void" IDENT LIST_PARAMS "{" { INSTR_SEM_RET } "}".
-LIST_PARAMS     = "(" [ [ "ref" ] TIPO IDENT ] { "," [ "ref" ] TIPO IDENT } ")".
+LIST_PARAMS     = "(" [ [ "ref" ] TIPO IDENT { "," [ "ref" ] TIPO IDENT } [ "," ] ] ")".
+
 DEF_MAIN        = "main" "(" ")" "{" { INSTR_SEM_RET } "}".
-INSTR           = INSTR_SEM_RET | ( "return" EXPR ";" ).
-INSTR_SEM_RET   = DEF_TIPO | DECL_CONST | DECL_VAR | ATRIB | PROC_CALL | FLOW_CONTROL.
-ATRIB           = ATRIB_SEM_PT ";".
-ATRIB_SEM_PT    = IDENT_CHAVES OPER_ATRIB EXPR { "," IDENT_CHAVES "=" EXPR }.
+
+INSTR_SEM_RET   = DECL_VAR | ATRIB | PROC_CALL | FLOW_CONTROL.
+ATRIB           = ATRIB_SEM_PV ";".
+ATRIB_SEM_PV    = VARIDENT OPER_ATRIB EXPR { "," VARIDENT "=" EXPR }.
 PROC_CALL       = IDENT "(" [ EXPR ] { "," EXPR } ")" ";".
-FLOW_CONTROL    = FOR_CONTROL | WHILE_CONTROL | IF_CONTROL | IFELSE_CONTROL.
-FOR_CONTROL     = "for" "(" DECL_VAR COND ";" ATRIB_SEM_PT ")" "{" { INSTR } "}".
-WHILE_CONTROL   = "while" "(" COND ")" "{" { INSTR } "}".
-IF_CONTROL      = "if" "(" COND ")" "{" { INSTR } "}".
-IFELSE_CONTROL  = IF_CONTROL "else" "{" { INSTR } "}".
-TIPO            = IDENT { "[" "]" }.
-IDENT_CHAVES    = IDENT { "[" INT_POSITIVO "]" }.
-IDENT           = (LETRA_MIN | LETRA_MAI | "_") {LETRA_MIN | LETRA_MAI | "_" | "." | DIGITO}.
+FLOW_CONTROL    = FOR_CONTROL | WHILE_CONTROL | IF_CONTROL.
+FOR_CONTROL     = "for" "(" DECL_VAR COND ";" ATRIB_SEM_PV ")" "{" { INSTR_SEM_RET } "}".
+WHILE_CONTROL   = "while" "(" COND ")" "{" { INSTR_SEM_RET } "}".
+IF_CONTROL      = "if" "(" COND ")" "{" { INSTR_SEM_RET } "}" ["else" "{" { INSTR_SEM_RET } "}"].
+
+TIPO            = IDENT_COLCHETES.
+IDENT_COLCHETES = IDENT { "[" INT "]" }.
+VARIDENT        = IDENT_COLCHETES { "." VARIDENT}.
+
 FUNCTION_CALL   = IDENT "(" [ EXPR ] { "," EXPR } ")".
-COND            = (EXPR OPER_COMP EXPR) | COND OPER_BOOL COND | ("not" COND) | IDENT_CHAVES | BOOL.
+
+COND            = COND_TERM { OPER_BOOL COND_TERM}.
+COND_TERM       = "(" COND ")" | ATOMO_COND {OPER_COMP ATOMO_COND}.
+ATOMO_COND      = VARIDENT | BOOL | INT | "not" ATOMO_COND.
 BOOL            = "true" | "false".
+
 OPER_ATRIB      = ["+" | "-" | "*" | "/" | "%"] "=".
 OPER_BOOL       = "and" | "or".
 OPER_COMP       = ("=" | "!" | "<" | ">") "=".
-OPER_ARIT       = "+" | "-" | "*" | "/" | "%".
-EXPR            = (EXPR OPER_ARIT EXPR) | FUNCTION_CALL | INT | STRING | CHAR | DOUBLE | BOOL | IDENT_CHAVES.
-STRING          = "\"" (LETRA_MIN | LETRA_MAI | DIGITO | "_" | ".") "\"".
-CHAR            = "'" (CHAR_COM_BARRA | LETRA_MIN | LETRA_MAI | DIGITO | "_" | ".") "'".
-CHAR_COM_BARRA  = "\\" ("0" | LETRA_MIN | "\\" | "'").
-LETRA_MIN       = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z".
-LETRA_MAI       = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z".
-INT             = [ "-" ] INT_POSITIVO.
-INT_POSITIVO    = DIGITO { DIGITO }.
-FLOAT           = [ INT ] "." INT_POSITIVO.
-DIGITO          = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9".
+OPER_ARIT       = "+" | "-".
+OPER_TERM       = "*" | "/" | "%".
+
+EXPR            = [ OPER_ARIT ] TERM { OPER_ARIT TERM}.
+TERM            = "(" EXPR ")" | ATOMO {OPER_TERM ATOMO}.
+ATOMO           = [ OPER_ARIT ] FUNCTION_CALL | [ OPER_ARIT ] INT | STRING | CHAR | [ OPER_ARIT ] FLOAT | BOOL | [ OPER_ARIT ] VARIDENT.
