@@ -1,137 +1,139 @@
 % !TEX encoding = UTF-8 Unicode
 
+Apesar de termos visto em aula que a sintaxe BNF não costuma ter os não-terminais explicitados entre aspas, prefirimos colocar aspas simples para facilitar a leitura, que também é uma forma válida de sintaxe BNF\footnote{Ver http://www.cs.man.ac.uk/~pjj/bnf/bnf.html}.
+
 \begin{lstlisting}[frame=single,numbers=left,breaklines=true,mathescape=true>,basicstyle=\ttfamily\scriptsize]
 <PROGRAM>            ::= <IMPORTS> <DECLS_GLOBAIS> <DEF_PROCS_FUNCS> <DEF_MAIN>
 
 <IMPORTS>            ::= $\epsilon$
-                       | "<" <IDENT> ">" <IMPORTS>
+                       | '<' <IDENT> '>' <IMPORTS>
 
 <DECLS_GLOBAIS>      ::= $\epsilon$
                        | <DEF_TIPO> <DECLS_GLOBAIS>
                        | <DECL_CONST> <DECLS_GLOBAIS>
                        | <DECL_VAR> <DECLS_GLOBAIS>  
 
-<DEF_TIPO>           ::= "struct" <IDENT> "{" <DEF_INSTR_TIPO> "}"
+<DEF_TIPO>           ::= 'struct' <IDENT> '{' <DEF_INSTR_TIPO> '}'
 
 <DEF_INSTR_TIPO>     ::= $\epsilon$
                        | <DECL_CONST>
                        | <DECL_VAR>
 
-<DECL_CONST>         ::= "const" <DECL_VAR>
+<DECL_CONST>         ::= 'const' <DECL_VAR>
 
-<DECL_VAR>           ::= <TIPO> <IDENT> <DECL_VAR_CONT> ";"
-                       | <TIPO> <IDENT> "=" <EXPR> <DECL_VAR_CONT> ";"
+<DECL_VAR>           ::= <TIPO> <IDENT> <DECL_VAR_CONT> ';'
+                       | <TIPO> <IDENT> '=' <EXPR> <DECL_VAR_CONT> ';'
 
 <DECL_VAR_CONT>      ::= $\epsilon$
-                       | "," <IDENT> <DECL_VAR_CONT>
-                       | "," <IDENT> "=" <EXPR> <DECL_VAR_CONT>
+                       | ',' <IDENT> <DECL_VAR_CONT>
+                       | ',' <IDENT> '=' <EXPR> <DECL_VAR_CONT>
 
 <DEF_PROCS_FUNCS>    ::= $\epsilon$
                        | <PROC> <DEF_PROCS_FUNCS>
                        | <FUNC> <DEF_PROCS_FUNCS>
 
-<FUNC>               ::= <TIPO> <IDENT> <LIST_PARAMS> "{" <INSTRUCOES> "return" <EXPR> "}"
-                       | <TIPO> <IDENT> <LIST_PARAMS> "{" <INSTRUCOES> "return" <EXPR> ";" "}"
+<FUNC>               ::= <TIPO> <IDENT> <LIST_PARAMS> '{' <INSTRUCOES> 'return' <EXPR> '}'
+                       | <TIPO> <IDENT> <LIST_PARAMS> '{' <INSTRUCOES> 'return' <EXPR> ';' '}'
 
-<PROC>               ::= "void" <IDENT> <LIST_PARAMS> "{" <INSTRUCOES> "}"
+<PROC>               ::= 'void' <IDENT> <LIST_PARAMS> '{' <INSTRUCOES> '}'
 
 <INSTRUCOES>         ::= $\epsilon$
                        | <INSTR_SEM_RET> <INSTRUCOES>
 
-<LIST_PARAMS>        ::= "(" ")"
-                       | "(" <TIPO> <IDENT> <LIST_PARAMS_CONT> ")"
-                       | "(" "ref" <TIPO> <IDENT> <LIST_PARAMS_CONT> ")"
+<LIST_PARAMS>        ::= '(' ')'
+                       | '(' <TIPO> <IDENT> <LIST_PARAMS_CONT> ')'
+                       | '(' 'ref' <TIPO> <IDENT> <LIST_PARAMS_CONT> ')'
 
 <LIST_PARAMS_CONT>   ::= $\epsilon$
-                       | "," <TIPO> <IDENT> <LIST_PARAMS_CONT>
-                       | "," "ref" <TIPO> <IDENT> <LIST_PARAMS_CONT>
+                       | ',' <TIPO> <IDENT> <LIST_PARAMS_CONT>
+                       | ',' 'ref' <TIPO> <IDENT> <LIST_PARAMS_CONT>
 
-<DEF_MAIN>           ::= "main" "(" ")" "{" <INSTRUCOES> "}"
+<DEF_MAIN>           ::= 'main' '(' ')' '{' <INSTRUCOES> '}'
 
 <INSTR_SEM_RET>      ::= <DECL_VAR>
                        | <ATRIB>
                        | <PROC_CALL>
                        | <FLOW_CONTROL>
 
-<ATRIB>              ::= <ATRIB_SEM_PV> ";"
+<ATRIB>              ::= <ATRIB_SEM_PV> ';'
 
 <ATRIB_SEM_PV>       ::= <VARIDENT> <OPER_ATRIB> <EXPR> <ATRIB_SEM_PV_CONT>
 
 <ATRIB_SEM_PV_CONT>  ::= $\epsilon$
-                       | "," <VARIDENT> <OPER_ATRIB> <EXPR> <ATRIB_SEM_PV_CONT>
+                       | ',' <VARIDENT> <OPER_ATRIB> <EXPR> <ATRIB_SEM_PV_CONT>
 
-<PROC_CALL>          ::= <IDENT> "(" ")" ";"
-                       | <IDENT> "(" <EXPR> <PROC_CALL_CONT> ")" ";"
+<PROC_CALL>          ::= <IDENT> '(' ')' ';'
+                       | <IDENT> '(' <EXPR> <PROC_CALL_CONT> ')' ';'
 
 <PROC_CALL_CONT>     ::= $\epsilon$
-                       | "," <EXPR> <PROC_CALL_CONT>
+                       | ',' <EXPR> <PROC_CALL_CONT>
 
 <FLOW_CONTROL>       ::= <FOR_CONTROL>
                        | <WHILE_CONTROL>
                        | <IF_CONTROL>
 
-<FOR_CONTROL>        ::= "for" "(" <DECL_VAR> <COND> ";" <ATRIB_SEM_PV> ")" "{" <INSTRUCOES> "}"
+<FOR_CONTROL>        ::= 'for' '(' <DECL_VAR> <COND> ';' <ATRIB_SEM_PV> ')' '{' <INSTRUCOES> '}'
 
-<WHILE_CONTROL>      ::= "while" "(" <COND> ")" "{" <INSTRUCOES> "}"
+<WHILE_CONTROL>      ::= 'while' '(' <COND> ')' '{' <INSTRUCOES> '}'
 
-<IF_CONTROL>         ::= "if" "(" <COND> ")" "{" <INSTRUCOES> "}"
-                       | "if" "(" <COND> ")" "{" <INSTRUCOES> "}" "else" "{" <INSTRUCOES> "}"
+<IF_CONTROL>         ::= 'if' '(' <COND> ')' '{' <INSTRUCOES> '}'
+                       | 'if' '(' <COND> ')' '{' <INSTRUCOES> '}' 'else' '{' <INSTRUCOES> '}'
 
 <TIPO>               ::= <IDENT> <TIPO_CONT>
 
 <TIPO_CONT>          ::= $\epsilon$
-                       | "[" <INT> "]" <TIPO_CONT>
+                       | '[' <INT> ']' <TIPO_CONT>
 
 <IDENT_COLCHETES>    ::= <IDENT> <IDENT_COLCH_CONT>
 
 <IDENT_COLCH_CONT>   ::= $\epsilon$
-                       | "[" <EXPR> "]" <IDENT_COLCH_CONT>
+                       | '[' <EXPR> ']' <IDENT_COLCH_CONT>
 
 <VARIDENT>           ::= <IDENT_COLCHETES> <VARIDENT_CONT>
 
 <VARIDENT_CONT>      ::= $\epsilon$
-                       | "." <VARIDENT> <VARIDENT_CONT>
+                       | '.' <VARIDENT> <VARIDENT_CONT>
 
-<FUNCTION_CALL>      ::= <IDENT> "(" ")"
-                       | <IDENT> "(" <EXPR> <FUNCTION_CALL_CONT> ")"
+<FUNCTION_CALL>      ::= <IDENT> '(' ')'
+                       | <IDENT> '(' <EXPR> <FUNCTION_CALL_CONT> ')'
 
 <FUNCTION_CALL_CONT> ::= $\epsilon$
-                       | "," <EXPR> <FUNCTION_CALL_CONT>
+                       | ',' <EXPR> <FUNCTION_CALL_CONT>
 
 <COND>               ::= <COND_TERM> 
                        | <COND_TERM> <OPER_BOOL> <COND_TERM>
 
-<COND_TERM>          ::= "(" <COND> ")" 
+<COND_TERM>          ::= '(' <COND> ')' 
                        | <ATOMO_COND> 
                        | <ATOMO_COND> <OPER_COMP> <COND_TERM>
 
 <ATOMO_COND>         ::= <VARIDENT> 
-                       | "true"
-                       | "false"
+                       | 'true'
+                       | 'false'
                        | <INT> 
-                       | "not" <ATOMO_COND>
+                       | 'not' <ATOMO_COND>
 
-<OPER_ATRIB>         ::= "+=" 
-                       | "-=" 
-                       | "*=" 
-                       | "/=" 
-                       | "%=" 
-                       | "=="
+<OPER_ATRIB>         ::= '+=' 
+                       | '-=' 
+                       | '*=' 
+                       | '/=' 
+                       | '%=' 
+                       | '=='
 
-<OPER_BOOL>          ::= "and" 
-                       | "or"
+<OPER_BOOL>          ::= 'and' 
+                       | 'or'
 
-<OPER_COMP>          ::= "==" 
-                       | "!=" 
-                       | "<=" 
-                       | ">="
+<OPER_COMP>          ::= '==' 
+                       | '!=' 
+                       | '<=' 
+                       | '>='
 
-<OPER_ARIT>          ::= "+" 
-                       | "-"
+<OPER_ARIT>          ::= '+' 
+                       | '-'
 
-<OPER_TERM>          ::= "*" 
-                       | "/" 
-                       | "%"
+<OPER_TERM>          ::= '*' 
+                       | '/' 
+                       | '%'
 
 <EXPR>               ::= <TERM> 
                        | <TERM> <OPER_ARIT_TERM_ARR>
@@ -140,7 +142,7 @@
 <OPER_ARIT_TERM_ARR> ::= <OPER_ARIT> <TERM>
                        | <OPER_ARIT> <TERM> <OPER_ARIT_TERM_ARR>
 
-<TERM>               ::= "(" <EXPR> ")"
+<TERM>               ::= '(' <EXPR> ')'
                        | <ATOMO>
                        | <ATOMO> <OPER_TERM_ATOMO_ARR>
 
