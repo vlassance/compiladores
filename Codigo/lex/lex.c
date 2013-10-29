@@ -147,29 +147,29 @@ void find_next_state_from_char(char c, State** from, State** to) {
 }
 
 void add_identifier_to_list(char* name_ident) {
-	int i;
-	for (i = 0; i < videntifiers_size; i++) {
+    int i;
+    for (i = 0; i < videntifiers_size; i++) {
         if (strcmp(name_ident, videntifiers[i]) == 0) {       
             break;
         }
-	}
-	if (i == videntifiers_size) {
-		videntifiers[videntifiers_size] = malloc(sizeof(char) * (strlen(name_ident) + 1L));
-		strcpy(videntifiers[videntifiers_size++], name_ident);
-	}
+    }
+    if (i == videntifiers_size) {
+        videntifiers[videntifiers_size] = malloc(sizeof(char) * (strlen(name_ident) + 1L));
+        strcpy(videntifiers[videntifiers_size++], name_ident);
+    }
 }
 
 int next_useful_token(FILE* f, Token** t) {
     int res, i;
-    
+
     do {
         res = next_token(f, t);
     } while(
         *t != NULL && 
         res && 
         (strcmp((*t)->origin_state->class_name, "SPACE") == 0 || // ignore SPACES 
-		 strcmp((*t)->origin_state->class_name, "COMMENTS") == 0) // ignore COMMENTS
-    );
+         strcmp((*t)->origin_state->class_name, "COMMENTS") == 0) // ignore COMMENTS
+        );
 
     if (!res || *t == NULL){
         return res; // if error or no token, return it to the caller. 
@@ -186,7 +186,7 @@ int next_useful_token(FILE* f, Token** t) {
         if (i == vkeywords_size) {
             (*t)->class_name = malloc(6 * sizeof(char));
             strcpy((*t)->class_name, "IDENT");
-			add_identifier_to_list((*t)->str);
+            add_identifier_to_list((*t)->str);
         } else {
             (*t)->class_name = malloc(9 * sizeof(char));
             // name it RESERVED in case it is
@@ -195,7 +195,7 @@ int next_useful_token(FILE* f, Token** t) {
     } else {
         (*t)->class_name = malloc(
             (strlen((*t)->origin_state->class_name) + 1) * sizeof(char)
-        );
+            );
         strcpy((*t)->class_name, (*t)->origin_state->class_name);
     }
     // to be sure that this will not be used
@@ -297,7 +297,7 @@ int next_token(FILE* f, Token** t) {
 void initialize_lex() {
     FILE *lex_file, *keywords_file;
     vkeywords_size = 0;
-	videntifiers_size = 0;
+    videntifiers_size = 0;
     _number_of_states = 0;
 
     lex_file = fopen("./languagefiles/lang.lex", "r");
@@ -314,10 +314,10 @@ void initialize_lex() {
 }
 
 void print_identifiers() {
-	int i;
-	
-	printf("\nLista de identificadores:\n\n");
-	for (i = 0; i < videntifiers_size; i++) {
+    int i;
+
+    printf("\nLista de identificadores:\n\n");
+    for (i = 0; i < videntifiers_size; i++) {
         printf(">> %s\n", videntifiers[i]);
-	}
+    }
 }

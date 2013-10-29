@@ -1,0 +1,12 @@
+
+initial: 0
+final: 3, 5
+(0, "(") -> 1
+(0, ATOMO_COND) -> 4
+(1, COND) -> 2
+(2, ")") -> 3
+(4, ) -> 5
+(5, OPER_COMP) -> 6
+(6, ATOMO_COND) -> 7
+(7, ) -> 5
+            

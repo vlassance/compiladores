@@ -1,0 +1,22 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+  <type>fa</type>
+  <state id="0" name="q0">
+    <initial/>
+  </state>
+  <state id="1" name="q1">
+    <final/>
+  </state>
+  <transition>
+    <from>0</from>
+    <to>1</to>
+    <read>"and"</read>
+  </transition>
+  <transition>
+    <from>0</from>
+    <to>1</to>
+    <read>"or"</read>
+  </transition>
+</structure>
+        
