@@ -1,4 +1,3 @@
-
 initial: 0
 final: 3, 7
 (0, VARIDENT) -> 1
@@ -9,4 +8,3 @@ final: 3, 7
 (5, OPER_ATRIB) -> 6
 (6, EXPR) -> 7
 (7, ",") -> 4
-            

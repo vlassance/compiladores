@@ -1,7 +1,5 @@
-
 initial: 0
 final: 1
 (0, IDENT_COLCHETES) -> 1
 (1, ".") -> 2
 (2, VARIDENT) -> 1
-            

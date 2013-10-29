@@ -1,4 +1,3 @@
-
 initial: 0
 final: 2
 (0, OPER_ARIT) -> 1
@@ -13,4 +12,3 @@ final: 2
 (1, INT) -> 2
 (1, FLOAT) -> 2
 (1, VARIDENT) -> 2
-            

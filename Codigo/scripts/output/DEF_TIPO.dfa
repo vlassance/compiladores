@@ -1,4 +1,3 @@
-
 initial: 0
 final: 6
 (0, "struct") -> 1
@@ -13,4 +12,3 @@ final: 6
 (5, DECL_CONST) -> 4
 (5, DECL_VAR) -> 5
 (5, "}") -> 6
-            
