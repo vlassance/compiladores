@@ -12,12 +12,17 @@
   <transition>
     <from>0</from>
     <to>1</to>
-    <read>OPER_ARIT</read>
+    <read>"+"</read>
+  </transition>
+  <transition>
+    <from>0</from>
+    <to>1</to>
+    <read>"-"</read>
   </transition>
   <transition>
     <from>0</from>
     <to>2</to>
-    <read>FUNCTION_CALL</read>
+    <read>BOTH</read>
   </transition>
   <transition>
     <from>0</from>
@@ -32,12 +37,7 @@
   <transition>
     <from>0</from>
     <to>2</to>
-    <read>VARIDENT</read>
-  </transition>
-  <transition>
-    <from>0</from>
-    <to>2</to>
-    <read>STRING</read>
+    <read>STR</read>
   </transition>
   <transition>
     <from>0</from>
@@ -52,7 +52,7 @@
   <transition>
     <from>1</from>
     <to>2</to>
-    <read>FUNCTION_CALL</read>
+    <read>BOTH</read>
   </transition>
   <transition>
     <from>1</from>
@@ -63,10 +63,5 @@
     <from>1</from>
     <to>2</to>
     <read>FLOAT</read>
-  </transition>
-  <transition>
-    <from>1</from>
-    <to>2</to>
-    <read>VARIDENT</read>
   </transition>
 </structure>

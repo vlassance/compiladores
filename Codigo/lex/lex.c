@@ -80,6 +80,7 @@ void state_from_name(char* statename, State** st) {
         sizeof(char) * (size + 1)
     );
     strncpy(state_table[_number_of_states]->class_name, statename, size);
+    state_table[_number_of_states]->class_name[size] = '\0';
     *st = state_table[_number_of_states++];
 }
 

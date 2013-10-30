@@ -34,7 +34,17 @@
   <transition>
     <from>2</from>
     <to>4</to>
-    <read>OPER_TERM</read>
+    <read>"*"</read>
+  </transition>
+  <transition>
+    <from>2</from>
+    <to>4</to>
+    <read>"/"</read>
+  </transition>
+  <transition>
+    <from>2</from>
+    <to>4</to>
+    <read>"%"</read>
   </transition>
   <transition>
     <from>3</from>

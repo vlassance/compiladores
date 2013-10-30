@@ -34,7 +34,22 @@
   <transition>
     <from>2</from>
     <to>4</to>
-    <read>OPER_COMP</read>
+    <read>"=="</read>
+  </transition>
+  <transition>
+    <from>2</from>
+    <to>4</to>
+    <read>"!="</read>
+  </transition>
+  <transition>
+    <from>2</from>
+    <to>4</to>
+    <read>"&lt;="</read>
+  </transition>
+  <transition>
+    <from>2</from>
+    <to>4</to>
+    <read>"&gt;="</read>
   </transition>
   <transition>
     <from>3</from>

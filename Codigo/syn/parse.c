@@ -1,11 +1,14 @@
+#include <stdio.h>
+#include "automata.h"
+#include "../lex/lex.h"
 
-
-int main() {
+int main(int argc, char** argv) {
     read_all_syn_files();
     FILE *input_file;
     Token* tk;
     uint32_t state;
-
+    Automaton* a;
+    a = automata_list + automaton_program_id;
     if (argc <= 1) {
         fprintf(stderr, "Usage:\n");
         fprintf(stderr, "  %s <input file>\n", argv[0]);
@@ -17,9 +20,12 @@ int main() {
     input_file = fopen(argv[1], "r");
 
     while (next_useful_token(input_file, &tk) && tk != NULL) {
-        while(followState(tk, a, &state) == 0) {
+        while(followState(tk, &a, &state) == 0) {
+            //printf("-> %s, %d \n", a->name, state);
             // following without reading
         }
+        //printf("-> %s, %d \n", a->name, state);
+        //printf("read %s\n", tk->str);
     }
 	
     print_identifiers();

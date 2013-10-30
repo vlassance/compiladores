@@ -23,10 +23,26 @@ void automaton_push_back(Automaton* a, uint32_t state) {
     automata_stack[automata_stack_size++] = s;
 }
 
+void read_finals(FILE* f) {
+    char tmpfinals[1000][1000];
+    int i = 0;
+    tmpfinals[i][0] = '\0';
+    while(fscanf(f, "%s", tmpfinals[i]) && strlen(tmpfinals[i]) > 0) {
+        i++; 
+        tmpfinals[i][0] = '\0';
+    }
+    finals = malloc(sizeof(char*) * (i + 1));
+    finals[i] = NULL;
+    while(--i >= 0) {
+        HARDCOPYSTR(finals[i], tmpfinals[i]);
+    }
+}
+
 void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
     uint32_t node, dest;
     uint32_t i, j;
     char chartmp;
+    char* ptrtmp;
     char tmp[1000];
     static char tmpid[MAX_AUT_STRING_SIZE];
 
@@ -55,20 +71,17 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
     PUTMAX(a->nstates, a->initial_state);
     fscanf(f, " %s %d", tmp, &dest);
     final_states[dest] = 1U;
-    printf("final: (%s) %d",tmp, dest);
     PUTMAX(a->nstates, dest);
     while (fscanf(f, "%c", &chartmp) && chartmp != '\n') {
         if (chartmp == ',') {
             fscanf(f, "%d", &dest);
-            printf("final %d", dest);
             final_states[dest] = 1U;
             PUTMAX(a->nstates, dest);
         }
-            printf("((%c))", chartmp);
 
     }
 
-    while(fscanf(f, " (%d, %[^)]) -> %d", &node, tmpid, &dest) != EOF) {
+    while(fscanf(f, " (%d, %s -> %d", &node, tmpid, &dest) != EOF) {
         PUTMAX(a->nstates, node);
         PUTMAX(a->nstates, dest);
         if (tmpid[0] == '"') {
@@ -77,32 +90,48 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
                 "\"%[^\"]", 
                 transitions_str[node][size_transitions[node]]
             );
-            printf("Encontrou ((%s))", transitions_str[node][size_transitions[node]]);
             transitions[node][size_transitions[node]] = dest;
 
             size_transitions[node]++;
-            printf("Iter: (%d)[%d]",node, size_transitions[node]);
             if (size_transitions[node] > 20) { // XXX remove
                 fflush(stdout);
                 exit(1);
             }
         } else {
-            if (calls[node][0] != '\0') {
-                fprintf(stderr,  
-                    "Non Deterministic (%s)\n   calls[%d] was: %s, trying to assign to %s\n", 
-                    name,
-                    node, 
-                    calls[node], 
-                    tmpid
-                );
-                perror("Non Deterministic Automaton");
-                exit(1);
+            i = 0;
+            while (tmpid[++i] != ')') {
+                // nothing
             }
-            strcpy(calls[node],tmpid);
-            push_back[node] = dest;
+            tmpid[i] = '\0';
+            i = 0;
+            while (finals[i] != NULL) {
+                if (strcmp(finals[i], tmpid) == 0) {
+                    ptrtmp = transitions_str[node][size_transitions[node]];
+                    ptrtmp[0] = AUT_FINAL_CHAR;
+                    strcpy(ptrtmp + 1UL, tmpid);
+                    transitions[node][size_transitions[node]] = dest;
+                    size_transitions[node]++; 
+                    break;
+                }
+                i++;
+            }
+            if (finals[i] == NULL) {
+                if (calls[node][0] != '\0') {
+                    fprintf(stderr,  
+                        "Non Deterministic (%s)\n   calls[%d] was: %s, trying to assign to %s\n", 
+                        name,
+                        node, 
+                        calls[node], 
+                        tmpid
+                    );
+                    perror("Non Deterministic Automaton");
+                    exit(1);
+                } 
+                strcpy(calls[node],tmpid);
+                push_back[node] = dest;
+            }
         }
     }
-    printf("finito: %s\n", name);
     a->nstates++;
     a->calls = malloc(sizeof(char*) * a->nstates); // malloc strings
     a->push_back = malloc(sizeof(uint32_t) * a->nstates);
@@ -171,12 +200,13 @@ void free_automaton(Automaton* a) {
     free(a->push_back);
     for (i = 0; i < a->nstates; i++) {
         free(a->calls[i]);
-        for (j = 0; j < a->nstates; j++) {
+        for (j = 0; j < a->size_transitions[i]; j++) {
             free(a->transitions_str[i][j]);
         }
         free(a->transitions_str[i]); 
         free(a->transitions[i]);
     }
+    free(a->size_transitions);
     free(a->transitions_str);
     free(a->transitions);
     free(a->calls);
@@ -188,7 +218,6 @@ void read_syn_file(char* dir, char* file) {
     char nametmp[200];
 
     sprintf(tmp, "%s%s", dir, file);
-    printf("reading %s", tmp);
     fflush(stdout);
     int i = 0;
     while (file[i] != '.'){
@@ -196,7 +225,11 @@ void read_syn_file(char* dir, char* file) {
         i++;
     }
     nametmp[i] = '\0';
+
     f = fopen(tmp, "r");
+    if (strcmp(nametmp, "PROGRAM") == 0) {
+        automaton_program_id = automata_len;
+    }
     read_mdfa(&(automata_list[automata_len]), nametmp, automata_len, f);
     fclose(f);
     print_automaton(&(automata_list[automata_len]), stdout);
@@ -207,6 +240,12 @@ void read_all_syn_files() {
     DIR *dp;
     struct dirent *ep;
     int lenname;
+    FILE* f;
+
+    f = fopen("./scripts/FINALS.txt", "r");
+    read_finals(f);
+    fclose(f);
+
     dp = opendir ("./scripts/output/");
     automata_len = 0;
     if (dp != NULL) {
@@ -229,16 +268,50 @@ void free_automata() {
     }
 }
 
+uint32_t findAutomatonByName(char* name) {
+    int i;
+    for (i = 0; i < automata_len; i++) {
+        if (strcmp(name, automata_list[i].name) == 0) {
+            return i;
+        }
+    }
+    return INVALID_AUT_ID;
+}
+
 uint32_t followState(Token* tk, Automaton** a, uint32_t* state) {
     uint32_t i;
+    char* strtrans;
     for (i = 0U; i < (*a)->size_transitions[*state]; i++) {
-        if (strcmp((*a)->transitions_str[*state][i], tk->str) == 0) {
+        strtrans = (*a)->transitions_str[*state][i];
+        if (strcmp(strtrans, tk->str) == 0) {
             *state =  (*a)->transitions[*state][i];
             return 1; // read
         }
     }
+
+    for (i = 0U; i < (*a)->size_transitions[*state]; i++) {
+        strtrans = (*a)->transitions_str[*state][i];
+        if (strtrans[0] == AUT_FINAL_CHAR) {
+            if (strcmp(strtrans + 1UL, tk->class_name) == 0) {
+                *state = (*a)->transitions[*state][i];
+                return 1;
+            }
+        }
+    }
+
     if ((*a)->calls[*state] != NULL) {
+
         automaton_push_back((*a), (*a)->push_back[*state]);
+        i = findAutomatonByName((*a)->calls[*state]);
+
+        if (i == INVALID_AUT_ID) {
+            fprintf(stderr, "Name (%s) wasn't found\n",(*a)->calls[*state]);
+            fflush(stderr);
+            perror("Internal Error, Invalid automata");
+            exit(1);
+        }
+        *a = automata_list + i;
+        *state = (*a)->initial_state;
         // TODO set a to called automaton and state to start state
         return 0; // didn't read
     }
@@ -248,6 +321,15 @@ uint32_t followState(Token* tk, Automaton** a, uint32_t* state) {
         (*state) = automaton_pop(a);
         return 0; // didn't read
     }
+    fprintf(stderr, "Automata(%s, %d), token(%s, %s)\n", (*a)->name, *state, tk->str, tk->class_name);
+    fprintf(stderr, "Expecting one of:\n");
+
+    for (i = 0U; i < (*a)->size_transitions[*state]; i++) {
+        fprintf(stderr, "  \"%s\"\n", (*a)->transitions_str[*state][i]);
+    }
+    fprintf(stderr, "Found:\n");
+    print_token(tk);
+    fflush(stderr);
     perror("Syntax error");
     exit(1);
 

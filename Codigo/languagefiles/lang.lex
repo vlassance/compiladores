@@ -21,7 +21,7 @@
 +	+                       SPACE   SPACE
 +
 +                               SPACE   SPACE 
-+()[]{};+                       Q0      DELIM
++()[]{};,+                      Q0      DELIM
 +"+                             Q0      STR
 +\+                             STR     SESCAPE
 +"+                             STR     STR_2

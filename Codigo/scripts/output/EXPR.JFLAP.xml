@@ -12,7 +12,12 @@
   <transition>
     <from>0</from>
     <to>1</to>
-    <read>OPER_ARIT</read>
+    <read>"+"</read>
+  </transition>
+  <transition>
+    <from>0</from>
+    <to>1</to>
+    <read>"-"</read>
   </transition>
   <transition>
     <from>0</from>
@@ -27,6 +32,11 @@
   <transition>
     <from>2</from>
     <to>1</to>
-    <read>OPER_ARIT</read>
+    <read>"+"</read>
+  </transition>
+  <transition>
+    <from>2</from>
+    <to>1</to>
+    <read>"-"</read>
   </transition>
 </structure>

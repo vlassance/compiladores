@@ -15,6 +15,11 @@
   <transition>
     <from>1</from>
     <to>0</to>
-    <read>OPER_BOOL</read>
+    <read>"and"</read>
+  </transition>
+  <transition>
+    <from>1</from>
+    <to>0</to>
+    <read>"or"</read>
   </transition>
 </structure>
