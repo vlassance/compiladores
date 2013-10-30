@@ -278,12 +278,47 @@ uint32_t findAutomatonByName(char* name) {
     return INVALID_AUT_ID;
 }
 
-uint32_t followState(Token* tk, Automaton** a, uint32_t* state) {
+uint32_t poponly(Automaton** a, uint32_t* state) {
+    if ((*a)->final_states[*state]) {
+        if (strcmp((*a)->name, "PROGRAM") == 0) {
+            printf("Desempilhou PROGRAM em %d com stack: %d", 
+                *state, automata_stack_size);
+            if (automata_stack_size >= 1) {
+                perror("Stack wasn't empty");
+                exit(1);
+            }
+            
+            return 0;
+        }
+        printf(
+            "Desempilhou: (automato: %s, estado:%d) -> ", 
+            (*a)->name, *state
+        );
+        (*state) = automaton_pop(a);
+        printf(
+            "(automato: %s, estado:%d)\n", 
+            (*a)->name, *state
+        );
+
+        return 1; // ok
+    }
+    perror("Ooops, can't pop"); 
+    exit(1);
+}
+
+uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
+    if (tk == NULL) {
+        return poponly(a, state);
+    }
     uint32_t i;
     char* strtrans;
     for (i = 0U; i < (*a)->size_transitions[*state]; i++) {
         strtrans = (*a)->transitions_str[*state][i];
         if (strcmp(strtrans, tk->str) == 0) {
+            printf(
+                "Leu: %s (automato: %s, estado:%d) -> (automato: %s, estado:%d)\n", 
+                strtrans, (*a)->name, *state, (*a)->name, (*a)->transitions[*state][i]
+            );
             *state =  (*a)->transitions[*state][i];
             return 1; // read
         }
@@ -293,6 +328,10 @@ uint32_t followState(Token* tk, Automaton** a, uint32_t* state) {
         strtrans = (*a)->transitions_str[*state][i];
         if (strtrans[0] == AUT_FINAL_CHAR) {
             if (strcmp(strtrans + 1UL, tk->class_name) == 0) {
+                printf(
+                    "Leu: <%s> (automato: %s, estado:%d) -> (automato: %s, estado:%d)\n", 
+                    strtrans+1, (*a)->name, *state, (*a)->name, (*a)->transitions[*state][i]
+                );
                 *state = (*a)->transitions[*state][i];
                 return 1;
             }
@@ -310,15 +349,27 @@ uint32_t followState(Token* tk, Automaton** a, uint32_t* state) {
             perror("Internal Error, Invalid automata");
             exit(1);
         }
+
+        printf(
+            "Empilhou: (automato: %s, estado:%d) -> (automato: %s, estado:%d)\n", 
+            (*a)->name, *state, ((automata_list + i))->name, ((automata_list+i)->initial_state) 
+        );
         *a = automata_list + i;
         *state = (*a)->initial_state;
-        // TODO set a to called automaton and state to start state
         return 0; // didn't read
     }
 
     // TODO transiçoes vazias?
     if ((*a)->final_states[*state]) {
+        printf(
+            "Desempilhou: (automato: %s, estado:%d) -> ", 
+            (*a)->name, *state
+        );
         (*state) = automaton_pop(a);
+        printf(
+            "(automato: %s, estado:%d)\n", 
+            (*a)->name, *state
+        );
         return 0; // didn't read
     }
     fprintf(stderr, "Automata(%s, %d), token(%s, %s)\n", (*a)->name, *state, tk->str, tk->class_name);

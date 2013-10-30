@@ -20,14 +20,16 @@ int main(int argc, char** argv) {
     input_file = fopen(argv[1], "r");
 
     while (next_useful_token(input_file, &tk) && tk != NULL) {
-        while(followState(tk, &a, &state) == 0) {
+        while(semantico_tbd(tk, &a, &state) == 0) {
             //printf("-> %s, %d \n", a->name, state);
             // following without reading
         }
         //printf("-> %s, %d \n", a->name, state);
         //printf("read %s\n", tk->str);
     }
-	
+    // TODO desempilha até programa (todos os estados tem que ser de aceitação).        
+    while(semantico_tbd(tk, &a, &state));
+
     print_identifiers();
     if (tk == NULL) 
         return 0;
