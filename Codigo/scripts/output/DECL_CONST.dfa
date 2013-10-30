@@ -1,4 +1,0 @@
-initial: 0
-final: 2
-(0, "const") -> 1
-(1, DECL_VAR) -> 2

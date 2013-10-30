@@ -3,11 +3,11 @@ final: 2
 (0, OPER_ARIT) -> 1
 (0, FUNCTION_CALL) -> 2
 (0, INT) -> 2
+(0, FLOAT) -> 2
+(0, VARIDENT) -> 2
 (0, STRING) -> 2
 (0, CHAR) -> 2
-(0, FLOAT) -> 2
 (0, BOOL) -> 2
-(0, VARIDENT) -> 2
 (1, FUNCTION_CALL) -> 2
 (1, INT) -> 2
 (1, FLOAT) -> 2

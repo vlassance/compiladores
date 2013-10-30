@@ -1,7 +1,8 @@
 initial: 0
-final: 1, 2, 3, 5
+final: 1, 2, 3, 4, 6
 (0, VARIDENT) -> 1
-(0, BOOL) -> 2
-(0, INT) -> 3
-(0, "not") -> 4
-(4, ATOMO_COND) -> 5
+(0, "true") -> 2
+(0, "false") -> 3
+(0, INT) -> 4
+(0, "not") -> 5
+(5, ATOMO_COND) -> 6

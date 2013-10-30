@@ -1,5 +1,9 @@
 initial: 0
-final: 1
-(0, IDENT_COLCHETES) -> 1
-(1, ".") -> 2
-(2, VARIDENT) -> 1
+final: 1, 5
+(0, IDENT) -> 1
+(1, "[") -> 2
+(1, ".") -> 3
+(2, EXPR) -> 4
+(3, VARIDENT) -> 5
+(4, "]") -> 1
+(5, ".") -> 3

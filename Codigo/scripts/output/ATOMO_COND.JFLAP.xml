@@ -17,7 +17,12 @@
   <transition>
     <from>0</from>
     <to>1</to>
-    <read>BOOL</read>
+    <read>"true"</read>
+  </transition>
+  <transition>
+    <from>0</from>
+    <to>1</to>
+    <read>"false"</read>
   </transition>
   <transition>
     <from>0</from>

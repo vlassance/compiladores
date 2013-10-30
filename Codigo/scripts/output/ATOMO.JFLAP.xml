@@ -27,6 +27,16 @@
   <transition>
     <from>0</from>
     <to>2</to>
+    <read>FLOAT</read>
+  </transition>
+  <transition>
+    <from>0</from>
+    <to>2</to>
+    <read>VARIDENT</read>
+  </transition>
+  <transition>
+    <from>0</from>
+    <to>2</to>
     <read>STRING</read>
   </transition>
   <transition>
@@ -37,17 +47,7 @@
   <transition>
     <from>0</from>
     <to>2</to>
-    <read>FLOAT</read>
-  </transition>
-  <transition>
-    <from>0</from>
-    <to>2</to>
     <read>BOOL</read>
-  </transition>
-  <transition>
-    <from>0</from>
-    <to>2</to>
-    <read>VARIDENT</read>
   </transition>
   <transition>
     <from>1</from>

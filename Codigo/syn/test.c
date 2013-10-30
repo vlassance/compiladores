@@ -8,11 +8,7 @@
 
 
 int main() {
-    Automaton a;
-    read_mdfa(&a, "ATOMO", 0U, fopen("scripts/output/VARIDENT.mdfa", "r"));
-    print_automaton(&a, stdout);
-    free_automaton(&a);
-    read_all_syn_files();
-    
+    read_all_syn_files(); 
+    free_automata(); 
     return 0;
 }

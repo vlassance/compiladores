@@ -2,37 +2,22 @@ PROGRAM         = IMPORTS DECLS_GLOBAIS DEF_PROCS_FUNCS DEF_MAIN.
 
 IMPORTS         = { "<" IDENT ">" }.
 
-DECLS_GLOBAIS   = { DEF_TIPO | DECL_CONST | DECL_VAR }.
-DEF_TIPO        = "struct" IDENT "{" { DECL_CONST | DECL_VAR } "}".
-DECL_CONST      = "const" DECL_VAR.
-DECL_VAR        = TIPO IDENT [ "=" EXPR ] { "," IDENT [ "=" EXPR ] } ";".
+DECLS_GLOBAIS   = { "struct" IDENT "{" { [ "const" ] IDENT { "[" INT "]" } IDENT [ "=" EXPR ] { "," IDENT [ "=" EXPR ] } ";" } "}" | [ "const" ] IDENT { "[" INT "]" } IDENT [ "=" EXPR ] { "," IDENT [ "=" EXPR ] } ";" }.
 
-DEF_PROCS_FUNCS = { PROC | FUNC }.
-FUNC            = TIPO IDENT LIST_PARAMS "{" { INSTR_SEM_RET } "return" EXPR [ ";" ] "}".
-PROC            = "void" IDENT LIST_PARAMS "{" { INSTR_SEM_RET } "}".
-LIST_PARAMS     = "(" [ [ "ref" ] TIPO IDENT { "," [ "ref" ] TIPO IDENT } ] ")".
+DEF_PROCS_FUNCS = { "void" IDENT LIST_PARAMS "{" { INSTR_SEM_RET } "}" | IDENT { "[" INT "]" } IDENT LIST_PARAMS "{" { INSTR_SEM_RET } "return" EXPR [ ";" ] "}" }.
+LIST_PARAMS     = "(" [ [ "ref" ] IDENT { "[" INT "]" } IDENT { "," [ "ref" ] IDENT { "[" INT "]" } IDENT } ] ")".
 
 DEF_MAIN        = "main" "(" ")" "{" { INSTR_SEM_RET } "}".
 
-INSTR_SEM_RET   = DECL_VAR | ATRIB | PROC_CALL | FLOW_CONTROL.
-ATRIB           = ATRIB_SEM_PV ";".
-ATRIB_SEM_PV    = VARIDENT OPER_ATRIB EXPR { "," VARIDENT OPER_ATRIB EXPR }.
-PROC_CALL       = IDENT "(" [ EXPR { "," EXPR } ] ")" ";".
-FLOW_CONTROL    = FOR_CONTROL | WHILE_CONTROL | IF_CONTROL.
-FOR_CONTROL     = "for" "(" DECL_VAR COND ";" ATRIB_SEM_PV ")" "{" { INSTR_SEM_RET } "}".
-WHILE_CONTROL   = "while" "(" COND ")" "{" { INSTR_SEM_RET } "}".
-IF_CONTROL      = "if" "(" COND ")" "{" { INSTR_SEM_RET } "}" ["else" "{" { INSTR_SEM_RET } "}"].
+INSTR_SEM_RET   = IDENT ( "[" ( [ "+" | "-" ] ( "(" EXPR ")" |( INT | FLOAT | IDENT ( "(" [ EXPR { "," EXPR } ] ")" | { "[" EXPR "]" } { "." VARIDENT } )) ) | STRING | CHAR | BOOL { OPER_TERM ATOMO } { OPER_ARIT TERM} "]" { "[" EXPR "]" } { "." VARIDENT } ["+" | "-" | "*" | "/" | "%" ] "=" EXPR { "," VARIDENT OPER_ATRIB EXPR } ";" | INT "]" { "[" INT "]" } IDENT [ "=" EXPR ] { "," IDENT [ "=" EXPR ] } ";" ) | IDENT [ "=" EXPR ] { "," IDENT [ "=" EXPR ] } ";" | { "." VARIDENT } [ "+" | "-" | "*" | "/" | "%"] "=" EXPR { "," VARIDENT OPER_ATRIB EXPR } ";" | "(" [ EXPR { "," EXPR } ] ")" ";" ) | "for" "(" IDENT { "[" INT "]" } IDENT [ "=" EXPR ] { "," IDENT [ "=" EXPR ] } ";" COND ";" VARIDENT OPER_ATRIB EXPR { "," VARIDENT OPER_ATRIB EXPR } ")" "{" { INSTR_SEM_RET } "}" | "while" "(" COND ")" "{" { INSTR_SEM_RET } "}" | "if" "(" COND ")" "{" { INSTR_SEM_RET } "}" ["else" "{" { INSTR_SEM_RET } "}"].
 
-TIPO            = IDENT { "[" INT "]" }.
-IDENT_COLCHETES = IDENT { "[" EXPR "]" }.
-VARIDENT        = IDENT_COLCHETES { "." VARIDENT}.
+VARIDENT        = IDENT { "[" EXPR "]" } { "." VARIDENT } .
 
 FUNCTION_CALL   = IDENT "(" [ EXPR { "," EXPR } ] ")".
 
 COND            = COND_TERM { OPER_BOOL COND_TERM}.
 COND_TERM       = "(" COND ")" | ATOMO_COND {OPER_COMP ATOMO_COND}.
-ATOMO_COND      = VARIDENT | BOOL | INT | "not" ATOMO_COND.
-BOOL            = "true" | "false".
+ATOMO_COND      = VARIDENT | "true" | "false" | INT | "not" ATOMO_COND.
 
 OPER_ATRIB      = ["+" | "-" | "*" | "/" | "%"] "=".
 OPER_BOOL       = "and" | "or".
@@ -40,6 +25,6 @@ OPER_COMP       = ("=" | "!" | "<" | ">") "=".
 OPER_ARIT       = "+" | "-".
 OPER_TERM       = "*" | "/" | "%".
 
-EXPR            = [ OPER_ARIT ] TERM { OPER_ARIT TERM}.
-TERM            = "(" EXPR ")" | ATOMO {OPER_TERM ATOMO}.
-ATOMO           = [ OPER_ARIT ] FUNCTION_CALL | [ OPER_ARIT ] INT | STRING | CHAR | [ OPER_ARIT ] FLOAT | BOOL | [ OPER_ARIT ] VARIDENT.
+EXPR            = [ OPER_ARIT ] TERM { OPER_ARIT TERM} .
+TERM            = "(" EXPR ")" | ATOMO {OPER_TERM ATOMO} .
+ATOMO           = [ OPER_ARIT ] ( FUNCTION_CALL | INT | FLOAT | VARIDENT ) | STRING | CHAR | BOOL .

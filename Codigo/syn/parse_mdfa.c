@@ -27,7 +27,9 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
     uint32_t node, dest;
     uint32_t i, j;
     char chartmp;
+    char tmp[1000];
     static char tmpid[MAX_AUT_STRING_SIZE];
+
     static char calls[MAX_AUT_STATES][MAX_AUT_STRING_SIZE];
     static char transitions_str[MAX_AUT_STATES][MAX_AUT_STATES][MAX_AUT_STRING_SIZE];
     static uint32_t transitions[MAX_AUT_STATES][MAX_AUT_STATES];
@@ -41,8 +43,7 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
         final_states[i] = 0U;
         for (j = 0; j < MAX_AUT_STATES; j++) {
             transitions_str[i][j][0] = '\0';
-            transitions[i][j] = INVALID_AUT_ID;
-            
+            transitions[i][j] = INVALID_AUT_ID; 
         }
     }
 
@@ -50,17 +51,21 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
     strcpy(a->name, name);
     a->id = id;
     a->nstates = 0;
-    fscanf(f, " initial: %d", &(a->initial_state));
+    fscanf(f, " %*s %d", &(a->initial_state));
     PUTMAX(a->nstates, a->initial_state);
-    fscanf(f, " final: %d", &dest);
+    fscanf(f, " %s %d", tmp, &dest);
     final_states[dest] = 1U;
+    printf("final: (%s) %d",tmp, dest);
     PUTMAX(a->nstates, dest);
     while (fscanf(f, "%c", &chartmp) && chartmp != '\n') {
         if (chartmp == ',') {
             fscanf(f, "%d", &dest);
+            printf("final %d", dest);
             final_states[dest] = 1U;
             PUTMAX(a->nstates, dest);
         }
+            printf("((%c))", chartmp);
+
     }
 
     while(fscanf(f, " (%d, %[^)]) -> %d", &node, tmpid, &dest) != EOF) {
@@ -72,12 +77,20 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
                 "\"%[^\"]", 
                 transitions_str[node][size_transitions[node]]
             );
+            printf("Encontrou ((%s))", transitions_str[node][size_transitions[node]]);
             transitions[node][size_transitions[node]] = dest;
+
             size_transitions[node]++;
+            printf("Iter: (%d)[%d]",node, size_transitions[node]);
+            if (size_transitions[node] > 20) { // XXX remove
+                fflush(stdout);
+                exit(1);
+            }
         } else {
             if (calls[node][0] != '\0') {
                 fprintf(stderr,  
-                    "Non Deterministic\n   calls[%d] was: %s, trying to assign to %s\n", 
+                    "Non Deterministic (%s)\n   calls[%d] was: %s, trying to assign to %s\n", 
+                    name,
                     node, 
                     calls[node], 
                     tmpid
@@ -89,15 +102,19 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
             push_back[node] = dest;
         }
     }
+    printf("finito: %s\n", name);
     a->nstates++;
     a->calls = malloc(sizeof(char*) * a->nstates); // malloc strings
     a->push_back = malloc(sizeof(uint32_t) * a->nstates);
     a->transitions = malloc(sizeof(uint32_t*) * a->nstates);
     a->transitions_str = malloc(sizeof(char**) * a->nstates);
     a->final_states = malloc(sizeof(uint32_t) * a->nstates);
+    a->size_transitions = malloc(sizeof(uint32_t) * a->nstates);
+
     for (i = 0; i < a->nstates; i++) {
-        a->transitions[i] = malloc(sizeof(uint32_t) * a->nstates);
-        a->transitions_str[i] = malloc(sizeof(char*) * a->nstates);
+        a->size_transitions[i] = size_transitions[i];
+        a->transitions[i] = malloc(sizeof(uint32_t) * size_transitions[i]);
+        a->transitions_str[i] = malloc(sizeof(char*) * size_transitions[i]);
     }
     for (i = 0; i < a->nstates; i++) {
         // Calls
@@ -105,7 +122,7 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
         // push_back
         a->push_back[i] = push_back[i];
         // transitions
-        for (j = 0; j < a->nstates; j++) {
+        for (j = 0; j < a->size_transitions[i]; j++) {
             a->transitions[i][j] = transitions[i][j];
             HARDCOPYSTR(a->transitions_str[i][j], transitions_str[i][j]);
         }
@@ -125,8 +142,8 @@ void print_automaton(Automaton* a, FILE* f) {
         if (a->final_states[i]) {
             if (!first) {
                 fprintf(f, ", ");
-                first = 0;
             }
+            first = 0;
             fprintf(f, "%d", i);
         }
     }
@@ -134,15 +151,18 @@ void print_automaton(Automaton* a, FILE* f) {
     for (i = 0; i < a->nstates; i++) {
         if (a->calls[i] != NULL) {
             fprintf(f, "(%d, %s) -> %d\n",i ,a->calls[i], a->push_back[i]);
-        } else {
-            for (j = 0; j < a->nstates; j++) {
-                if (a->transitions[i][j] != INVALID_AUT_ID){
-                    fprintf(f, "(%d \"%s\") -> %d\n", i, a->transitions_str[i][j], j);
-                }
+        } 
+        {
+            for (j = 0; j < a->size_transitions[i]; j++) {
+                fprintf(f, "(%d \"%s\") -> %d\n", i, a->transitions_str[i][j], a->transitions[i][j]);
             }
         }
     }
+
+
+
     fprintf(f, "---------------------------------\n");
+    fflush(f);
 }
 
 void free_automaton(Automaton* a) {
@@ -168,6 +188,8 @@ void read_syn_file(char* dir, char* file) {
     char nametmp[200];
 
     sprintf(tmp, "%s%s", dir, file);
+    printf("reading %s", tmp);
+    fflush(stdout);
     int i = 0;
     while (file[i] != '.'){
         nametmp[i] = file[i];
@@ -209,20 +231,20 @@ void free_automata() {
 
 uint32_t followState(Token* tk, Automaton** a, uint32_t* state) {
     uint32_t i;
-    for (i = 0U, i < (*a)->size_transitions; i++) {
-        if (strcmp((*a)->transitions_str[i], tk->str) == 0) {
-            *state =  (*a)->transitions[i];
+    for (i = 0U; i < (*a)->size_transitions[*state]; i++) {
+        if (strcmp((*a)->transitions_str[*state][i], tk->str) == 0) {
+            *state =  (*a)->transitions[*state][i];
             return 1; // read
         }
     }
     if ((*a)->calls[*state] != NULL) {
-        automaton_push_back((*a), a->push_back[*state]);
+        automaton_push_back((*a), (*a)->push_back[*state]);
         // TODO set a to called automaton and state to start state
         return 0; // didn't read
     }
 
     // TODO transiçoes vazias?
-    if ((*a)->final_states[state]) {
+    if ((*a)->final_states[*state]) {
         (*state) = automaton_pop(a);
         return 0; // didn't read
     }
