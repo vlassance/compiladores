@@ -16,17 +16,17 @@ syn.o: lex.o
 testall: lextest syntest synlextest 
 
 
-lextest:  
+lextest: lex.o 
 	${CC} ${LEXFOLDER}/test.c lex.o ${CFLAGS} -o $@
 	$(info ===== TESTING LEX =====)
 	./lextest ./ENTRADA.txt 
 
-syntest:  
+syntest: syn.o lex.o
 	${CC} ${SYNFOLDER}/test.c syn.o lex.o ${CFLAGS} -o $@
 	$(info ===== TESTING SYN =====)
 	./syntest 
 
-synlextest: 
+synlextest: syn.o lex.o
 	${CC} lex.o syn.o ${SYNFOLDER}/parse.c ${CFLAGS} -o $@
 	$(info ===== INT LEX/SYN =====)
 	./synlextest ./examples/exemplo-programa-fatorial.czar 

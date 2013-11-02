@@ -9,8 +9,12 @@
 #include "../lex/lex.h"
 
 
-// TODO verify when 0
 uint32_t automaton_pop(Automaton** a) {
+	if (automata_stack_size == 0) {
+		fflush(stdout);
+		fprintf(stderr, "\nError: Unexpected token at the end of file.\n");
+		exit(1);
+	}
     uint64_t s = automata_stack[--automata_stack_size];
     (*a) = automata_list + (s>>32);
     return s&((1L<<32)-1L);
@@ -123,7 +127,7 @@ void read_mdfa(Automaton* a, char* name, uint32_t id, FILE* f) {
                         calls[node], 
                         tmpid
                     );
-                    perror("Non Deterministic Automaton");
+                    fprintf(stderr, "Non Deterministic Automaton.\n");
                     exit(1);
                 } 
                 strcpy(calls[node],tmpid);
@@ -283,7 +287,7 @@ uint32_t poponly(Automaton** a, uint32_t* state) {
             printf("Desempilhou PROGRAM em %d com stack: %d", 
                 *state, automata_stack_size);
             if (automata_stack_size >= 1) {
-                perror("Stack wasn't empty");
+                fprintf(stderr, "Stack wasn't empty.\n");
                 exit(1);
             }
             
@@ -301,7 +305,7 @@ uint32_t poponly(Automaton** a, uint32_t* state) {
 
         return 1; // ok
     }
-    perror("Ooops, can't pop"); 
+    fprintf(stderr, "Ooops, can't pop.\n"); 
     exit(1);
 }
 
@@ -345,7 +349,7 @@ uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
         if (i == INVALID_AUT_ID) {
             fprintf(stderr, "Name (%s) wasn't found\n",(*a)->calls[*state]);
             fflush(stderr);
-            perror("Internal Error, Invalid automata");
+            fprintf(stderr, "Internal Error, Invalid automata.\n");
             exit(1);
         }
 
@@ -358,7 +362,6 @@ uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
         return 0; // didn't read
     }
 
-    // TODO transiçoes vazias?
     if ((*a)->final_states[*state]) {
         printf(
             "Desempilhou: (automato: %s, estado:%d) -> ", 
@@ -380,7 +383,7 @@ uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
     fprintf(stderr, "Found:\n");
     print_token(tk);
     fflush(stderr);
-    perror("Syntax error");
+    fprintf(stderr, "Syntax error.\n");
     exit(1);
 
 }

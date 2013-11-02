@@ -19,6 +19,7 @@ int main(int argc, char** argv) {
     
     input_file = fopen(argv[1], "r");
 
+	state = a->initial_state;
     while (next_useful_token(input_file, &tk) && tk != NULL) {
         while(semantico_tbd(tk, &a, &state) == 0) {
             //printf("-> %s, %d \n", a->name, state);
@@ -26,8 +27,7 @@ int main(int argc, char** argv) {
         }
         //printf("-> %s, %d \n", a->name, state);
         //printf("read %s\n", tk->str);
-    }
-    // TODO desempilha até programa (todos os estados tem que ser de aceitação).        
+    }      
     while(semantico_tbd(tk, &a, &state));
 
     print_identifiers();
