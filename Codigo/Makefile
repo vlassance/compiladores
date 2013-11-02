@@ -3,8 +3,7 @@ LEXFOLDER=./lex
 SYNFOLDER=./syn
 CFLAGS=-g
 
-all: lex.o testall
-
+all: lex.o syn.o testall
 
 lex.o:
 	${CC} -c ${LEXFOLDER}/lex.c ${CFLAGS} -o $@
@@ -14,7 +13,7 @@ syn.o: lex.o
 
 
 
-testall: lextest lex.o syn.o syntest synlextest 
+testall: lextest syntest synlextest 
 
 
 lextest:  
