@@ -10,11 +10,11 @@
 
 
 uint32_t automaton_pop(Automaton** a) {
-	if (automata_stack_size == 0) {
-		fflush(stdout);
-		fprintf(stderr, "\nError: Unexpected token at the end of file.\n");
-		exit(1);
-	}
+    if (automata_stack_size == 0) {
+        fflush(stdout);
+        fprintf(stderr, "\nError: Unexpected token at the end of file.\n");
+        exit(1);
+    }
     uint64_t s = automata_stack[--automata_stack_size];
     (*a) = automata_list + (s>>32);
     return s&((1L<<32)-1L);

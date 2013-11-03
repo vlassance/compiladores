@@ -33,5 +33,5 @@ synlextest: syn.o lex.o
 	./synlextest ./examples/exemplo-programa-geral.czar
 
 clean:
-	rm -f lextest lex.o syn.o synlextest  
+	rm -f lextest lex.o syn.o syntest synlextest  
 

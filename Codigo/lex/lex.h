@@ -9,6 +9,9 @@
 # define MAX_SIZE_OF_A_TOKEN 2048
 # define MAX_NUMBER_OF_KEYWORDS 256
 # define MAX_NUMBER_OF_IDENTIFIERS 2048
+# define MAX_NUMBER_OF_ESCOPOS 512
+
+typedef enum { false, true } bool;
 
 typedef struct State {
     char* name;
@@ -27,6 +30,12 @@ typedef struct Token {
     char* str;
 } Token;
 
+typedef struct Escopo {
+    long level;
+    char* videntifiers[MAX_NUMBER_OF_IDENTIFIERS];
+    long videntifiers_size;
+} Escopo;
+
 int _number_of_states;
 
 State* state_table[MAX_NUM_STATES];
@@ -36,8 +45,9 @@ long buff_token_end;
 
 char* vkeywords[MAX_NUMBER_OF_KEYWORDS];
 long vkeywords_size;
-char* videntifiers[MAX_NUMBER_OF_IDENTIFIERS];
-long videntifiers_size;
+long escopo_atual;
+Escopo* vescopos[MAX_NUMBER_OF_ESCOPOS];
+long vescopos_size;
 
 void initialize_lex();
 int next_useful_token(FILE* f, Token** t);

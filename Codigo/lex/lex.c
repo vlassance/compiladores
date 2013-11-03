@@ -148,16 +148,45 @@ void find_next_state_from_char(char c, State** from, State** to) {
 }
 
 void add_identifier_to_list(char* name_ident) {
-    int i;
-    for (i = 0; i < videntifiers_size; i++) {
-        if (strcmp(name_ident, videntifiers[i]) == 0) {       
+    Escopo* esc;
+    int i, j;
+    bool found = false;
+
+    for (i = vescopos_size-1; i >= 0; i--) {
+        esc = vescopos[i];
+        if (esc->level < escopo_atual) {
+            // Significa que eu não há mais idents do mesmo escopo que o atual
             break;
         }
+        if (esc->level == escopo_atual) {
+            for (j = 0; j < esc->videntifiers_size; j++) {
+                if (strcmp(name_ident, esc->videntifiers[j]) == 0) {   
+                    found = true;    
+                    break;
+                }
+            }
+        }
     }
-    if (i == videntifiers_size) {
-        videntifiers[videntifiers_size] = malloc(sizeof(char) * (strlen(name_ident) + 1L));
-        strcpy(videntifiers[videntifiers_size++], name_ident);
+    if (!found) {
+        esc = vescopos[vescopos_size-1];
+        esc->videntifiers[esc->videntifiers_size] = malloc(sizeof(char) * (strlen(name_ident) + 1L));
+        strcpy(esc->videntifiers[esc->videntifiers_size++], name_ident);
     }
+}
+
+void increase_scope() {
+    vescopos[++vescopos_size-1] = malloc(sizeof(Escopo));
+    vescopos[vescopos_size-1]->level = ++escopo_atual;
+    vescopos[vescopos_size-1]->videntifiers_size = 0;
+}
+
+void decrease_scope() {
+    if (escopo_atual <= 0)
+        return;
+
+    vescopos[++vescopos_size-1] = malloc(sizeof(Escopo));
+    vescopos[vescopos_size-1]->level = --escopo_atual;
+    vescopos[vescopos_size-1]->videntifiers_size = 0;
 }
 
 int next_useful_token(FILE* f, Token** t) {
@@ -194,6 +223,14 @@ int next_useful_token(FILE* f, Token** t) {
             strcpy((*t)->class_name, "RESERVED");
         }
     } else {
+        if (strcmp((*t)->origin_state->class_name, "DELIM") == 0) {
+            if (strcmp((*t)->str, "{") == 0) {
+                increase_scope();
+            } else if (strcmp((*t)->str, "}") == 0) {
+                decrease_scope();
+            }
+        }
+
         (*t)->class_name = malloc(
             (strlen((*t)->origin_state->class_name) + 1) * sizeof(char)
             );
@@ -296,10 +333,19 @@ int next_token(FILE* f, Token** t) {
 }
 
 void initialize_lex() {
-    FILE *lex_file, *keywords_file;
+    FILE *lex_file, *keywords_file, *primitive_types_file;
     vkeywords_size = 0;
-    videntifiers_size = 0;
+    escopo_atual = 0;
     _number_of_states = 0;
+    vescopos_size = 1;
+    vescopos[0] = malloc(sizeof(Escopo));
+    vescopos[0]->level = 0;
+    vescopos[0]->videntifiers_size = 0;
+
+    primitive_types_file = fopen("./languagefiles/primitive_types.txt", "r");
+    while (fscanf(primitive_types_file, " %s", buff_token) != EOF) {
+        add_identifier_to_list(buff_token);
+    }
 
     lex_file = fopen("./languagefiles/lang.lex", "r");
     keywords_file = fopen("./languagefiles/keywords.txt", "r");
@@ -315,10 +361,17 @@ void initialize_lex() {
 }
 
 void print_identifiers() {
-    int i;
+    int i, j, k;
 
     printf("\nLista de identificadores:\n\n");
-    for (i = 0; i < videntifiers_size; i++) {
-        printf(">> %s\n", videntifiers[i]);
+    for (i = 0; i < vescopos_size; i++) {
+        if (vescopos[i]->videntifiers_size > 0) {
+            printf("Escopo nivel %ld:\n", vescopos[i]->level);
+            for (j = 0; j < vescopos[i]->videntifiers_size; j++) {
+                for (k = 0; k < vescopos[i]->level+1; k++)
+                    printf(">>");
+                printf(" %s\n", vescopos[i]->videntifiers[j]);
+            }
+        }
     }
 }

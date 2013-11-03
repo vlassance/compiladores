@@ -9,3 +9,8 @@ and
 or
 main
 return
+struct
+const
+meth
+void
+ref

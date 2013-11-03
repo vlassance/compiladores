@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     
     input_file = fopen(argv[1], "r");
 
-	state = a->initial_state;
+    state = a->initial_state;
     while (next_useful_token(input_file, &tk) && tk != NULL) {
         while(semantico_tbd(tk, &a, &state) == 0) {
             //printf("-> %s, %d \n", a->name, state);
