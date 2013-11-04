@@ -27,7 +27,7 @@ with open('WIRTH.txt', 'r') as f:
     the_page = response.read()
     names = re.findall(b'[^<]*<h3>[^>]*>([^<]*)', the_page)
     for i in re.findall(b'[^<]*<pre>([^<]*)</pre>', the_page):
-        with open(folder + names[ctr].decode() + "." + rotate[ctrrot], 'w') as outfile:
+        with open(folder + names[ctr].decode().replace("_","-") + "." + rotate[ctrrot], 'w') as outfile:
             outfile.write(html.parser.HTMLParser().unescape(i.decode(encoding='UTF-8')).strip())
         ctrrot += 1
         ctrrot %= len(rotate)

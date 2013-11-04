@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+  <type>fa</type>
+  <state id="0" name="q0">
+    <initial/>
+  </state>
+  <state id="1" name="q1">
+  </state>
+  <state id="2" name="q2">
+  </state>
+  <state id="3" name="q3">
+  </state>
+  <state id="4" name="q4">
+    <final/>
+  </state>
+  <transition>
+    <from>0</from>
+    <to>1</to>
+    <read>"("</read>
+  </transition>
+  <transition>
+    <from>1</from>
+    <to>2</to>
+    <read>")"</read>
+  </transition>
+  <transition>
+    <from>2</from>
+    <to>3</to>
+    <read>"{"</read>
+  </transition>
+  <transition>
+    <from>3</from>
+    <to>3</to>
+    <read>INSTR_SEM_RET</read>
+  </transition>
+  <transition>
+    <from>3</from>
+    <to>4</to>
+    <read>"}"</read>
+  </transition>
+</structure>

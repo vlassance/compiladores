@@ -11,20 +11,14 @@ const int SOU_CONSTANTE_INT = 10;
 const string SOU_CONSTANTE_STRING = "CONSTANTE_STRING";
 string sou_variavel = "valor inicial da variavel";
 
+meth 
+
 void soma_como_procedimento (int a, int b, ref int soma) {
   soma = a + b;
 }
 
 int soma_como_funcao (int a, int b) {
   return a + b;
-}
-
-string concatena_chars(int n_chars, char[] caracteres) {
-  string retorno = "";
-  for(int i = 0; i < n_chars; i += 1) {
-      retorno += caracteres[i];
-  }
-  return retorno;
 }
 
 void proc_exemplo (char a, int b, int c, int d) {

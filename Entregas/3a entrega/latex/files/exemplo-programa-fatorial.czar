@@ -4,9 +4,11 @@ const int fat_10_rec = 10;
 const int fat_10_iter = 10;
 int retorno;
 
+meth 
+
 int fatorial_recursivo(int n) {
     int retorno = 1;
-	if (n > 1) {
+	if (n >= 1) {
         retorno = n * fatorial_recursivo (n - 1);
     }
     return retorno;
@@ -14,7 +16,7 @@ int fatorial_recursivo(int n) {
 
 int fatorial_iterativo(int n) {
     int fatorial = 1;
-    while (n > 0) {
+    while (n >= 0) {
         fatorial = fatorial * n;
         n = n - 1;
     }
