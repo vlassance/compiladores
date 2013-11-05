@@ -14,13 +14,14 @@ int main(int argc, char *argv[]) {
     initialize_lex();
     
     input_file = fopen(argv[1], "r");
-
+    tk = NULL;
     while (next_useful_token(input_file, &tk) && tk != NULL) {
        print_token(tk); 
     }
 
     print_identifiers();
-
+    freeLex();
+    fclose(input_file);
     if (tk == NULL) 
         return 0;
     return 1;

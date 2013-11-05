@@ -64,6 +64,7 @@ void state_from_name(char* statename, State** st) {
     // since the lex parser will run until the life span of the compiler run,
     // the memory will be used until the end. No need to free it. 
     state_table[_number_of_states] = malloc(sizeof(State));
+    memset(state_table[_number_of_states], 0, sizeof(State));
     state_table[_number_of_states]->name = malloc(
         sizeof(char) * (strlen(statename) + 1) // +1 for the \0 
     );
@@ -95,13 +96,13 @@ int lex_parser_read_char(FILE* f) {
     long *mask;
     char sep;
     char c;
-    long cod;
+    unsigned long cod;
     long maskterm, maskdepl;
     int i;
     State *from;
     State *to;
 
-    long masktermsize = sizeof(long) * 8; // number of byts on a long
+    long masktermsize = sizeof(long) * 8; // number of bits on a long
 
     if (fscanf(f, " %c", &sep) == EOF || sep == EOF) {
         return 0;
@@ -114,7 +115,8 @@ int lex_parser_read_char(FILE* f) {
     }
     // for each char different from sep, insert a transition 
     while (fscanf(f, "%c", &c) && c != sep && c != EOF) {
-        cod = (long) c;
+        cod = (unsigned long) c;
+        cod &= 0x0FF;
         maskterm = cod / masktermsize;
         maskdepl = cod % masktermsize;
         mask[maskterm] |= (1L<<maskdepl);
@@ -214,10 +216,12 @@ int next_useful_token(FILE* f, Token** t) {
             }
         }
         if (i == vkeywords_size) {
+            free((*t)->class_name);
             (*t)->class_name = malloc(6 * sizeof(char));
             strcpy((*t)->class_name, "IDENT");
             add_identifier_to_list((*t)->str);
         } else {
+            free((*t)->class_name);
             (*t)->class_name = malloc(9 * sizeof(char));
             // name it RESERVED in case it is
             strcpy((*t)->class_name, "RESERVED");
@@ -241,6 +245,14 @@ int next_useful_token(FILE* f, Token** t) {
     return res;
 }
 
+void freeToken(Token* t) {
+    if (t == NULL)
+        return;
+    FREEANDNULL(t->class_name);
+    FREEANDNULL(t->str);
+    FREEANDNULL(t);
+}
+
 int next_token(FILE* f, Token** t) {
     static State *current_state = NULL;
     static long cline = 1;
@@ -248,12 +260,14 @@ int next_token(FILE* f, Token** t) {
     static long line = 1;
     static long column = 1;
     static char tmpend = 1;
-    char next_c;
+    char next_c = EOF;
 
-    State* next_state; 
+    State* next_state;
+    next_state = NULL; 
     // tmpend is static, if i read something that was 
     // EOF in the last step, this is the end and I should set t to null 
     if (tmpend == EOF) {
+        freeToken(*t);
         (*t) = NULL;
         return 1;
     }
@@ -284,7 +298,9 @@ int next_token(FILE* f, Token** t) {
         //  Since the transductor have an empty transition to Q0, we are
         //  obligated to do so.
         if (next_state != NULL && strcmp(next_state->name, "Q0") == 0){
+            freeToken(*t);
             (*t) = malloc(sizeof(Token));
+            (*t)->class_name = NULL;
             (*t)->str = malloc(sizeof(char) * (strlen(buff_token) + 1L));
             strcpy((*t)->str, buff_token);
             (*t)->line = line;
@@ -328,6 +344,7 @@ int next_token(FILE* f, Token** t) {
         }
         current_state = next_state;
     } while (tmpend != EOF);
+    freeToken(*t);
     (*t) = NULL;
     return 1;
 }
@@ -358,6 +375,9 @@ void initialize_lex() {
         vkeywords[vkeywords_size] = malloc(sizeof(char) * (strlen(buff_token) + 1L));
         strcpy(vkeywords[vkeywords_size++], buff_token);
     }
+    fclose(lex_file);
+    fclose(keywords_file);
+    fclose(primitive_types_file);
 }
 
 void print_identifiers() {
@@ -375,3 +395,73 @@ void print_identifiers() {
         }
     }
 }
+
+
+void freeLex() {
+    int i, j;
+    for (i = 0; i < _number_of_states; i++) {
+        if (state_table[i] == NULL)
+            continue;
+        FREEANDNULL(state_table[i]->name);
+        FREEANDNULL(state_table[i]->class_name);
+        for (j = 0; j < state_table[i]->number_of_transitions; j++) {
+            FREEANDNULL(state_table[i]->masks[j]);
+
+        }
+    }
+
+    for (i = 0; i < _number_of_states; i++) {
+        FREEANDNULL(state_table[i]);
+    }
+
+    for (i = 0; i < vescopos_size; i++) {
+        for (j = 0; j < vescopos[i]->videntifiers_size; j++) {
+            FREEANDNULL(vescopos[i]->videntifiers[j]);
+        }
+        FREEANDNULL(vescopos[i]);
+    }
+    for (i = 0; i < vkeywords_size; i++) {
+        FREEANDNULL(vkeywords[i]);
+    }
+}
+
+
+//typedef struct State {
+//    char* name;
+//    char* class_name;
+//    int number_of_transitions;
+//    long* masks[MAX_NUM_TRANSITIONS];
+//    struct State* transitions[MAX_NUM_TRANSITIONS];
+//} State;
+//
+//typedef struct Token {
+//    long line;
+//    long column;
+//    long size;
+//    char* class_name;
+//    State* origin_state;
+//    char* str;
+//} Token;
+//
+//typedef struct Escopo {
+//    long level;
+//    char* videntifiers[MAX_NUMBER_OF_IDENTIFIERS];
+//    long videntifiers_size;
+//} Escopo;
+//
+//int _number_of_states;
+//
+//State* state_table[MAX_NUM_STATES];
+//char buff_token[MAX_SIZE_OF_A_TOKEN];
+//long buff_token_end;
+//
+//
+//char* vkeywords[MAX_NUMBER_OF_KEYWORDS];
+//long vkeywords_size;
+//long escopo_atual;
+//Escopo* vescopos[MAX_NUMBER_OF_ESCOPOS];
+//long vescopos_size;
+//
+//void initialize_lex();
+//int next_useful_token(FILE* f, Token** t);
+//void print_token(Token* t);

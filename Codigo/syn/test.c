@@ -8,6 +8,6 @@
 
 int main() {
     read_all_syn_files(); 
-    free_automata(); 
+    free_automata();
     return 0;
 }

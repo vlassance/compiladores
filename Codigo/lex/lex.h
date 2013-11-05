@@ -10,6 +10,8 @@
 # define MAX_NUMBER_OF_KEYWORDS 256
 # define MAX_NUMBER_OF_IDENTIFIERS 2048
 # define MAX_NUMBER_OF_ESCOPOS 512
+# define FREEANDNULL(__x__) if ((__x__) != NULL) {free(__x__); (__x__) = NULL;};
+
 
 typedef enum { false, true } bool;
 

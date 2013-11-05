@@ -1,0 +1,55 @@
+Este pacote possui o compilador de uma linguagem simples, baseada em C:
+
+Lex:
+    Para rodar os testes, basta utilizar o comando make:
+
+    $ make clean
+    $ make 
+
+    deve deletar arquivos antigos e compilar o projeto.
+
+
+    O código do Lexer se encontra disponível na pasta ./lex/ 
+    O código do Analisador Sintático se encontra disponível na pasta ./syn/ 
+
+    O código foi modificado para atender às espectativas de fuga de memória,
+    para executar o programa no valgrind basta executar:
+    $ make valgrind 
+
+    Foi usado python e java para o download automático dos arquivos mdfa e para
+    a geração dos arquivos de imagem dos autômatos. Estes programas estão
+    disponíveis na pasta ./scripts/. O compilador em sí está inteiramente
+    escrito na linguagem C. 
+
+Versões de software:
+
+    $  gcc --version
+    gcc (GCC) 4.8.1 20130725 (prerelease)
+    Copyright (C) 2013 Free Software Foundation, Inc.
+    This is free software; see the source for copying conditions.  There is NO
+    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    
+    $  make --version
+    GNU Make 3.82
+    Built for x86_64-unknown-linux-gnu
+    Copyright (C) 2010  Free Software Foundation, Inc.
+    License GPLv3+: GNU GPL version 3 or later
+    <http://gnu.org/licenses/gpl.html>
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.
+
+    $  valgrind --version
+    valgrind-3.8.1
+
+    $  python --version
+    Python 3.3.2
+
+    $  javac -version
+    javac 1.7.0_45
+
+    $  java -version
+    java version "1.7.0_45"
+    OpenJDK Runtime Environment (IcedTea 2.4.3) (ArchLinux build
+        7.u45_2.4.3-1-x86_64)
+    OpenJDK 64-Bit Server VM (build 24.45-b08, mixed mode)
+

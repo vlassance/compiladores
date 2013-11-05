@@ -213,6 +213,9 @@ void free_automaton(Automaton* a) {
     free(a->transitions_str);
     free(a->transitions);
     free(a->calls);
+    free(a->final_states);
+    a = NULL;
+
 }
 
 void read_syn_file(char* dir, char* file) {
@@ -269,6 +272,12 @@ void free_automata() {
     for (i = 0; i < automata_len; i++) {
         free_automaton(&(automata_list[i]));
     }
+    i = 0;
+    while (finals[i] != NULL) {
+        free(finals[i]);
+        i++;
+    }
+    free(finals);
 }
 
 uint32_t findAutomatonByName(char* name) {
@@ -309,8 +318,13 @@ uint32_t poponly(Automaton** a, uint32_t* state) {
     exit(1);
 }
 
-uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
+void semantico_tbd() {
+    printf("TODO\n");
+}
+
+uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
     if (tk == NULL) {
+        semantico_tbd();
         return poponly(a, state);
     }
     uint32_t i;
@@ -323,6 +337,7 @@ uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
                 strtrans, (*a)->name, *state, (*a)->name, (*a)->transitions[*state][i]
             );
             *state =  (*a)->transitions[*state][i];
+            semantico_tbd();
             return 1; // read
         }
     }
@@ -336,6 +351,7 @@ uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
                     strtrans+1, (*a)->name, *state, (*a)->name, (*a)->transitions[*state][i]
                 );
                 *state = (*a)->transitions[*state][i];
+                semantico_tbd();
                 return 1;
             }
         }
@@ -359,6 +375,7 @@ uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
         );
         *a = automata_list + i;
         *state = (*a)->initial_state;
+        semantico_tbd();
         return 0; // didn't read
     }
 
@@ -372,6 +389,7 @@ uint32_t semantico_tbd(Token* tk, Automaton** a, uint32_t* state) {
             "(automato: %s, estado:%d)\n", 
             (*a)->name, *state
         );
+        semantico_tbd();
         return 0; // didn't read
     }
     fprintf(stderr, "Automata(%s, %d), token(%s, %s)\n", (*a)->name, *state, tk->str, tk->class_name);
