@@ -1,0 +1,24 @@
+; Somador
+; *******
+; Somador que recebe duas entradas, nas posições
+; ENTRADA1 e ENTRADA2, e coloca o resultado da
+; soma na posição SAIDA (externa).
+
+
+2004 0000 ; "SOMADOR>"		;	SOMADOR >
+2000 0000 ; "ENTRADA1>"		;	ENTRADA1 >
+2002 0000 ; "ENTRADA2>"		;	ENTRADA2 >
+4000 0000 ; "SAIDA<"		;	SAIDA <
+
+				;	& /0000                 ; Origem relocável
+; Entradas do programa.
+8000 0000		;	ENTRADA1 K /0000
+8002 0000		;	ENTRADA2 K /0000
+
+; Programa
+8004 0000		;	SOMADOR JP /000         ; Ponto de entrada da subrotina
+a006 8000		;	INICIO LD ENTRADA1
+a008 4002		;	       +  ENTRADA2
+d00a 9000		;	       MM SAIDA         ; Colocando na saída
+a00c b004		;	       RS SOMADOR       ; Retornando
+
