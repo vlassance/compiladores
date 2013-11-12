@@ -77,6 +77,12 @@ function cleanlib () {
     rm -f $MVNFILES
 }
 
+function clean_all_mvn () {
+    rm -f *.dump
+    rm -f *.lst
+    rm -f *.mvn
+}
+
 function borala () {
     rlwrap $MVNDL
 }

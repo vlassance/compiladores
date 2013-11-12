@@ -7,6 +7,7 @@ PONEASCII >
 TO_BE_PRINTED >
 P_STRING >
 STRING_PTR >
+P_INT_ZERO >
 ; relocavel
 & /0000
 ; alocando para K
@@ -17,7 +18,8 @@ MOVE_CONST          K /9000           ; instruction to move to memory
 ZERO                K /0000 
 TWO                 K /0002
 STRING_PTR          K /0000           ; ponteiro para o comeco da string 
-
+TMP_1               K /0000  
+TMP_2               K /0000  
 ;; VARIAVEIS GLOBAIS
 ;; tamanho da pilha = 2FF 
 ;;   | ptr to old_stack_head  | \___ STACK_PTR
@@ -60,6 +62,81 @@ LABELLOAD           K /0000
                     JP LOAD_TO_BE_PRINTED
 P_STRING_END        RS P_STRING 
 
+;; *** P_INT_ZERO TO_BE_PRINTED ***
+;;  Imprime um inteiro (com zeros à esquerda)
+;; ex:  
+;;  INT_2 K  =345 
+;;        LD INT_2
+;;        MM TO_BE_PRINTED 
+;;        SC P_INT_ZERO
+;; imprime 00345
+;;
+;;
+;; Esta funcao esta com o loop inline
+;; sendo simples e robusta
+
+P_INT_ZERO          JP /000
+P_INT_INIT          JP P_INT_REAL_INIT
+ZERO_BASE           K /30
+;; bases para a conversao:
+INT_POT_1           K =10000   
+INT_POT_2           K =1000 
+INT_POT_3           K =100  
+INT_POT_4           K =10 
+INT_POT_5           K =1 
+P_INT_REAL_INIT     LD TO_BE_PRINTED       ;; PRIMEIRO CHAR
+                    MM TMP_1
+                    /  INT_POT_1 
+                    +  ZERO_BASE 
+                    PD /100                     ;; imprime 
+                    LD TMP_1  
+                    /  INT_POT_1
+                    *  INT_POT_1 
+                    MM TMP_2                     
+                    LD TMP_1
+                    -  TMP_2
+                    MM TMP_1   
+                    /  INT_POT_2                ;; segundo char 
+                    +  ZERO_BASE 
+                    PD /100                     ;; imprime 
+                    LD TMP_1  
+                    /  INT_POT_2
+                    *  INT_POT_2 
+                    MM TMP_2                     
+                    LD TMP_1
+                    -  TMP_2
+                    MM TMP_1 
+                    /  INT_POT_3                ;; terceiro char 
+                    +  ZERO_BASE 
+                    PD /100                     ;; imprime 
+                    LD TMP_1  
+                    /  INT_POT_3
+                    *  INT_POT_3 
+                    MM TMP_2                     
+                    LD TMP_1
+                    -  TMP_2
+                    MM TMP_1 
+                    /  INT_POT_4                ;; quarto char 
+                    +  ZERO_BASE 
+                    PD /100                     ;; imprime 
+                    LD TMP_1  
+                    /  INT_POT_4
+                    *  INT_POT_4 
+                    MM TMP_2                     
+                    LD TMP_1
+                    -  TMP_2
+                    MM TMP_1 
+                    /  INT_POT_5                ;; quinto char 
+                    +  ZERO_BASE 
+                    PD /100                     ;; imprime 
+                    LD TMP_1  
+                    /  INT_POT_5
+                    *  INT_POT_5 
+                    MM TMP_2                     
+                    LD TMP_1
+                    -  TMP_2
+                    MM TMP_1 
+                    RS P_INT_ZERO
 
 ;; ****  PUSH_CALL PUSH_CALL_SIZELV 
 ;;       PUSH_CALL_RET_ADDRS PUSH_CALL_TMP_SZ   
