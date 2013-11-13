@@ -8,6 +8,19 @@ TO_BE_PRINTED >
 P_STRING >
 STRING_PTR >
 P_INT_ZERO >
+P_LINE >
+;; STACK manipulation: 
+;;PUSH_CALL >
+;;PUSH_CALL_SIZELV >
+;;PUSH_CALL_RET_ADDRS > 
+;;PUSH_CALL_TMP_SZ >
+;;PUSH_CALL_PAR_SZ >
+;; get word nbr WORD_TO_GET on local vars 
+;; and saves on *STORE_PTR
+;;GET_WORD_LOCAL_VAR  >
+;;WORD_TO_GET >
+;;STORE_PTR >
+
 ; relocavel
 & /0000
 ; alocando para K
@@ -36,6 +49,15 @@ STACK_PTR           K /0FFF
 STACK_FRAME         K /0FFF 
 
 ;; FIM VARIAVEIS GLOBAIS 
+
+;; **** P_LINE ****
+;; imprime uma linha
+;;
+
+P_LINE              JP /000           ; alocando para o endereço de retorno  
+                    LV /00A  ; carregar a variavel 
+                    PD /100           ; imprimir na tela 
+                    RS P_LINE         ; retornar a rotina  
 
 ; inicio da rotina
 PONEASCII           JP /000           ; alocando para o endereço de retorno  
@@ -143,30 +165,42 @@ P_INT_REAL_INIT     LD TO_BE_PRINTED       ;; PRIMEIRO CHAR
 ;;       PUSH_CALL_PAR_SZ ****
 ;;    Empilha um espaco de memoria 
 ;; para a pilha. 
-;;;;;;; \/ this is not working yet... TODO(gpgouveia) 
-;;;PUSH_CALL_SIZELV        K /000 
-;;;PUSH_CALL_RET_ADDRS     K /000 
-;;;PUSH_CALL_TMP_SZ        K /000  
-;;;PUSH_CALL_PAR_SZ        K /000 
-;;;
-;;;;; definicao:
-;;;PUSH_CALL           JP /000 ; retorno 
-;;;PUSH_CALL_INIT      LD STACK_PTR          ;; get STACK_PTR
-;;;                    +  MOVE_CONST         ;; get Instruction to move to stack_ptr
-;;;                    MM MRKR_PC_SAVE_HEAD  ;; put composed instruction on marker
-;;;                    LD STACK_PTR          ;; load stack_ptr 
-;;;MRKR_PC_SAVE_HEAD   K /0000               ;; move old STACK_PTR to the address 
-;;;                                          ;; it points to 
-;;;                    LD STACK_PTR 
-;;;                    -  PUSH_CALL_SIZELV
-;;;                    -  PUSH_CALL_RET_ADDRS
-;;;                    -  PUSH_CALL_TMP_SZ
-;;;                    -  PUSH_CALL_PAR_SZ 
-;;;                    -  TWO  ;; return addrs
-;;;                    MM STACK_PTR          ;; saves new STACK_PTR 
-;;;
-;;;                    
-;;;
+PUSH_CALL_SIZELV        K /000 
+PUSH_CALL_RET_ADDRS     K /000 
+PUSH_CALL_TMP_SZ        K /000  
+PUSH_CALL_PAR_SZ        K /000 
 
+;; definicao:
+;;PUSH_CALL           JP /000 ; retorno 
+;;PUSH_CALL_INIT      LD STACK_PTR          ;; get STACK_PTR
+;;                    +  MOVE_CONST         ;; get Instruction to move to stack_ptr
+;;                    MM MRKR_PC_SAVE_HEAD  ;; put composed instruction on marker
+;;                    LD STACK_PTR          ;; load stack_ptr 
+;;MRKR_PC_SAVE_HEAD   K /0000               ;; move old STACK_PTR to the address 
+;;                                          ;; it points to 
+;;                    LD STACK_PTR
+;;                    -  TWO 
+;;                    -  TWO 
+;;                    -  PUSH_CALL_SIZELV
+;;                    -  PUSH_CALL_RET_ADDRS
+;;                    -  PUSH_CALL_TMP_SZ
+;;                    -  PUSH_CALL_PAR_SZ 
+;;                    -  TWO  ;; return addrs
+;;                    MM STACK_PTR          ;; saves new STACK_PTR 
+;;
+;;
+;;;; **** GET_WORD_LOCAL_VAR WORD_TO_GET STORE_PTR ****
+;;GET_WORD_LOCAL_VAR          JP /000 
+;;GET_WORD_LOCGET_WORD_LOCAL_VAR WORD_TO_GET STORE_PTRAL_VAR_INIT     LD STACK_PTR
+;;                            + TWO          ;; first word 
+;;                            + WORD_TO_GET  
+;;                            + WORD_TO_GET  ;; WORD_TO_GET * 2
+;;                            + LOAD_CONST   ;; 
+;;                            MM LOAD_WORD_LOCAL_VAR  
+;;                            LD STORE_PTR
+;;                            + MOVE_CONST 
+;;                            MM MOVE_WORD_LOCAL_VAR
+;;LOAD_WORD_LOCAL_VAR         JP /000 ;; 8FROMPTR
+;;MOVE_WORD_LOCAL_VAR         JP /000 ;; 9TOPTR
+                            
 # PONEASCII_INIT
-
