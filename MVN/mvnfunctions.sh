@@ -4,7 +4,10 @@
 #
 # Usage:
 #  $ source ./mvnfunctions.sh 
-#  $ borala  
+#  $ makelib libraries.asm
+#  $ makemain mainfile.asm
+#    be happy :D
+
 JAVARUN="java -cp"
 MVNDL="java -jar MvnPcs4_wDumperLoader.jar"
 MLR="$JAVARUN PCS2302_MLR.jar"
@@ -25,7 +28,8 @@ function makelib () {
 
 function prog_size() {
     lines=$(cat $1 | wc -l)
-    echo $lines*2 | bc
+    echo $lines*2 | bc 1>&2
+    echo $lines*2+100 | bc
 }
 
 function clean_reloca() {
@@ -59,17 +63,21 @@ function makemain () {
 
         SIZEREL=$(prog_size $MAIN) || return 1
         BUTTER=$(cat $MVNFILES | sort -u)
-        echo Ligando as bagaca
-        $LINKA $MAIN $BUTTER -s $OUTNAME 
-        echo Jogando tudo pra baixo da main 
-        $RELOCA $OUTNAME $BINARY $SIZEREL 
-        echo "AAA LEK LEK"
-        read -p "RODO os Paranaue (s/n)?" choice
-        case "$choice" in 
-            s|S ) echo "Your binary is called: $BINARY"; borala;;
-            n|N ) return 0;;
-            * ) echo "invalid";;
-        esac
+        echo Ligando as bagaca sizerel is $SIZEREL
+        $LINKA $MAIN $BUTTER -s $OUTNAME && {
+            echo Jogando tudo pra baixo da main 
+            $RELOCA $OUTNAME $BINARY $SIZEREL && {
+                echo "All Ok!"
+                echo -e '\E[37;44m'"\033[1mYour binary is called: $BINARY\033[0m"
+                borala
+            } || {
+                echo Error 
+                return 0
+            }
+        } || {
+            echo Error
+            return 0
+        }
     }
 }
 
