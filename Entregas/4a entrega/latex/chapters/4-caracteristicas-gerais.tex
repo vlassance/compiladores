@@ -22,6 +22,11 @@ As operações push e pop dessa pilha não podem ser feitas individualmente para
 	\item \emph{Activation Record} ou \emph{Stack Frame}
 	\begin{itemize}
 		\item área na pilha reservada para os dados de uma função (parâmetros, locais, endereço de retorno, etc).
+                \item esta parte da pilha foi fusionada à parte anterior,
+                    facilitando o uso da pilha e diminuindo a quantidade de
+                    dados na mesma. Esta decisão não afeta a implantação, uma
+                    vez que no caso desta linguagem o compilador tem total
+                    controle do tamanho das estruturas sendo utilizadas. 
 	\end{itemize}
 \end{itemize}
 
@@ -40,4 +45,4 @@ A figura~\ref{fig:registros-ativacao} ilustra a organização da pilha. O uso do
 	\item Retorno de subprograma - mnemônico RS (0xB): desvia a execução para o endereço indicado pelo valor guardado na posição de memória do operando.
 \end{itemize}
 
-Foi criado por nós uma biblioteca em assembly para implementar funções auxiliares de entrada e saída de dados, além da funcionalidade de empilhar, desempilhar e ter acesso a informações contidas na pilha discutida anteriormente. Essas funções são explicadas na próxima seção.
+Foi criada por nós uma biblioteca em assembly para implementar funções auxiliares de entrada e saída de dados, além da funcionalidade de empilhar, desempilhar e ter acesso a informações contidas na pilha discutida anteriormente. Essas funções são explicadas na próxima seção.
