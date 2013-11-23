@@ -2,31 +2,30 @@
 
 const int fat_10_rec = 10;
 const int fat_10_iter = 10;
-int retorno;
+decl int retorno;
 
 meth 
 
 int fatorial_recursivo(int n) {
-    int retorno = 1;
-	if (n >= 1) {
-        retorno = n * fatorial_recursivo (n - 1);
+    decl int retorno = 1;
+    if (n >= 1) {
+        set retorno = n * call fatorial_recursivo (n - 1);
     }
     return retorno;
 }
 
 int fatorial_iterativo(int n) {
-    int fatorial = 1;
+    decl int fatorial = 1;
     while (n >= 0) {
-        fatorial = fatorial * n;
-        n = n - 1;
+        set fatorial = fatorial * n;
+        set n = n - 1;
     }
     return fatorial;
 }
 
 main () {
-    retorno = fatorial_recursivo(fat_10_rec);
-
-    io_print_int(retorno);
-    io_print(" ");
-    io_print_int(fatorial_iterativo(fat_10_iter));
+    set retorno = call fatorial_recursivo(fat_10_rec);
+    call io_print_int(retorno);
+    call io_print(" ");
+    call io_print_int(call fatorial_iterativo(fat_10_iter));
 }

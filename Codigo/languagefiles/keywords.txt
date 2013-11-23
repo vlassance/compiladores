@@ -14,3 +14,6 @@ const
 meth
 void
 ref
+set
+call 
+decl

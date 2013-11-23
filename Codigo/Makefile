@@ -32,7 +32,9 @@ syntest: syn.o lex.o
 synlextest: syn.o lex.o
 	${CC} lex.o syn.o ${SYNFOLDER}/parse.c ${CFLAGS} -o $@
 	$(info ===== INT LEX/SYN =====)
+	$(info ======= ${EX1} ========)
 	./synlextest ${EX1}
+	$(info ======= ${EX2} ========)
 	./synlextest ${EX2}
 
 valgrind: valsynlex valsyn vallex 

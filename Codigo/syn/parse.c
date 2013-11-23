@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
         fprintf(stderr, "  %s <input file>\n", argv[0]);
         return 1;
     }
-
+    printf("Parsing file <%s>\n\n\n", argv[1]);
     initialize_lex();
     
     input_file = fopen(argv[1], "r");
