@@ -337,7 +337,6 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
                 strtrans, (*a)->name, *state, (*a)->name, (*a)->transitions[*state][i]
             );
             *state =  (*a)->transitions[*state][i];
-            semantico_tbd();
             return 1; // read
         }
     }
@@ -351,7 +350,6 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
                     strtrans+1, (*a)->name, *state, (*a)->name, (*a)->transitions[*state][i]
                 );
                 *state = (*a)->transitions[*state][i];
-                semantico_tbd();
                 return 1;
             }
         }
@@ -375,7 +373,6 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
         );
         *a = automata_list + i;
         *state = (*a)->initial_state;
-        semantico_tbd();
         return 0; // didn't read
     }
 

@@ -1,7 +1,6 @@
 ; Biblioteca de ambiente
 ; ======================
-
-
+; exports
 PUSH_CALL_SIZELV        > 
 PUSH_CALL_RET_ADDRS     > 
 PUSH_CALL_TMP_SZ        > 
@@ -18,6 +17,17 @@ PRINT_STACK_ADDRS       >
 POP_CALL_FCT            >
 EXAMPLE_STACK           >
 EXAMPLE_STACK_ARG       >
+;; ARITH: 
+PUSH_ARITH              >            
+POP_ARITH               >  
+SUM_ARITH               > 
+SUB_ARITH               >  
+DIV_ARITH               >   
+MUL_ARITH               >   
+AND_ARITH               >   
+OR_ARITH                >   
+NOT_ARITH               >   
+;; imports
 READ_INT                <
 PONEASCII               < 
 TO_BE_PRINTED           <
@@ -281,4 +291,127 @@ PRINT_STACK_ADDRS JP /000
                   SC P_LINE 
                   RS PRINT_STACK_ADDRS
 
+ARIT_PTR_STACK  ARIT_STACK_ZERO
+;; pilha aritimética:
+ARIT_STACK_ZERO K /0000   ;; 0
+                K /0000   ;; 1
+                K /0000   ;; 2
+                K /0000   ;; 3
+                K /0000   ;; 4
+                K /0000   ;; 5
+                K /0000   ;; 6
+                K /0000   ;; 7
+                K /0000   ;; 8
+                K /0000   ;; 9
+                K /0000   ;; 10
+                K /0000   ;; 11
+                K /0000   ;; 12
+                K /0000   ;; 13
+                K /0000   ;; 14
+                K /0000   ;; 15
+                K /0000   ;; 16
+                K /0000   ;; 17
+                K /0000   ;; 18
+                K /0000   ;; 19
+                K /0000   ;; 20
+
+
+PUSH_ARITH      JP /000
+                MM TMP_1
+                LD ARIT_PTR_STACK 
+                +  ONE
+                MM ARIT_PTR_STACK
+                +  MOVE_CONST
+                MM OP_PUSH_ARITH
+                LD TMP_1
+OP_PUSH_ARITH   JP /000 
+                RS PUSH_ARITH 
+
+
+POP_ARITH       JP /000 
+                LD ARIT_PTR_STACK 
+                -  ONE
+                MM ARIT_PTR_STACK 
+                +  ONE
+                +  LOAD_CONST 
+                MM OP_POP_ARITH
+OP_POP_ARITH    JP /000
+                RS POP_ARITH 
+
+;;; BIN OPER:
+
+SUM_ARITH       JP /000 
+                SC POP_ARITH
+                MM TMP_2 
+                SC POP_ARITH 
+                +  TMP_2 
+                SC PUSH_ARITH
+                RS SUM_ARITH 
+
+SUB_ARITH       JP /000 
+                SC POP_ARITH
+                MM TMP_2 
+                SC POP_ARITH 
+                -  TMP_2 
+                SC PUSH_ARITH
+                RS SUB_ARITH 
+
+DIV_ARITH       JP /000 
+                SC POP_ARITH
+                MM TMP_2 
+                SC POP_ARITH 
+                /  TMP_2 
+                SC PUSH_ARITH
+                RS DIV_ARITH 
+
+MUL_ARITH       JP /000 
+                SC POP_ARITH
+                MM TMP_2 
+                SC POP_ARITH 
+                *  TMP_2 
+                SC PUSH_ARITH
+                RS MUL_ARITH 
+
+AND_ARITH       JP /000 
+                SC POP_ARITH 
+                MM TMP_2
+                SC POP_ARITH 
+                JZ PUSH_ZERO_AND_ARITH
+                LD TMP_2 
+                JZ PUSH_ZERO_AND_ARITH 
+                LV /001
+                SC PUSH_ARITH 
+                RS AND_ARITH
+PUSH_ZERO_AND_ARITH  LV /000 
+                     SC PUSH_ARITH
+                     RS AND_ARITH 
+
+OR_ARITH        JP /000 
+                SC POP_ARITH
+                MM TMP_2 
+                SC POP_ARITH 
+                JZ ONE_ZERO_OR_ARITH
+                LV /001
+                SC PUSH_ARITH 
+                RS OR_ARITH 
+ONE_ZERO_OR_ARITH LD TMP_2 
+                  JZ PUSH_ZERO_OR_ARITH 
+                  LV /001 
+                  SC PUSH_ARITH 
+                  RS OR_ARITH 
+PUSH_ZERO_OR_ARITH LV /000 
+                   SC PUSH_ARITH 
+                   RS OR_ARITH 
+
+;; UNARY OPER:
+
+NOT_ARITH           JP /000 
+                    SC POP_ARITH 
+                    JZ PUSH_ONE_NOT_ARITH
+                    LV /000 
+                    SC PUSH_ARITH 
+                    RS NOT_ARITH 
+PUSH_ONE_NOT_ARITH  LV /001 
+                    SC PUSH_ARITH
+                    RS NOT_ARITH 
 # START_STD_LIB_PADDING 
