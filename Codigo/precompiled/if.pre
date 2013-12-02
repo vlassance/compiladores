@@ -1,0 +1,4 @@
+         LD {R0} # carrega a primeira referencia  
+         JZ {L0} # se 0, entao pula para L0 (else)
+         {C0}    # codigo if, C pode ser nulo ou mais coisas  
+{L0}     {N}     # N executa somente a expansao

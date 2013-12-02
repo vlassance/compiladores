@@ -1,0 +1,92 @@
+% verso e anverso:
+% \documentclass[12pt,openright,twoside,a4paper,english]{abntex2}
+% apenas verso:	
+\documentclass[12pt,oneside,a4paper,english]{abntex2} 
+
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+\usepackage{listings}
+\usepackage{float}
+\usepackage{cmap}				% Mapear caracteres especiais no PDF
+\usepackage{lmodern}			% Usa a fonte Latin Modern			
+\usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{lastpage}			% Usado pela Ficha catalográfica
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{pdfpages}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+\usepackage{mathtools}
+
+\definecolor{blue}{RGB}{41,5,195} % alterando o aspecto da cor azul
+
+\makeatletter
+\hypersetup{
+    %pagebackref=true,
+    pdftitle={\@title}, 
+    pdfauthor={\@author},
+    pdfsubject={\@title},
+    pdfcreator={\imprimirpreambulo},
+    pdfkeywords={Linguagens}{Compiladores}{Tradução dos Comandos}, 
+    colorlinks=true,       		% false: boxed links; true: colored links
+    linkcolor=blue,          	% color of internal links
+    citecolor=blue,        		% color of links to bibliography
+    filecolor=magenta,      		% color of file links
+    urlcolor=blue,
+    bookmarksdepth=4
+}
+\makeatother
+
+\autor{Gustavo P. Gouveia (6482819), Victor Lassance (6431325)}
+\title{Relatório de Compiladores\\Quinta Etapa\\Tradução dos Comandos\\Linguagem de programação \underline{CZAR}}
+\orientador[Professor:]{Ricardo Luis de Azevedo da Rocha}
+\preambulo{Texto apresentado à Escola Politécnica da Universidade de São Paulo como requisito para a aprovação na disciplina Linguagens e Compiladores no quinto módulo acadêmico do curso de graduação em Engenharia de Computação, junto ao Departamento de Engenharia de Computação e Sistemas Digitais (PCS).}
+\instituicao{%
+	Universidade de São Paulo
+	\par
+	Escola Politécnica
+	\par
+	Engenharia de Computação - Curso Cooperativo}
+\local{São Paulo}
+\data{2013}
+\tipotrabalho{PCS2056 - Linguagens e Compiladores}
+
+\setlength{\parindent}{1.3cm} % O tamanho do parágrafo
+\setlength{\parskip}{0.2cm}  % Controle do espaçamento entre um parágrafo e outro
+
+\makeindex
+
+\begin{document}
+
+\frenchspacing % Retira espaço extra obsoleto entre as frases.
+
+\imprimirfolhaderosto
+
+\tableofcontents
+
+\textual
+
+\chapter{Introdução}
+\label{chap:introducao}
+	\input{chapters/1-introducao}
+
+\chapter{Tradução de estruturas de controle de fluxo}
+\label{chap:traducao-estruturas-controle}
+	\input{chapters/2-traducao-estruturas-controle}
+
+\chapter{Tradução de comandos imperativos}
+\label{chap:traducao-comandos-imperativos}
+	\input{chapters/3-traducao-comandos-imperativos}
+	
+\chapter{Cálculo de expressões aritméticas e booleanas}
+\label{chap:calculo-expressoes}
+	\input{chapters/4-calculo-expressoes}
+
+\chapter{Exemplo de programa traduzido}
+\label{chap:caracteristicas-gerais}
+	\input{chapters/5-exemplo-programa}
+
+\bibliography{bibliografia}
+
+\end{document}
