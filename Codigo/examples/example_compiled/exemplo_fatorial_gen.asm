@@ -31,18 +31,16 @@ OR_ARITH             <
 NOT_ARITH            <
 @ /0000
 CZAR_INICIO_CODE        JP CZAR_INICIO 
-CONST_VAR_0             K =6  ; const int fat_10_rec = 10;
+CONST_VAR_0             K =6  ; const int fat_10_rec = 6;
 GLOBAL_VAR_0            K =0  ; decl int retorno;
 ONE                     K /001
-
-DBG_TMP                 K /000
 
 FUNCTION_0_RETURN       K =0 
 FUNCTION_0_ARG_0        K =0  ; int n
 FUNCTION_0_TMP_0        K =0
 FUNCTION_0_LOCAL_VAR_0  K =1  ;     decl int retorno = 1;
 FUNCTION_0              JP /000 ; int fatorial_recursivo(int n) {
-                       ; SC PRINT_STACK_ADDRS
+                        ; SC PRINT_STACK_ADDRS
                         ;;;; PREAMBULO
                         LV =0
                         MM WORD_TO_SAVE 
@@ -64,12 +62,9 @@ FUNCTION_0              JP /000 ; int fatorial_recursivo(int n) {
                         LD FUNCTION_0_ARG_0 ; n >= 1
                         SC PUSH_ARITH 
                         LD ONE
-                        SC PUSH_ARITH 
+                        SC PUSH_ARITH
                         SC SUB_ARITH 
                         SC POP_ARITH 
-                        
-
-
 
                         JN FUNCTION_0_LABEL_0 ; if (n >= 1) {
                         

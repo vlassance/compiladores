@@ -74,65 +74,13 @@ STACK_PTR           K /0FFF
 ;; imprime uma linha
 ;;
 
-COUNT_IS      K /436f
-              K /756e
-              K /7465
-              K /7220
-              K /6973
-              K /3a00
-              K /0000 
-
-EXAMPLE_STACK_ARG   K  /0000
-EXAMPLE_STACK       JP /000 
-                    SC PRINT_STACK_ADDRS   ;; deve imprimir 0fff 
-                    ;;; SALVAR ARGUMENTOS na pilha 
-                    LV =0
-                    MM WORD_TO_SAVE 
-                    LV EXAMPLE_STACK_ARG 
-                    MM ORIGIN_PTR 
-                    SC SAVE_WORD_TO_LOCAL_VAR 
-                    ;;;; CORPO DA FUNCAO 
-                    ;;; CARREGANDO UM VALOR DA PILHA 
-                    LV =0
-                    MM WORD_TO_GET 
-                    LV EXAMPLE_STACK_ARG 
-                    MM STORE_PTR
-                    SC GET_WORD_LOCAL_VAR 
-                    ;;; IMPRIME 
-                    LV COUNT_IS
-                    MM STRING_PTR 
-                    SC P_STRING  ;; inline fct, no need to stack 
-                    LD EXAMPLE_STACK_ARG 
-                    MM TO_BE_PRINTED 
-                    SC P_INT_ZERO
-                    SC P_LINE
-
-                    LD EXAMPLE_STACK_ARG
-                    JZ RETURN_EXAMPLE_STACK
-
-                    LD EXAMPLE_STACK_ARG 
-                    -  ONE 
-                    MM EXAMPLE_STACK_ARG 
-
-                    LV =1
-                    MM PUSH_CALL_SIZELV
-                    LV =0
-                    MM PUSH_CALL_RET_ADDRS 
-                    LV =0
-                    MM PUSH_CALL_TMP_SZ
-                    LV =0
-                    MM PUSH_CALL_PAR_SZ 
-                    SC PUSH_CALL
-
-                    SC EXAMPLE_STACK  ;; chamada recursiva
-                    ;;;; FIM DO CORPO DA FUNCAO 
-RETURN_EXAMPLE_STACK LV EXAMPLE_STACK
-                    MM POP_CALL_FCT 
-                    SC POP_CALL ;; trickery!
-
-                    SC PRINT_STACK_ADDRS   ;; deve imprimir 0fff 
-                    RS EXAMPLE_STACK
-
+COUNT_IS_STR      K /436f
+                  K /756e
+                  K /7465
+                  K /7220
+                  K /6973
+                  K /3a00
+                  K /0000 
 
 ; MISCELANEA: 
 ;; *** HIGH_LOW HIGH_V *** 
@@ -183,35 +131,59 @@ PUSH_CALL_PAR_SZ        K /000
 ;;  PUSH_CALL 
 ;;  CALLEE_FCT
 ;;    POP_CALL 
+FUNCTION_BEING_CALLED           K /000 
+SIZE_OF_CONTEXT                 K /000 
+PUSH_CALL_2                     JP /000 
+                                MM FUNCTION_BEING_CALLED 
+                                -  TWO 
+                                +  LOAD_CONST 
+                                MM LOAD_SIZE_OF_CONTEXT 
+LOAD_SIZE_OF_CONTEXT            JP /000 
+                                MM SIZE_OF_CONTEXT 
+ITER_AND_COPY_CONTEXT           LD SIZE_OF_CONTEXT
+                                JZ NO_MORE_CONTEXT_COPIES 
+                                
+                                LD FUNCTION_BEING_CALLED 
+                                -  TWO 
+                                -  SIZE_OF_CONTEXT
+                                -  SIZE_OF_CONTEXT 
+                                ;;;; TODO HERE 
+                                                ;;;; acho que agnt tem que
+                                                ;;;; fazer isso depois 
 
-PUSH_CALL           JP /000 
-                    LD PUSH_CALL  ;; get return addrs 
-                    +  TWO ;; return address of the callee
-                    +  LOADV_CONST
-                    MM LOAD_RETURN_ADDRS 
-                    LD STACK_PTR
-                    -  TWO        ;; new return addrs  
-                    +  MOVE_CONST 
-                    MM MOVE_RETURN_ADDRS 
-LOAD_RETURN_ADDRS   JP /000  
-MOVE_RETURN_ADDRS   JP /000   ;; return addrs salvo 
-                    LD STACK_PTR          
-                    -  TWO 
-                    -  TWO 
-                    -  PUSH_CALL_SIZELV
-                    -  PUSH_CALL_RET_ADDRS
-                    -  PUSH_CALL_TMP_SZ
-                    -  PUSH_CALL_PAR_SZ 
-                    -  TWO  ;; return addrs
-                    MM TMP_1
-                    LD TMP_1 
-                    +  MOVE_CONST 
-                    MM MRKR_PC_SAVE_HEAD 
-                    LD STACK_PTR 
-MRKR_PC_SAVE_HEAD   JP /000 
-                    LD TMP_1 
-                    MM STACK_PTR
-                    RS PUSH_CALL
+
+                                LD SIZE_OF_CONTEXT
+                                -  ONE 
+                                MM SIZE_OF_CONTEXT 
+NO_MORE_CONTEXT_COPIES          LD FUNCTION_BEING_CALLED  ;; Will copy the 
+                                                          ;; return address 
+                                +  LOAD_CONST     ;; TODO VERIFY THIS THING RIGHT HERE 
+                                MM LOAD_PUSH_CALL ;; WE MAY NEED TO SUM UP 2 IN ORDER TO JUMP
+                                                  ;; OVER SOME INSTR 
+                                LD STACK_PTR 
+                                -  TWO 
+                                +  MOVE_CONST 
+                                MM MOVE_PUSH_CALL 
+LOAD_PUSH_CALL                  JP /000 
+MOVE_PUSH_CALL                  JP /000             
+                                LD STACK_PTR 
+                                -  TWO 
+                                -  TWO 
+                                -  SIZE_OF_CONTEXT
+                                -  SIZE_OF_CONTEXT 
+                                MM TMP_1 
+                                LD TMP_1
+                                +  MOVE_CONST
+                                MM MRKR_PC_SAVE_HEAD
+                                LD STACK_PTR 
+MRKR_PC_SAVE_HEAD               JP /000 
+                                LD TMP_1 
+                                MM STACK_PTR
+                                RS PUSH_CALL
+                 
+
+
+
 ;; **** POP_CALL ****
                     K /6666
 POP_CALL_FCT        K /0000             
@@ -321,8 +293,7 @@ ARIT_PTR_STACK  K ARIT_STACK_ZERO
 PUSH_ARITH      JP /000
                 MM TMP_1
                 LD ARIT_PTR_STACK 
-                +  ONE
-                +  ONE
+                +  TWO
                 MM ARIT_PTR_STACK
                 +  MOVE_CONST
                 MM OP_PUSH_ARITH
@@ -333,15 +304,26 @@ OP_PUSH_ARITH   JP /000
 
 POP_ARITH       JP /000 
                 LD ARIT_PTR_STACK 
-                -  ONE
-                -  ONE
+                -  TWO
                 MM ARIT_PTR_STACK 
-                +  ONE
-                +  ONE
+                +  TWO 
                 +  LOAD_CONST 
                 MM OP_POP_ARITH
 OP_POP_ARITH    JP /000
                 RS POP_ARITH 
+
+FLIP_ARITH      JP /000 
+                MM TMP_4 
+                SC POP_ARITH
+                MM TMP_2 
+                SC POP_ARITH
+                MM TMP_3
+                LD TMP_2 
+                SC PUSH_ARITH 
+                LD TMP_3 
+                SC PUSH_ARITH 
+                LD TMP_4 
+                RS FLIP_ARITH
 
 ;;; BIN OPER:
 
@@ -408,6 +390,47 @@ PUSH_ZERO_OR_ARITH LV /000
                    SC PUSH_ARITH 
                    RS OR_ARITH 
 
+EQ_OPER_ARITH       JP /000 
+                    SC SUB_ARITH 
+                    JZ EQ_OPER_ARITH_EQUAL 
+                    LD ZERO
+                    SC PUSH_ARITH
+                    RS EQ_OPER_ARITH
+EQ_OPER_ARITH_EQUAL LD ONE 
+                    SC PUSH_ARITH 
+                    RS EQ_OPER_ARITH
+
+NEQ_OPER_ARITH       JP /000 
+                     SC EQ_OPER_ARITH 
+                     SC NOT_ARITH 
+                     RS NEQ_OPER_ARITH 
+
+LT_OPER_ARITH         JP /000            ;; a1 < a2
+                      SC SUB_ARITH 
+                      JN LT_OPER_ARITH_RET_ONE
+                      LD ZERO
+                      SC PUSH_ARITH 
+                      RS LT_OPER_ARITH
+LT_OPER_ARITH_RET_ONE LD ONE 
+                      SC PUSH_ARITH 
+                      RS LT_OPER_ARITH
+
+GEQ_OPER_ARITH        JP /000     ;; a1 >= a2 
+                      SC LT_OPER_ARITH 
+                      SC NOT_ARITH 
+                      RS GEQ_OPER_ARITH 
+
+GT_OPER_ARITH         JP /000    ;; a1 > a2 
+                      SC FLIP_ARITH 
+                      SC LT_OPER_ARITH 
+                      RS GT_OPER_ARITH 
+
+
+LEQ_OPER_ARITH        JP /000     ;; a1 <= a2 
+                      SC GT_OPER_ARITH 
+                      SC NOT_ARITH 
+                      RS LEQ_OPER_ARITH 
+                      
 ;; UNARY OPER:
 
 NOT_ARITH           JP /000 
@@ -418,5 +441,7 @@ NOT_ARITH           JP /000
                     RS NOT_ARITH 
 PUSH_ONE_NOT_ARITH  LV /001 
                     SC PUSH_ARITH
-                    RS NOT_ARITH 
+                    RS NOT_ARITH
+
+
 # START_STD_LIB_PADDING 
