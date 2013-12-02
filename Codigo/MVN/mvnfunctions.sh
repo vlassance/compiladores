@@ -7,10 +7,12 @@
 #  $ makelib libraries.asm
 #  $ makemain mainfile.asm
 #    be happy :D
-
+BASEDIR_JARS=$(dirname $BASH_SOURCE)
+BASEDIR_JARS=$(realpath $BASEDIR_JARS)
 JAVARUN="java -cp"
-MVNDL="java -jar MvnPcs4_wDumperLoader.jar"
-MLR="$JAVARUN PCS2302_MLR.jar"
+MVNDL="java -jar $BASEDIR_JARS/MvnPcs4_wDumperLoader.jar"
+MLR="$JAVARUN $BASEDIR_JARS/PCS2302_MLR.jar"
+MLR="$JAVARUN $BASEDIR_JARS/MLR.jar"
 MONTA="$MLR montador.MvnAsm"
 LINKA="$MLR linker.MvnLinker"
 RELOCA="$MLR relocator.MvnRelocator"
@@ -50,7 +52,7 @@ function reloca_var() {
 function makemain () {
     OUTNAME=`basename $1 .asm`.out 
     MAIN=`basename $1 .asm`.mvn 
-    BINARY=`basename $1 .asm`
+    BINARY=`basename $1 .asm`.bin
 
     TMPNAME=tmpfile.tmp
 
@@ -66,7 +68,8 @@ function makemain () {
         echo Ligando as bagaca sizerel is $SIZEREL
         $LINKA $MAIN $BUTTER -s $OUTNAME && {
             echo Jogando tudo pra baixo da main 
-            $RELOCA $OUTNAME $BINARY $SIZEREL && {
+            echo $RELOCA $OUTNAME $BINARY 0$SIZEREL 000
+            $RELOCA $OUTNAME $BINARY 0$SIZEREL 000 && {
                 echo "All Ok!"
                 echo -e '\E[37;44m'"\033[1mYour binary is called: $BINARY\033[0m"
                 borala
