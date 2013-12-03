@@ -67,13 +67,13 @@ HIGH_LOW            JP /000
 ;;*** P_LINE***
 ;; imprime uma linha nova 
                     K  /6665
-P_LINE              JP /000           ; alocando para o endereço de retorno  
+P_LINE              JP /000           ; alocando para o endereo de retorno  
                     LV /00A  ; carregar a variavel 
                     PD /100           ; imprimir na tela 
                     RS P_LINE         ; retornar a rotina  
 
 ; inicio da rotina
-PONEASCII           JP /000           ; alocando para o endereço de retorno  
+PONEASCII           JP /000           ; alocando para o endereo de retorno  
 PONEASCII_INIT      LD TO_BE_PRINTED  ; carregar a variavel 
                     PD /100           ; imprimir na tela 
                     RS PONEASCII      ; retornar a rotina  
@@ -82,7 +82,7 @@ PONEASCII_INIT      LD TO_BE_PRINTED  ; carregar a variavel
 ;;   Imprime a string apontada por STRING_PTR ate
 ;; o caractere /000  
 
-P_STRING            JP /000           ; endereço de retorno 
+P_STRING            JP /000           ; endereco de retorno 
 PSTRINGINIT         LD STRING_PTR 
                     MM TO_BE_PRINTED_TMP 
 LOAD_TO_BE_PRINTED  LD TO_BE_PRINTED_TMP
@@ -232,7 +232,7 @@ MOVE_ZERO       JP /000
 
 
 ;; *** P_INT_ZERO TO_BE_PRINTED ***
-;;  Imprime um inteiro (com zeros à esquerda)
+;;  Imprime um inteiro (com zeros a esquerda)
 ;; ex:  
 ;;  INT_2 K  =345 
 ;;        LD INT_2
