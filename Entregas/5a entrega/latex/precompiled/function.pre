@@ -1,16 +1,16 @@
-:               <   PUSH_CALL 
-:               <   POP_CALL
-:               <   LOAD_WORD_FROM_STACK
-:               <   SAVE_WORD_ON_STACK 
-:               <   WORD_TO_BE_SAVED
+:        PUSH_CALL              <
+:        POP_CALL               <
+:        LOAD_WORD_FROM_STACK   <
+:        SAVE_WORD_ON_STACK     <
+:        WORD_TO_BE_SAVED       <
 
-                     {C0}       # dados da funcao 
-                     {C1}       # constante com o numero de dados da
+         {C0}                   # dados da funcao 
+         {C1}                   # constante com o numero de dados da
                                 #  funcao em nibbles
-{L0}                 JP /000    # label funcao 
-                     LV {L0}
-                     SC PUSH_CALL 
-                     {C2}
-                     LV {L0}
-                     SC POP_CALL 
-                     RS {L0}
+{L0}     JP /000                # label funcao 
+         LV {L0}
+         SC PUSH_CALL 
+         {C2}
+         LV {L0}
+         SC POP_CALL 
+         RS {L0}

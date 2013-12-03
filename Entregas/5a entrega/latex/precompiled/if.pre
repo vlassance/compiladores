@@ -1,5 +1,5 @@
-         {C0}    # calculo da expressao booleana 
+         {C0}                   # calculo da expressao booleana 
          SC POP_ARITH 
-         JZ {L0} # se 0, entao pula para L0 (else)
-         {C1}    # codigo if, C pode ser nulo ou mais coisas  
-{L0}     {N}     # N executa somente a expansao
+         JZ {L0}                # se 0, entao pula para L0 (else)
+         {C1}                   # codigo if, C pode ser nulo ou mais coisas  
+{L0}     {N}                    # N executa somente a expansao

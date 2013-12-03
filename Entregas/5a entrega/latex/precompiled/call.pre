@@ -1,3 +1,3 @@
-    {C0}                  # Copia dados para os argumentos 
-                          # da funcao 
-    SC {R0} 
+         {C0}                   # Copia dados para os argumentos 
+                                # da funcao 
+         SC {R0} 
