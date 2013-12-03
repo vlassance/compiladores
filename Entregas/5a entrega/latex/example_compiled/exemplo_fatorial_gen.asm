@@ -99,7 +99,6 @@ FUNCTION_0_LABEL_0      *  CZAR_STUB
 CZAR_INICIO             * CZAR_STUB ;; stub instruction
                         LD CONST_VAR_0
                         MM FUNCTION_0_ARG_0 
-                        LV /666
                         SC FUNCTION_0       ;; depois chama.. 
                         LD FUNCTION_0_RETURN 
                         MM GLOBAL_VAR_0

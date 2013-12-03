@@ -1,4 +1,5 @@
-         LD {R0} # carrega a primeira referencia  
+         {C0}    # calculo da expressao booleana 
+         SC POP_ARITH
          JZ {L0} # se 0, entao pula para L0 (else)
          {C0}    # codigo if, C pode ser nulo ou mais coisas  
          JP {L1} # codigo fim, pula para fim 

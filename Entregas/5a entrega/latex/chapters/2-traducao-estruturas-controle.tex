@@ -7,10 +7,14 @@ Cabe ressaltar que foram utilizadas simbologias nas traduções que serão subst
 \begin{itemize}
 	\item \verb={C0}, {C1}, ...=: Conjunto de comandos
 	\item \verb={R0}, {R1}, ...=: Referência
-	\item \verb={L0}, {L1}, ...=: Label ou rótulo de uma instrução
+	\item \verb={L0}, {L1}, ...=: Label ou rótulo de uma instrução criados
+            e exportados pelo código 
 \end{itemize}
 
 Há também a marcação \verb={N}=, utilizada para denotar que a primeira instrução do código subsequente ao comando atual deve ser adicionada no lugar da marcação. Estamos considerando substituir sempre a marcação \verb={N}= por uma instrução simples que só sirva para simplificar, como por exemplo somar zero ao acumulador.
+
+Conceitos da pilha aritmética são utilizados para o cálculo de expressões
+booleanas, no \autoref{sec:expre} explicações mais detalhadas são apresentadas. 
 
 \section{Estrutura de controle de fluxo: IF}
 \label{sec:if}

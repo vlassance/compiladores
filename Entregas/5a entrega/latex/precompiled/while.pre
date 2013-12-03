@@ -1,4 +1,6 @@
-     LD {R0}
-     JZ {L0}
-     {C0}
-{L0} {N} 
+{L0} +  ZER0    # STUB para facilitar criacao de codigo 
+     {C0}       # calculo da expressao boleana 
+     SC POP_ARITH 
+     JZ {L0}    
+     {C1}       # corpo do while 
+{L0} {N}     

@@ -20,9 +20,13 @@ Esse capítulo explica as traduções dos comandos imperativos que constam na no
 \section{Definição e chamada de subrotinas}
 \label{sec:subrotinas}
 
-No caso da definição de subrotinas, a tradução fica a seguinte:
+No caso da definição de subrotinas, a tradução fica a seguinte: 
 
 \lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/function.pre}
+
+Vale salientar que as funcoes que tratam a pilha de registro de ativação foram
+modificadas completamente para integração mais transparente na implementacao da
+função. 
 
 Já quando é identificada a chamada de uma subrotina já declarada, a seguinte tradução é utilizada:
 

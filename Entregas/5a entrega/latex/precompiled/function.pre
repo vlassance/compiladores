@@ -1,31 +1,16 @@
-:               <   WORD_TO_GET 
-:               <   STORE_PTR 
-:               <   GET_WORD_LOCAL_VAR 
+:               <   PUSH_CALL 
+:               <   POP_CALL
+:               <   LOAD_WORD_FROM_STACK
+:               <   SAVE_WORD_ON_STACK 
+:               <   WORD_TO_BE_SAVED
 
-                     {C0}       # argumentos 
-{R0}                 JP /000    # label funcao 
-                     {C1}       # salva valores na pilha 
-                                # LV =0 
-                                # MM WORD_TO_SAVE 
-                                # LV EXAMPLE_STACK_ARG 
-                                # MM ORIGIN_PTR 
-                                # SC SAVE_WORD_TO_LOCAL_VAR 
-                     {C2}       # Corpo da funcao 
-                                # como carregar valor da pilha:
-                                # ----------------------
-                                # LV =0 
-                                # MM WORD_TO_GET 
-                                # LV EXAMPLE_STACK_ARG 
-                                # MM STORE_PTR
-                                # SC GET_WORD_LOCAL_VAR 
-                     {C3}       # pega valores da pilha 
-                     LV {R0} 
-                     MM POP_CALL_FCT
+                     {C0}       # dados da funcao 
+                     {C1}       # constante com o numero de dados da
+                                #  funcao em nibbles
+{L0}                 JP /000    # label funcao 
+                     LV {L0}
+                     SC PUSH_CALL 
+                     {C2}
+                     LV {L0}
                      SC POP_CALL 
-                     RS {R0} 
-RETURN_EXAMPLE_STACK LV EXAMPLE_STACK
-                     MM POP_CALL_FCT 
-                     SC POP_CALL ;; trickery!
-
-                     SC PRINT_STACK_ADDRS   ;; deve imprimir 0fff 
-                     RS EXAMPLE_STACK
+                     RS {L0}
