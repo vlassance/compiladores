@@ -1,11 +1,29 @@
 % !TEX encoding = UTF-8 Unicode
 
-Tradução de comandos imperativos
+Esse capítulo explica as traduções dos comandos imperativos que constam na nossa linguagem e foram solicitadas para essa entrega, entre os quais os comandos de atribuição de valor, leitura da entrada padrão, impressão na saída padrão e chamada de subrotinas, associado à definicão de novas subrotinas. As mesmas definições das marcações explicadas no Capítulo~\ref{chap:traducao-estruturas-controle} são válidas para as traduções a seguir.
 
-- Atribuição de valor (obrigatório)
+\section{Atribuição de valor}
+\label{sec:atribuicao-valor}
 
-- Leitura (entrada) (obrigatório)
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/atribV.pre}
 
-- Impressão (saída) (obrigatório)
+\section{Comando de leitura}
+\label{sec:leitura}
 
-- Chamada de subrotina (obrigatório)
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/read.pre}
+
+\section{Comando de impressão}
+\label{sec:impressao}
+
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/write.pre}
+
+\section{Definição e chamada de subrotinas}
+\label{sec:subrotinas}
+
+No caso da definição de subrotinas, a tradução fica a seguinte:
+
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/function.pre}
+
+Já quando é identificada a chamada de uma subrotina já declarada, a seguinte tradução é utilizada:
+
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/call.pre}

@@ -1,15 +1,28 @@
 % !TEX encoding = UTF-8 Unicode
 
-Tradução de estruturas de controle de fluxo
+Será apresentado nas próximas seções, as traduções das estruturas de controle de fluxo que constam na nossa linguagem e foram solicitadas para essa entrega, entre elas as estruturas if, if-else e while.
 
-- Desvio
+Cabe ressaltar que foram utilizadas simbologias nas traduções que serão substituídas pelo compilador no momento da geração de código. Uma dessas marcações é os dois pontos no começo de uma linha que significa que os comandos devem ser colocados no início do código gerado. Outra simbologia criada é da forma {XN}, onde X representa uma letra maiúscula qualquer e N é o índice da instância dentro do tipo de marcação X. As opções para X são as seguintes:
 
-- If-then (obrigatório)
+\begin{itemize}
+	\item \verb={C0}, {C1}, ...=: Conjunto de comandos
+	\item \verb={R0}, {R1}, ...=: Referência
+	\item \verb={L0}, {L1}, ...=: Label ou rótulo de uma instrução
+\end{itemize}
 
-- If-then-else (obrigatório)
+Há também a marcação \verb={N}=, utilizada para denotar que a primeira instrução do código subsequente ao comando atual deve ser adicionada no lugar da marcação. Estamos considerando substituir sempre a marcação \verb={N}= por uma instrução simples que só sirva para simplificar, como por exemplo somar zero ao acumulador.
 
-- While (obrigatório)
+\section{Estrutura de controle de fluxo: IF}
+\label{sec:if}
 
-- Do-until
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/if.pre}
 
-Falar que o comando {N} pode ser substituído por +0, por exemplo, para simplificar o processo e tornar o código sequencial.
+\section{Estrutura de controle de fluxo: IF-ELSE}
+\label{sec:if-else}
+
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/ifelse.pre}
+
+\section{Estrutura de controle de fluxo: WHILE}
+\label{sec:while}
+
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{precompiled/while.pre}

@@ -87,6 +87,25 @@
 \label{chap:caracteristicas-gerais}
 	\input{chapters/5-exemplo-programa}
 
+\postextual
+
 \bibliography{bibliografia}
+
+\begin{apendicesenv} % Inicia os apêndices
+
+	% Imprime uma página indicando o início dos apêndices
+	\partapendices
+	
+	\chapter{Biblioteca auxiliar \emph{std}}
+	\label{app:std}
+	
+	\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{example_compiled/std.asm}
+	
+	\chapter{Biblioteca auxiliar \emph{stdio}}
+	\label{app:stdio}
+	
+	\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{example_compiled/stdio.asm}
+
+\end{apendicesenv}
 
 \end{document}
