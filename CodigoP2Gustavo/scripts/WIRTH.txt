@@ -1,5 +1,5 @@
 PROGRAM          = EXPR { EXPR }.
-EXPR             = "(" ( PRED ( ":-" DADO | ARGS ":-" ( "(" LCLAUSULA ")" | DADO ) ) | "?-" QMETA ) ")".
+EXPR    = "(" ( PRED ( ":-" DADO | ARGS ":-" ( "(" LCLAUSULA ")" | DADO ) ) | "?-" QMETA ) ")".
 QMETA            = PRED DADO.
 DADO             = ( PRED |       NUM ) { "," ( PRED |       NUM ) }.
 DADOV            = ( PRED | INF | NUM ) { "," ( PRED | INF | NUM ) }.
