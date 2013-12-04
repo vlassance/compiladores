@@ -46,11 +46,11 @@ LSTLIST = """
   title=\\lstname
 }
 """
-files = ["""\\lstinputlisting{./WIRTH.txt}
+files = ["""\\lstinputlisting{../WIRTH.txt}
 """]
-for file in os.listdir('./output/'):
+for file in os.listdir('../output/'):
     if fnmatch.fnmatch(file, '*.mdfa'):
-        files.append("""\\lstinputlisting{./output/%s}
+        files.append("""\\lstinputlisting{../output/%s}
 """ % file)
         
 print(LDOC % (LSTLIST, "".join(files)))
