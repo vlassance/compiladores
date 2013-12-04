@@ -1,0 +1,5 @@
+:   < STRING_PTR 
+:   < P_STRING
+    LV {R0} 
+    MM STRING_PTR 
+    SC P_STRING  

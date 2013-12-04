@@ -1,0 +1,42 @@
+<math>
+<io>
+
+struct nome_struct {
+  nome_struct eu_mesmo;
+  int a;
+  char b;
+}
+
+const int SOU_CONSTANTE_INT = 10;
+const string SOU_CONSTANTE_STRING = "CONSTANTE_STRING";
+decl string sou_variavel = "valor inicial da variavel";
+
+meth 
+
+void soma_como_procedimento (int a, int b, ref int soma) {
+  set soma = a + b;
+}
+
+int soma_como_funcao (int a, int b) {
+  return a + b;
+}
+
+void proc_exemplo (char a, int b, int c, int d) {
+  decl int tmp;
+  decl char[32] buff;
+  call soma_como_procedimento(b, c, tmp);
+  set d = call soma_como_funcao(tmp, c) + 5;
+  set d = call math_exp(SOU_CONSTANTE_INT, 2);
+  call io_print(a);
+  call io_int_to_str(d, buff);
+  call io_print(" gives ");
+  call io_print(buff);
+  call io_print(" \n pointer to a is: ");
+  set buff = a + "caracter";
+  call io_print(buff);
+  call io_print("bye");
+}
+
+main () {
+  call proc_exemplo('x', 3, -6, -15);
+}
