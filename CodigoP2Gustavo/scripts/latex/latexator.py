@@ -14,6 +14,8 @@ LDOC = """
 LSTLIST = """ 
 \\usepackage{listings}
 \\usepackage{color}
+\\usepackage{graphicx}
+\\usepackage{float}
 
 \\definecolor{mygreen}{rgb}{0,0.6,0}
 \\definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -45,12 +47,39 @@ LSTLIST = """
   tabsize=2,                       
   title=\\lstname
 }
+
 """
-files = ["""\\lstinputlisting{../WIRTH.txt}
+
+files = ["""
+\\lstinputlisting[title=WIRTH]{../WIRTH.txt}
 """]
+
 for file in os.listdir('../output/'):
     if fnmatch.fnmatch(file, '*.mdfa'):
-        files.append("""\\lstinputlisting{../output/%s}
-""" % file)
-        
+        filename = file.split('.')[0]
+        files.append("""
+\\lstinputlisting[title=AFD %s]{../output/%s}
+""" % (filename, file))
+
+files.append("""
+\\begin{itemize}
+""")
+
+for file in os.listdir('../images/'):
+    if fnmatch.fnmatch(file, '*.png'):
+        filename = file.split('.')[0]
+        files.append("""
+\\item AFD %s
+
+\\begin{figure}[H]
+\\centering 
+\\includegraphics[width=0.8\\textwidth]{../images/%s.png}  
+\\caption{Autômato %s}
+\\end{figure}
+""" % (filename, filename, filename))
+
+files.append("""
+\\end{itemize}
+""")
+
 print(LDOC % (LSTLIST, "".join(files)))
