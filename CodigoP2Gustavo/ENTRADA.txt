@@ -1,17 +1,7 @@
-int main() {
-    zhis = 2;
-    print(zhis);
-    ozer = "a\"nother";
-    abc = '\r';    # this is a comment
-    while ( a >= 0 ) {
-        if ( b == 0 ) {
-            b = a;
-        }
-        a = a - 1;
-    }
-    print(ozer);
-    eis = 'I';
-    e = '\n';
-    cerr = 'i';
-    return 0;
-}
+(listaFatos :- a, 1, 3)
+(fatoSimples :- 3)
+(verdades :- verdade)
+(pai a,b :- verdade)   
+(pai b,c :- verdade)   
+(avo X,Y :- (pai X,Z) & (pai Z,Y))
+(?- avo pai, pai)

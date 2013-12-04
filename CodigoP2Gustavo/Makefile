@@ -7,7 +7,8 @@ EX1=./examples/exemplo-programa-geral.czar
 EX2=./examples/exemplo-programa-fatorial.czar
 
 
-all: lex.o syn.o testall
+all: lex.o lextest
+	# syn.o testall
 
 lex.o:
 	${CC} -c ${LEXFOLDER}/lex.c ${CFLAGS} -o $@
