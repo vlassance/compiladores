@@ -1,45 +1,9 @@
-PROGRAM         = IMPORTS DECLS_GLOBAIS "meth" DEF_PROCS_FUNCS DEF_MAIN .
-
-IMPORTS         = { "<" IDENT ">" } .
-
-DECLS_GLOBAIS   = { "struct" DEF_TIPO | "const" DECL_CONST | "decl" DECL_VAR } .
-DEF_TIPO        = IDENT "{" { DECL_VAR } "}" .
-DECL_CONST      = DECL_VAR.
-DECL_VAR        = TIPO IDENT [ "=" EXPR ] { "," IDENT [ "=" EXPR ] } ";" .
-
-DEF_PROCS_FUNCS = { "void" PROC | FUNC } "main" .
-FUNC            = TIPO IDENT LIST_PARAMS "{" { INSTR_SEM_RET } "return" EXPR [ ";" ] "}" .
-PROC            = IDENT LIST_PARAMS "{" { INSTR_SEM_RET } "}" .
-LIST_PARAMS     = "(" [ [ "ref" ] TIPO IDENT { "," [ "ref" ] TIPO IDENT } ] ")" .
-
-DEF_MAIN        = "(" ")" "{" { INSTR_SEM_RET } "}" .
-
-INSTR_SEM_RET   = "decl" DECL_VAR | "set" ATRIB | "call" PROC_CALL | "for" FOR_CONTROL | "while" WHILE_CONTROL | "if" IF_CONTROL .
-ATRIB           = ATRIB_SEM_PV ";" .
-ATRIB_SEM_PV    = VARIDENT OPER_ATRIB EXPR { "," VARIDENT OPER_ATRIB EXPR } .
-PROC_CALL       = IDENT "(" [ EXPR { "," EXPR } ] ")" ";" .
-
-FOR_CONTROL     = "(" "set" ATRIB COND ";" ATRIB_SEM_PV ")" "{" { INSTR_SEM_RET } "}" .
-WHILE_CONTROL   = "(" COND ")" "{" { INSTR_SEM_RET } "}" .
-IF_CONTROL      = "(" COND ")" "{" { INSTR_SEM_RET } "}" [ "else" "{" { INSTR_SEM_RET } "}" ] .
-
-TIPO            = IDENT { "[" INT "]" } .
-IDENT_COLCHETES = IDENT { "[" EXPR "]" } .
-VARIDENT        = IDENT_COLCHETES { "." VARIDENT } .
-
-FUNCTION_CALL   = IDENT "(" [ EXPR { "," EXPR } ] ")" .
-
-COND            = COND_TERM { "and" | "or" COND_TERM } .
-COND_TERM       = "(" COND ")" | ATOMO_COND { ( "==" | "!=" | "<=" | ">=" ) ATOMO_COND } .
-ATOMO_COND      = VARIDENT | BOOL | INT | "not" ATOMO_COND .
-BOOL            = "true" | "false" .
-
-OPER_ATRIB      = ( "+=" | "-=" | "*=" | "/=" | "%=" | "=" ).
-OPER_BOOL       = "and" | "or" .
-OPER_COMP       = ( "==" | "!=" | "<=" | ">=" ) .
-OPER_ARIT       = "+" | "-" .
-OPER_TERM       = "*" | "/" | "%" .
-
-EXPR            = [ "+" | "-" ] TERM { ( "+" | "-" ) TERM } .
-TERM            = "(" EXPR ")" | ATOMO { ( "*" | "/" | "%" ) ATOMO } .
-ATOMO           = [ "+" | "-" ] "call" FUNCTION_CALL | [ "+" | "-" ] INT | STR | CHAR | BOOL | [ "+" | "-" ] VARIDENT .
+PROGRAM          = EXPR { EXPR }.
+EXPR             = "(" ( PRED ( ":-" DADO | ARGS ":-" ( "(" LCLAUSULA ")" | DADO ) ) | "?-" QMETA ) ")".
+QMETA            = PRED DADO.
+DADO             = ( PRED |       NUM ) { "," ( PRED |       NUM ) }.
+DADOV            = ( PRED | INF | NUM ) { "," ( PRED | INF | NUM ) }.
+ARGS             = ( PRED | INF | NUM ) { "," ( PRED | INF | NUM ) }.
+LCLAUSULA        = LCLAUSULATERMO { "or" LCLAUSULATERMO }.
+LCLAUSULATERMO   = LCLAUSULAFATOR { "&"  LCLAUSULAFATOR }.
+LCLAUSULAFATOR   = { "not" } "(" PRED DADOV ")".

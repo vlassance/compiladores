@@ -3,12 +3,11 @@ LEXFOLDER=./lex
 SYNFOLDER=./syn
 CFLAGS=-g
 VALFLAGS= --leak-check=full --track-origins=yes --show-reachable=yes
-EX1=./examples/exemplo-programa-geral.czar
-EX2=./examples/exemplo-programa-fatorial.czar
+EX1=./examples/simprolog.pro
+EX2=./examples/simprolog2.pro
 
 
-all: lex.o lextest
-	# syn.o testall
+all: lex.o syn.o testall
 
 lex.o:
 	${CC} -c ${LEXFOLDER}/lex.c ${CFLAGS} -o $@

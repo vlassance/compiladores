@@ -41,6 +41,9 @@
 
 +0123456789+                    PRED_2      PRED_2
 
++abcdefghijklmnopqrstuvxywz+    PRED        PRED
++ABCDEFGHIJKLMNOPQRSTUVXYWZ+    PRED        PRED
+
 +abcdefghijklmnopqrstuvxywz+    PRED_2      PRED
 +ABCDEFGHIJKLMNOPQRSTUVXYWZ+    PRED_2      PRED
 
@@ -51,6 +54,7 @@
 +abcdefghijklmnopqrstuvxywz+    NUM         PRED
 +ABCDEFGHIJKLMNOPQRSTUVXYWZ+    NUM         PRED
 
+@@                              OPB         Q0 
 @@                              OPFATO_2    Q0 
 @@                              OPMETA_2    Q0
 @@                              DELIM       Q0
