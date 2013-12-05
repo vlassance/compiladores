@@ -1,0 +1,3 @@
+PROGRAMA = "(" ( PRED | INF ) ":-" DADO ")" { "(" ( PRED | INF ) ":-" DADO ")" } "(" CLAUSULA ")" { "(" CLAUSULA ")" } "(" "?-" PRED DADO ")".
+DADO = ( PRED | NUM ) { "," ( PRED | NUM ) }.
+CLAUSULA = PRED ( INF | PRED | NUM ) { "," ( INF | PRED | NUM ) } ":-" ( "(" [ "not" ] "(" INF DADO ")" { ( "&" | "or" ) [ "not" ] "(" INF DADO ")" } ")" |  DADO ).

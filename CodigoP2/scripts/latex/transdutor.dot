@@ -1,0 +1,39 @@
+digraph finite_state_machine {
+    //rankdir=LR;
+    size="8.5"
+//    node [shape = doublecircle]; LR_0 LR_3 LR_4 LR_8;
+    INVISIBLENODE [shape = none, label = ""];
+    node [shape = circle,];
+    
+
+    INVISIBLENODE -> Q_0 [ label = " " ];
+    Q_0  -> OPFATO  [ label = ":"];
+    OPFATO  -> OPFATO_2  [ label = "-"];
+    OPFATO_2  -> Q_0  [ label = "&#949;/opfato",style=dashed];
+    Q_0  -> OPMETA  [ label = "?"];
+    OPMETA  -> OPMETA_2  [ label = "-"];
+    OPMETA_2  -> Q_0  [ label = "&#949;/opmeta",style=dashed];
+	Q_0  -> DELIM  [ label = "()"];
+	DELIM  -> Q_0  [ label = "&#949;/delim",style=dashed];
+	Q_0  -> SPACE  [ label = "<espaço>\\n\\t"];
+	SPACE  -> SPACE  [ label = "<espaço>\\n\\t"];
+	SPACE  -> Q_0  [ label = "&#949;/space",style=dashed];
+	Q_0  -> VIRGULA  [ label = ","];
+	VIRGULA  -> Q_0  [ label = "&#949;/virgula",style=dashed];
+	Q_0  -> INF  [ label = "A-Z"];
+	INF  -> INF  [ label = "a-zA-Z"];
+	INF  -> INF_2  [ label = "0-9"];
+	INF_2  -> INF_2  [ label = "0-9"];
+	INF_2  -> INF  [ label = "a-zA-Z"];
+	INF  -> Q_0  [ label = "&#949;/inf",style=dashed];
+	Q_0  -> PRED  [ label = "a-z"];
+	PRED  -> PRED  [ label = "a-zA-Z"];
+	PRED  -> PRED_2  [ label = "0-9"];
+	PRED_2  -> PRED_2  [ label = "0-9"];
+	PRED_2  -> PRED  [ label = "a-zA-Z"];
+	PRED  -> Q_0  [ label = "&#949;/pred",style=dashed];
+	Q_0  -> NUM  [ label = "0-9"];
+	NUM  -> NUM  [ label = "0-9"];
+	NUM  -> PRED  [ label = "a-zA-Z"];
+	NUM  -> Q_0  [ label = "&#949;/num",style=dashed];
+}

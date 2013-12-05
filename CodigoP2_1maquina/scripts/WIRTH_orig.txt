@@ -1,0 +1,10 @@
+PROGRAMA = FATOS CLAUSULAS METAS.
+FATOS = "(" FATO ")" { "(" FATO ")" }.
+CLAUSULAS = "(" CLAUSULA ")" { "(" CLAUSULA ")" }.
+METAS = "(" "?-" PRED DADO ")".
+FATO = ( PRED | INF ) ":-" DADO.
+DADO = ( PRED | NUM ) { "," ( PRED | NUM ) }.
+CLAUSULA = PRED ARGS ":-" ( "(" LCLAUSULA ")" |  DADO ).
+
+LCLAUSULA = [ "not" ] "(" INF DADO ")" { ( "&" | "or" ) [ "not" ] "(" INF DADO ")" }.
+ARGS = ( INF | PRED | NUM ) { "," ( INF | PRED | NUM ) }.
