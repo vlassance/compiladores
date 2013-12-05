@@ -35,4 +35,6 @@
 *.o
 *.swp
 lextest
+syntest
+synlextest
 *.dSYM
