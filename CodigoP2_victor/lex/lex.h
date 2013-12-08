@@ -12,8 +12,7 @@
 # define MAX_NUMBER_OF_ESCOPOS 512
 # define FREEANDNULL(__x__) if ((__x__) != NULL) {free(__x__); (__x__) = NULL;};
 
-
-typedef enum { false, true } bool;
+#include <stdbool.h>
 
 typedef struct State {
     char* name;

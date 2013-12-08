@@ -32,6 +32,21 @@ typedef struct {
     uint32_t* size_transitions; 
 } Automaton;
 
+char lista_constantes[250][500];
+int size_lista_constantes;
+char lista_variaveis[250][500];
+int size_lista_variaveis;
+char lista_sentencas[250][500];
+int size_lista_sentencas;
+char lista_clausulas[250][500];
+int size_lista_clausulas;
+
+int lista_fatos[250];
+int size_lista_fatos;
+int meta;
+
+char sentenca[500];
+
 uint32_t automaton_program_id;
 uint32_t automata_len;
 Automaton automata_list[MAX_AUTOMATA]; 

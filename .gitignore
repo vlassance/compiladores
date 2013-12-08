@@ -37,4 +37,5 @@
 lextest
 syntest
 synlextest
+compilertest
 *.dSYM

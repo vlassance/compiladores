@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <stdbool.h>
 #include "automata.h"
 #include "../lex/lex.h"
-
+#include "../semantico/generate_rna.h"
 
 uint32_t automaton_pop(Automaton** a) {
     if (automata_stack_size == 0) {
@@ -247,6 +248,13 @@ void read_all_syn_files() {
     struct dirent *ep;
     int lenname;
     FILE* f;
+	
+	size_lista_constantes = 0;
+	size_lista_variaveis = 0;
+	size_lista_sentencas = 0;
+	size_lista_clausulas = 0;
+	size_lista_fatos = 0;
+	sentenca[0] = '\0';
 
     f = fopen("./scripts/FINALS.txt", "r");
     read_finals(f);
@@ -318,13 +326,91 @@ uint32_t poponly(Automaton** a, uint32_t* state) {
     exit(1);
 }
 
-void semantico_tbd() {
-    printf("TODO\n");
+void semantico_desempilha() {
+    generate_rna_file(meta, size_lista_fatos, lista_fatos);
+	
+	int i;
+	printf("Lista de constantes:\n");
+	for (i = 0; i < size_lista_constantes; i++)
+		printf("%s\n", lista_constantes[i]);
+	printf("Lista de variáveis:\n");
+	for (i = 0; i < size_lista_variaveis; i++)
+		printf("%s\n", lista_variaveis[i]);
+	printf("Lista de sentenças:\n");
+	for (i = 0; i < size_lista_sentencas; i++)
+		printf("%s\n", lista_sentencas[i]);
+	printf("Lista de fatos:\n");
+	for (i = 0; i < size_lista_fatos; i++)
+		printf("%d\n", lista_fatos[i]);
+	printf("Lista de cláusulas:\n");
+	for (i = 0; i < size_lista_clausulas; i++)
+		printf("%s\n", lista_clausulas[i]);
+	printf("Meta:\n");
+	printf("%d\n", meta);
+}
+
+int insere_lista_str(char lista[250][500], int* size_lista, char* text) {
+	int i;
+	
+	for (i = 0; i < *size_lista; i++)
+		if (strcmp(lista[i], text) == 0)
+			return i+1;
+	i = *size_lista;
+	strcpy(lista[i], text);
+	(*size_lista)++;
+	return i+1;
+}
+
+int insere_lista_int(int lista[250], int* size_lista, int value) {
+	int i;
+	
+	for (i = 0; i < *size_lista; i++)
+		if (lista[i] == value)
+			return i;
+	i = *size_lista;
+	lista[i] = value;
+	(*size_lista)++;
+	return i;
+}
+
+void semantico_token(Token* tk, char* nome_trans, int id_state_from, int id_state_to) {
+	int index;
+	
+	if (strcmp(nome_trans, " PRED") == 0 || strcmp(nome_trans, " NUM") == 0) {
+		index = insere_lista_str(lista_constantes, &size_lista_constantes, tk->str);
+		sprintf(sentenca, "%s%d;", sentenca, index);
+	}
+	if (strcmp(nome_trans, " INF") == 0) {
+		index = insere_lista_str(lista_variaveis, &size_lista_variaveis, tk->str);
+		sprintf(sentenca, "%s%d;", sentenca, index+250);
+	}
+	if (id_state_from == 4 && id_state_to == 5) {
+		index = insere_lista_str(lista_sentencas, &size_lista_sentencas, sentenca);
+		insere_lista_int(lista_fatos, &size_lista_fatos, index);
+		sentenca[0] = '\0';
+		
+	}
+	if (id_state_from == 12 && id_state_to == 14) {
+		// Apesar da gramática permitir, não há sentido em manter sentenças do tipo (pai X, Y :- 1, 2, 3)
+		// pois não há como transformá-las em true, false
+		sentenca[0] = '\0';
+		
+	}
+	if (id_state_from == 25 && id_state_to == 14) {
+		index = insere_lista_str(lista_clausulas, &size_lista_clausulas, sentenca);
+		sentenca[0] = '\0';
+		
+	}
+	if (id_state_from == 20 && id_state_to == 21) {
+		meta = insere_lista_str(lista_sentencas, &size_lista_sentencas, sentenca);
+		sentenca[0] = '\0';
+	}
+		
 }
 
 uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
     if (tk == NULL) {
-        semantico_tbd();
+        semantico_desempilha();
         return poponly(a, state);
     }
     uint32_t i;
@@ -332,6 +418,7 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
     for (i = 0U; i < (*a)->size_transitions[*state]; i++) {
         strtrans = (*a)->transitions_str[*state][i];
         if (strcmp(strtrans, tk->str) == 0) {
+			semantico_token(tk, strtrans, *state, (*a)->transitions[*state][i]);
             printf(
                 "Leu: %s (automato: %s, estado:%d) -> (automato: %s, estado:%d)\n", 
                 strtrans, (*a)->name, *state, (*a)->name, (*a)->transitions[*state][i]
@@ -345,6 +432,7 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
         strtrans = (*a)->transitions_str[*state][i];
         if (strtrans[0] == AUT_FINAL_CHAR) {
             if (strcmp(strtrans + 1UL, tk->class_name) == 0) {
+				semantico_token(tk, strtrans, *state, (*a)->transitions[*state][i]);
                 printf(
                     "Leu: <%s> (automato: %s, estado:%d) -> (automato: %s, estado:%d)\n", 
                     strtrans+1, (*a)->name, *state, (*a)->name, (*a)->transitions[*state][i]
@@ -377,6 +465,7 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
     }
 
     if ((*a)->final_states[*state]) {
+		semantico_desempilha();
         printf(
             "Desempilhou: (automato: %s, estado:%d) -> ", 
             (*a)->name, *state
@@ -386,7 +475,6 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
             "(automato: %s, estado:%d)\n", 
             (*a)->name, *state
         );
-        semantico_tbd();
         return 0; // didn't read
     }
     fprintf(stderr, "Automata(%s, %d), token(%s, %s)\n", (*a)->name, *state, tk->str, tk->class_name);
