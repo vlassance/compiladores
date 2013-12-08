@@ -1,9 +1,0 @@
-PROGRAM          = EXPR { EXPR }.
-EXPR    = "(" ( (PRED|INF) ( ":-" DADO | ARGS ":-" ( "(" LCLAUSULA ")" | DADO ) ) | "?-" QMETA ) ")".
-QMETA            = PRED DADO.
-DADO             = ( PRED |       NUM ) { "," ( PRED |       NUM ) }.
-DADOV            = ( PRED | INF | NUM ) { "," ( PRED | INF | NUM ) }.
-ARGS             = ( PRED | INF | NUM ) { "," ( PRED | INF | NUM ) }.
-LCLAUSULA        = LCLAUSULATERMO { "or" LCLAUSULATERMO }.
-LCLAUSULATERMO   = LCLAUSULAFATOR { "&"  LCLAUSULAFATOR }.
-LCLAUSULAFATOR   = { "not" } "(" INF DADO ")".

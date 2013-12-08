@@ -1,5 +1,0 @@
-:       < STORE_PTR_IO 
-:       < GETS 
-        LV {R0}
-        MM STORE_PTR_IO 
-        SC GETS

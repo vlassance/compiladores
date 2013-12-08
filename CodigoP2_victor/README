@@ -1,32 +1,53 @@
-Este pacote possui o compilador de uma linguagem simples, baseada em C:
+Este pacote possui o compilador da linguagem SimpPro, baseada em C:
 
-Lex:
+>> Léxico:
     Para rodar o teste do lexer, basta utilizar o comando make:
 
     $ make clean
-    $ make 
+    $ make lextest
 
     deve deletar arquivos antigos e compilar o projeto, rodando os testes em cima
-    do arquivo ./ENTRADA.txt 
+    do arquivo ./examples/simprolog.pro
 
-    Este arquivo possui cadeias de caractéres que seriam reconhecidas pelo lexer.
+    Este arquivo possui cadeias de caracteres que seriam reconhecidas pelo lexer.
 
     O  código do Lexer se encontra disponível na pasta ./lex/ 
 
-Versões de software:
+
+>> Compilador completo:
+    Para rodar o teste do compilador completo, basta utilizar o comando make:
+
+    $ make clean
+    $ make compilertest
+
+    deve deletar arquivos antigos e compilar o projeto, rodando os testes em cima
+    do arquivo ./examples/simprolog.pro
+
+    O código que compõe o sintático e o semântico, assim como a geração de código estão localizados do Lexer se encontra disponível nas pastas ./syn/, ./semantico/ e ./rna/. 
+
+
+>> Rodar o arquivo RNA e ver o resultado:
+    Para rodar o programa RNA gerado pelo compilador, basta utilizar o comando make:
+
+    $ make clean
+    $ make runrna
+
+    deve rodar o arquivo program.rna no interpretador RNA que foi consertado.
+
+
+>> Versões de software:
 
     $  gcc --version
-    gcc (GCC) 4.8.1 20130725 (prerelease)
-    Copyright (C) 2013 Free Software Foundation, Inc.
+    i686-apple-darwin11-llvm-gcc-4.2 (GCC) 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.11.00)
+    Copyright (C) 2007 Free Software Foundation, Inc.
     This is free software; see the source for copying conditions.  There is NO
     warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     
     $  make --version
-    GNU Make 3.82
-    Built for x86_64-unknown-linux-gnu
-    Copyright (C) 2010  Free Software Foundation, Inc.
-    License GPLv3+: GNU GPL version 3 or later
-    <http://gnu.org/licenses/gpl.html>
-    This is free software: you are free to change and redistribute it.
-    There is NO WARRANTY, to the extent permitted by law.
+    GNU Make 3.81
+    Copyright (C) 2006  Free Software Foundation, Inc.
+    This is free software; see the source for copying conditions.
+    There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+    PARTICULAR PURPOSE.
+    This program built for i386-apple-darwin11.3.0
 

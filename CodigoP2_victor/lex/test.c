@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
        print_token(tk); 
     }
 
-    print_identifiers();
+    //print_identifiers();
     freeLex();
     fclose(input_file);
     if (tk == NULL) 

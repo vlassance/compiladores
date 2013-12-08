@@ -3,13 +3,12 @@ LEXFOLDER=./lex
 SYNFOLDER=./syn
 SEMFOLDER=./semantico
 STACKFOLDER=./stack
+RNAFOLDER=./rna
 CFLAGS=-g
 VALFLAGS= --leak-check=full --track-origins=yes --show-reachable=yes
-EX1=./examples/simprolog.pro
-EX2=./examples/simprolog2.pro
+EX=./examples/simprolog.pro
 
-
-all: lex.o syn.o sem.o stack.o testall
+all: lex.o syn.o sem.o stack.o lextest compilertest runrna
 
 lex.o:
 	${CC} -c ${LEXFOLDER}/lex.c ${CFLAGS} -o $@
@@ -23,44 +22,19 @@ sem.o:
 stack.o:  
 	${CC} -c ${STACKFOLDER}/generic-stack.c  ${CFLAGS} -o $@
 
-
-testall: lextest syntest compilertest 
-
-
 lextest: lex.o 
 	${CC} ${LEXFOLDER}/test.c lex.o ${CFLAGS} -o $@
 	$(info ===== TESTING LEX =====)
-	./lextest ./ENTRADA.txt 
-
-syntest: syn.o lex.o sem.o stack.o
-	${CC} ${SYNFOLDER}/test.c syn.o lex.o sem.o stack.o ${CFLAGS} -o $@
-	$(info ===== TESTING SYN =====)
-	./syntest 
+	./lextest ${EX}
 
 compilertest: syn.o lex.o sem.o stack.o
 	${CC} lex.o syn.o sem.o stack.o ${SYNFOLDER}/parse.c ${CFLAGS} -o $@
-	$(info ===== INT LEX/SYN =====)
-	$(info ======= ${EX1} ========)
-	./compilertest ${EX1}
-	$(info ======= ${EX2} ========)
-	./compilertest ${EX2}
+	$(info ===== TESTING COMPILER =====)
+	./compilertest ${EX}
 
-valgrind: valsynlex valsyn vallex 
-
-
-valsynlex: compilertest
-	valgrind ${VALFLAGS} ./compilertest ${EX1}
-	valgrind ${VALFLAGS} ./compilertest ${EX2}
-
-valsyn: syntest 
-	valgrind ${VALFLAGS} ./syntest 
-
-vallex: lextest 
-	valgrind ${VALFLAGS} ./lextest ${EX1}
-	valgrind ${VALFLAGS} ./lextest ${EX1}
-
-
-
+runrna: compilertest
+	$(info ===== TESTING RNA PROGRAM =====)
+	cd ${RNAFOLDER} && ./rna.out program.rna && cd ..
 
 clean:
 	rm -f lextest lex.o syn.o sem.o stack.o syntest compilertest  

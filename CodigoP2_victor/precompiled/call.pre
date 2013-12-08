@@ -1,7 +1,0 @@
-:   < PUSH_CALL_SIZELV 
-:   < PUSH_CALL 
-    LV {R0}               # carrega o tamanho dos argumentos, temporarios e tudo mais
-    MM PUSH_CALL_SIZELV   # 
-    {C0}                  # passa argumentos 
-    SC PUSH_CALL          # primeiro dah push  
-    SC {R1}               # depois chama..            
