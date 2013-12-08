@@ -2,13 +2,14 @@ CC=gcc
 LEXFOLDER=./lex
 SYNFOLDER=./syn
 SEMFOLDER=./semantico
+STACKFOLDER=./stack
 CFLAGS=-g
 VALFLAGS= --leak-check=full --track-origins=yes --show-reachable=yes
 EX1=./examples/simprolog.pro
 EX2=./examples/simprolog2.pro
 
 
-all: lex.o syn.o testall
+all: lex.o syn.o sem.o stack.o testall
 
 lex.o:
 	${CC} -c ${LEXFOLDER}/lex.c ${CFLAGS} -o $@
@@ -18,6 +19,9 @@ syn.o:
 	
 sem.o:  
 	${CC} -c ${SEMFOLDER}/generate_rna.c  ${CFLAGS} -o $@
+	
+stack.o:  
+	${CC} -c ${STACKFOLDER}/generic-stack.c  ${CFLAGS} -o $@
 
 
 testall: lextest syntest compilertest 
@@ -28,13 +32,13 @@ lextest: lex.o
 	$(info ===== TESTING LEX =====)
 	./lextest ./ENTRADA.txt 
 
-syntest: syn.o lex.o sem.o
-	${CC} ${SYNFOLDER}/test.c syn.o lex.o sem.o ${CFLAGS} -o $@
+syntest: syn.o lex.o sem.o stack.o
+	${CC} ${SYNFOLDER}/test.c syn.o lex.o sem.o stack.o ${CFLAGS} -o $@
 	$(info ===== TESTING SYN =====)
 	./syntest 
 
-compilertest: syn.o lex.o sem.o
-	${CC} lex.o syn.o sem.o ${SYNFOLDER}/parse.c ${CFLAGS} -o $@
+compilertest: syn.o lex.o sem.o stack.o
+	${CC} lex.o syn.o sem.o stack.o ${SYNFOLDER}/parse.c ${CFLAGS} -o $@
 	$(info ===== INT LEX/SYN =====)
 	$(info ======= ${EX1} ========)
 	./compilertest ${EX1}
@@ -59,5 +63,5 @@ vallex: lextest
 
 
 clean:
-	rm -f lextest lex.o syn.o sem.o syntest compilertest  
+	rm -f lextest lex.o syn.o sem.o stack.o syntest compilertest  
 

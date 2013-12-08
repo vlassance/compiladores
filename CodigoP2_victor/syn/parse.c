@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     }      
     while(syn(tk, &a, &state));
 
-    print_identifiers();
+    //print_identifiers();
     free_automata();
     freeLex();
     fclose(input_file);

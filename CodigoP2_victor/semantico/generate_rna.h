@@ -1,6 +1,3 @@
-#ifndef GENERATE_RNA_H
-# define GENERATE_RNA_H
-
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -10,6 +7,9 @@
 #include <dirent.h>
 #include <stdbool.h>
 #include "../syn/automata.h"
+
+#ifndef GENERATE_RNA_H
+# define GENERATE_RNA_H
 
 #define POS_INICIAL 2
 

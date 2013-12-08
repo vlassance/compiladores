@@ -10,6 +10,14 @@
 #include "../lex/lex.h"
 #include "../semantico/generate_rna.h"
 
+int prioridade_operadores[256] = {['~'] = 3, ['&'] = 2, ['|'] = 1};
+int num_operandos[256] = {['~'] = 1, ['&'] = 2, ['|'] = 2};
+Stack stack_operando, stack_operador;
+
+void strfreefn(ElementAddr elemaddr) {
+	free(*(char **)elemaddr);
+}
+
 uint32_t automaton_pop(Automaton** a) {
     if (automata_stack_size == 0) {
         fflush(stdout);
@@ -255,6 +263,7 @@ void read_all_syn_files() {
 	size_lista_clausulas = 0;
 	size_lista_fatos = 0;
 	sentenca[0] = '\0';
+	clausula[0] = '\0';
 
     f = fopen("./scripts/FINALS.txt", "r");
     read_finals(f);
@@ -301,7 +310,7 @@ uint32_t findAutomatonByName(char* name) {
 uint32_t poponly(Automaton** a, uint32_t* state) {
     if ((*a)->final_states[*state]) {
         if (strcmp((*a)->name, "PROGRAM") == 0) {
-            printf("Desempilhou PROGRAM em %d com stack: %d", 
+            printf("Desempilhou PROGRAM em %d com stack: %d\n", 
                 *state, automata_stack_size);
             if (automata_stack_size >= 1) {
                 fprintf(stderr, "Stack wasn't empty.\n");
@@ -326,30 +335,243 @@ uint32_t poponly(Automaton** a, uint32_t* state) {
     exit(1);
 }
 
+void get_variaveis_e_inicia_constantes(char* clausula_atual, int* size_variaveis, int variaveis[MAX_SIZE_LIST], int constantes[MAX_SIZE_LIST]) {
+	printf("Selecionando todas as variáveis da clausula %s...\n", clausula_atual);
+	*size_variaveis = 0;
+	
+	char *p = clausula_atual;
+	while (*p) {
+	    if (isdigit(*p)) {
+	        int ind = (int)strtol(p, &p, 10)-1;
+			char *p2 = lista_sentencas[ind];
+			while (*p2) {
+			    if (isdigit(*p2)) {
+			        int val = (int)strtol(p2, &p2, 10);
+					if (val > MAX_SIZE_LIST) {
+						insere_lista_int(variaveis, size_variaveis, val);
+						constantes[val-MAX_SIZE_LIST-1] = 1;
+					}
+			    } else {
+			        p2++;
+			    }
+			}
+	    } else {
+	        p++;
+	    }
+	}
+}
+
+bool has_new_combination(int size_variaveis, int variaveis[MAX_SIZE_LIST], int constantes[MAX_SIZE_LIST]) {
+	int i;
+	
+	constantes[variaveis[size_variaveis-1]-MAX_SIZE_LIST-1]++;
+	for (i = size_variaveis-1; i >= 0; i--) {
+		if (constantes[variaveis[i]-MAX_SIZE_LIST-1] <= size_lista_constantes) {
+			return true;
+		} else if (i > 0) {
+			constantes[variaveis[i]-MAX_SIZE_LIST-1] = 1;
+			constantes[variaveis[i-1]-MAX_SIZE_LIST-1]++;
+		}
+	}
+	return false;
+}
+
+void insere_fato(char fato_gerado[MAX_SIZE_SENTENCA]) {
+	int index;
+	
+	index = insere_lista_str(lista_sentencas, &size_lista_sentencas, fato_gerado);
+	insere_lista_int(lista_fatos, &size_lista_fatos, index);
+}
+
+void unifica(char sentenca_gerada[MAX_SIZE_SENTENCA], char sentenca[MAX_SIZE_SENTENCA], int size_variaveis, int variaveis[MAX_SIZE_LIST], int constantes[MAX_SIZE_LIST]) {
+	char pstr[MAX_SIZE_SENTENCA];
+	char* pch;
+	char* end_token;
+	strcpy(pstr, sentenca);
+	sentenca_gerada[0] = '\0';
+	
+	pch = strtok_r (pstr, " ", &end_token);
+	while (pch != NULL) {
+		if (atoi(pch) > MAX_SIZE_LIST) {
+			sprintf(sentenca_gerada, "%s%d ", sentenca_gerada, constantes[atoi(pch)-MAX_SIZE_LIST-1]);
+		} else {
+			sprintf(sentenca_gerada, "%s%s ", sentenca_gerada, pch);
+		}
+		pch = strtok_r (NULL, " ", &end_token);
+	}
+}
+
+void empilha_operando(char fato[MAX_SIZE_SENTENCA]) {
+	// Verifica se fato pertence a lista_sentencas e indice a lista_fatos
+	int i, index = -1, res = 0;
+	
+	for (i = 0; i < size_lista_sentencas; i++) {
+		if (strcmp(lista_sentencas[i], fato) == 0) {
+			index = i;
+		}
+	}
+		
+	if (index >= 0) {
+		for (i = 0; i < size_lista_fatos; i++) {
+			if (lista_fatos[i]-1 == index) {
+				res = 1;
+			}
+		}
+	}
+	
+	// Adiciona o resultado a pilha de operandos
+	stack_push(stack_operando, &res);
+}
+
+int calculate_expression(int op, int* elems) {
+	if (op == '~')
+		return !elems[0];
+	if (op == '&')
+		return elems[0] && elems[1];
+	if (op == '|')
+		return elems[0] || elems[1];
+	
+	printf("Operador não reconhecido!\n");
+	return 0;
+}
+
+void empilha_operador(char* pch) {
+	int op = pch[0], op_pilha, elem, i;
+	int elems[5];
+	
+	// Verifica se não tem operadores com maior prioridade para calculá-los primeiro
+	if (!stack_is_empty(stack_operador)) {
+		stack_top(stack_operador, &op_pilha);
+		while (prioridade_operadores[op_pilha] > prioridade_operadores[op]) {
+			stack_pop(stack_operador);
+			for (i = 0; i < num_operandos[op_pilha]; i++) {
+				stack_top_and_pop(stack_operando, &elem);
+				elems[i] = elem;
+			}
+			elem = calculate_expression(op_pilha, elems);
+			stack_push(stack_operando, &elem);
+			
+			if (stack_is_empty(stack_operador))
+				break;
+			stack_top(stack_operador, &op_pilha);
+		}
+	}
+	
+	// Adiciona o resultado a pilha de operadores
+	stack_push(stack_operador, &op);
+}
+
+bool resultado_expressao() {
+	int op, elem, i;
+	int elems[5];
+	
+	// Desempilha o que for necessário e devolver o resultado da expressão
+	while (!stack_is_empty(stack_operador)) {
+		stack_top_and_pop(stack_operador, &op);
+		for (i = 0; i < num_operandos[op]; i++) {
+			stack_top_and_pop(stack_operando, &elem);
+			elems[i] = elem;
+		}
+		elem = calculate_expression(op, elems);
+		stack_push(stack_operando, &elem);
+	}
+	
+	stack_top_and_pop(stack_operando, &elem);
+	if (!stack_is_empty(stack_operando))
+		printf("Problema na análise da expressão.\n");
+	return elem;
+}
+
+void generate_facts_from_rule(char* clausula_atual, int size_variaveis, int variaveis[MAX_SIZE_LIST], int constantes[MAX_SIZE_LIST]) {
+	
+	char fato_gerado[MAX_SIZE_SENTENCA], pstr[MAX_SIZE_SENTENCA], sentenca[MAX_SIZE_SENTENCA];
+	char* pch;
+	char* end_str;
+	strcpy(pstr, clausula_atual);
+	
+	stack_make_empty(stack_operando);
+	stack_make_empty(stack_operador);
+	
+	pch = strtok_r (pstr, " ", &end_str);
+	unifica(sentenca, lista_sentencas[atoi(pch) - 1], size_variaveis, variaveis, constantes);
+	strcpy(fato_gerado, sentenca);
+	
+	pch = strtok_r (NULL, " ", &end_str);
+	if (strcmp(pch, "=") != 0) {
+		printf("Erro ao ler cláusula: %s!\n", clausula_atual);
+		return;
+	}
+	
+	pch = strtok_r (NULL, " ", &end_str);
+	while (pch != NULL) {
+		if (atoi(pch) > 0) {
+			unifica(sentenca, lista_sentencas[atoi(pch) - 1], size_variaveis, variaveis, constantes);
+			empilha_operando(sentenca);
+		} else {
+			empilha_operador(pch);
+		}
+		pch = strtok_r (NULL, " ", &end_str);
+	}
+	
+	if (resultado_expressao())
+		insere_fato(fato_gerado);
+	
+	/*int pr;
+	printf("Generating new facts from rule %s\n", clausula_atual);
+	for (pr = 0; pr < size_variaveis; pr++) {
+		printf(">> Using %s (ID %d) = ", lista_variaveis[variaveis[pr]-MAX_SIZE_LIST-1], variaveis[pr]);
+		printf("%s (ID %d)\n", lista_constantes[constantes[variaveis[pr]-MAX_SIZE_LIST-1]-1], constantes[variaveis[pr]-MAX_SIZE_LIST-1]);
+	}*/
+}
+
+void generate_facts_from_rules() {
+	int n_fatos, c, v, size_variaveis;
+	int variaveis[MAX_SIZE_LIST], constantes_escolhidas[MAX_SIZE_LIST];
+	
+	stack_operando = stack_create(sizeof(int), NULL);
+	stack_operador = stack_create(sizeof(int), NULL);
+	
+	do {
+		n_fatos = size_lista_fatos;
+		printf("New cycle - generating new facts from rules.\n");
+		
+		for(c = 0; c < size_lista_clausulas; c++) {
+			get_variaveis_e_inicia_constantes(lista_clausulas[c], &size_variaveis, variaveis, constantes_escolhidas);
+			do {
+				generate_facts_from_rule(lista_clausulas[c], size_variaveis, variaveis, constantes_escolhidas);
+			} while (has_new_combination(size_variaveis, variaveis, constantes_escolhidas));
+		}
+		
+	} while(n_fatos < size_lista_fatos);
+	
+	stack_dispose(stack_operando);
+	stack_dispose(stack_operador);
+}
+
 void semantico_desempilha() {
     generate_rna_file(meta, size_lista_fatos, lista_fatos);
 	
 	int i;
-	printf("Lista de constantes:\n");
+	printf("\n>> Lista de constantes:\n");
 	for (i = 0; i < size_lista_constantes; i++)
 		printf("%s\n", lista_constantes[i]);
-	printf("Lista de variáveis:\n");
+	printf("\n>> Lista de variáveis:\n");
 	for (i = 0; i < size_lista_variaveis; i++)
 		printf("%s\n", lista_variaveis[i]);
-	printf("Lista de sentenças:\n");
+	printf("\n>> Lista de sentenças:\n");
 	for (i = 0; i < size_lista_sentencas; i++)
 		printf("%s\n", lista_sentencas[i]);
-	printf("Lista de fatos:\n");
+	printf("\n>> Lista de fatos:\n");
 	for (i = 0; i < size_lista_fatos; i++)
 		printf("%d\n", lista_fatos[i]);
-	printf("Lista de cláusulas:\n");
+	printf("\n>> Lista de cláusulas:\n");
 	for (i = 0; i < size_lista_clausulas; i++)
 		printf("%s\n", lista_clausulas[i]);
-	printf("Meta:\n");
+	printf("\n>> Meta:\n");
 	printf("%d\n", meta);
 }
 
-int insere_lista_str(char lista[250][500], int* size_lista, char* text) {
+int insere_lista_str(char lista[MAX_SIZE_LIST][MAX_SIZE_SENTENCA], int* size_lista, char* text) {
 	int i;
 	
 	for (i = 0; i < *size_lista; i++)
@@ -361,7 +583,7 @@ int insere_lista_str(char lista[250][500], int* size_lista, char* text) {
 	return i+1;
 }
 
-int insere_lista_int(int lista[250], int* size_lista, int value) {
+int insere_lista_int(int lista[MAX_SIZE_LIST], int* size_lista, int value) {
 	int i;
 	
 	for (i = 0; i < *size_lista; i++)
@@ -376,33 +598,65 @@ int insere_lista_int(int lista[250], int* size_lista, int value) {
 void semantico_token(Token* tk, char* nome_trans, int id_state_from, int id_state_to) {
 	int index;
 	
+	// AS 1
 	if (strcmp(nome_trans, " PRED") == 0 || strcmp(nome_trans, " NUM") == 0) {
 		index = insere_lista_str(lista_constantes, &size_lista_constantes, tk->str);
-		sprintf(sentenca, "%s%d;", sentenca, index);
+		sprintf(sentenca, "%s%d ", sentenca, index);
 	}
+	// AS 2
 	if (strcmp(nome_trans, " INF") == 0) {
 		index = insere_lista_str(lista_variaveis, &size_lista_variaveis, tk->str);
-		sprintf(sentenca, "%s%d;", sentenca, index+250);
+		sprintf(sentenca, "%s%d ", sentenca, index+MAX_SIZE_LIST);
 	}
+	// AS 3
 	if (id_state_from == 4 && id_state_to == 5) {
 		index = insere_lista_str(lista_sentencas, &size_lista_sentencas, sentenca);
 		insere_lista_int(lista_fatos, &size_lista_fatos, index);
 		sentenca[0] = '\0';
 		
 	}
+	// AS 4
+	if (id_state_from == 8 && id_state_to == 9) {
+		index = insere_lista_str(lista_sentencas, &size_lista_sentencas, sentenca);
+		sprintf(clausula, "%s%d ", clausula, index);
+		sprintf(clausula, "%s%s ", clausula, "=");
+		sentenca[0] = '\0';
+	}
+	// AS 5
+	if (id_state_from == 24 && id_state_to == 11) {
+		if (strcmp(tk->str, "&") == 0)
+			sprintf(clausula, "%s%s ", clausula, "&");
+		else if (strcmp(tk->str, "or") == 0)
+			sprintf(clausula, "%s%s ", clausula, "|");
+	}
+	// AS 6
+	if (id_state_from == 11 && id_state_to == 19) {
+		sprintf(clausula, "%s%s ", clausula, "~");
+	}
+	// AS 7
 	if (id_state_from == 12 && id_state_to == 14) {
 		// Apesar da gramática permitir, não há sentido em manter sentenças do tipo (pai X, Y :- 1, 2, 3)
 		// pois não há como transformá-las em true, false
 		sentenca[0] = '\0';
+		clausula[0] = '\0';
 		
 	}
+	// AS 8
 	if (id_state_from == 25 && id_state_to == 14) {
-		index = insere_lista_str(lista_clausulas, &size_lista_clausulas, sentenca);
-		sentenca[0] = '\0';
+		index = insere_lista_str(lista_clausulas, &size_lista_clausulas, clausula);
+		clausula[0] = '\0';
 		
 	}
+	// AS 9
 	if (id_state_from == 20 && id_state_to == 21) {
 		meta = insere_lista_str(lista_sentencas, &size_lista_sentencas, sentenca);
+		sentenca[0] = '\0';
+		generate_facts_from_rules();
+	}
+	// AS 10
+	if (id_state_from == 23 && id_state_to == 24) {
+		index = insere_lista_str(lista_sentencas, &size_lista_sentencas, sentenca);
+		sprintf(clausula, "%s%d ", clausula, index);
 		sentenca[0] = '\0';
 	}
 		
@@ -410,8 +664,10 @@ void semantico_token(Token* tk, char* nome_trans, int id_state_from, int id_stat
 
 uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
     if (tk == NULL) {
+		uint32_t res;
+		res = poponly(a, state);
         semantico_desempilha();
-        return poponly(a, state);
+        return res;
     }
     uint32_t i;
     char* strtrans;
@@ -465,7 +721,6 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
     }
 
     if ((*a)->final_states[*state]) {
-		semantico_desempilha();
         printf(
             "Desempilhou: (automato: %s, estado:%d) -> ", 
             (*a)->name, *state
@@ -475,6 +730,7 @@ uint32_t syn(Token* tk, Automaton** a, uint32_t* state) {
             "(automato: %s, estado:%d)\n", 
             (*a)->name, *state
         );
+		semantico_desempilha();
         return 0; // didn't read
     }
     fprintf(stderr, "Automata(%s, %d), token(%s, %s)\n", (*a)->name, *state, tk->str, tk->class_name);

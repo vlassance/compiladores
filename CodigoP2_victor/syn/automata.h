@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include "../stack/generic-stack.h"
+
 #ifndef AUTOMATA_H
 # define AUTOMATA_H
 # define INVALID_AUT_ID 0xFFFFFFFF
@@ -15,6 +17,8 @@
         strcpy(__dest__,__orig__);\
     }
 # define AUT_FINAL_CHAR ' '
+# define MAX_SIZE_LIST 300
+# define MAX_SIZE_SENTENCA 500
 
 typedef struct {
     uint32_t id;
@@ -32,20 +36,21 @@ typedef struct {
     uint32_t* size_transitions; 
 } Automaton;
 
-char lista_constantes[250][500];
+char lista_constantes[MAX_SIZE_LIST][MAX_SIZE_SENTENCA];
 int size_lista_constantes;
-char lista_variaveis[250][500];
+char lista_variaveis[MAX_SIZE_LIST][MAX_SIZE_SENTENCA];
 int size_lista_variaveis;
-char lista_sentencas[250][500];
+char lista_sentencas[MAX_SIZE_LIST][MAX_SIZE_SENTENCA];
 int size_lista_sentencas;
-char lista_clausulas[250][500];
+char lista_clausulas[MAX_SIZE_LIST][MAX_SIZE_SENTENCA];
 int size_lista_clausulas;
 
-int lista_fatos[250];
+int lista_fatos[MAX_SIZE_LIST];
 int size_lista_fatos;
 int meta;
 
-char sentenca[500];
+char sentenca[MAX_SIZE_SENTENCA];
+char clausula[MAX_SIZE_SENTENCA];
 
 uint32_t automaton_program_id;
 uint32_t automata_len;
