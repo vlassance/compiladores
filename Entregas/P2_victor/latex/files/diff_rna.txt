@@ -1,0 +1,14 @@
+326c326
+< 		loopy=loopActivators[1][loopActivatorIndex--];
+---
+> 		loopy=loopActivators[1][loopActivatorIndex++]-1;
+331c331
+< 		loopActivators[0][loopActivatorIndex]=loopy-2;
+---
+> 		loopActivators[0][loopActivatorIndex++]=loopy-2;
+337,338c337,338
+< 		loopActivators[1][loopActivatorIndex]=codon+1;
+< 		loopy=loopActivators[0][loopActivatorIndex--];
+---
+> 		loopActivators[1][--loopActivatorIndex]=loopy+1;
+> 		loopy=loopActivators[0][loopActivatorIndex]-1;

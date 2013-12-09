@@ -1,0 +1,15 @@
+% !TEX encoding = UTF-8 Unicode
+
+A linguagem \emph{SimpPro} foi criada e apresentada pelo professor da disciplina com características similares a de outras linguagens. As principais linguagens herdadas pela \emph{SimpPro} foram de Prolog, na forma de declaração e busca; e Lisp, na utilização dos parêntesis para declarar predicados, cláusulas e a meta.
+
+A linguagem Prolog é declarativa, o seu texto pode conter variáveis (identificáveis lexicamente) ou nomes e números (constantes) ao estilo LISP. O operador de definição de termos é “:-”, para uma verificação de meta o operador é “?-”. Um programa em Prolog é composto usualmente de três partes: conjuntos de fatos, conjuntos de cláusulas e conjuntos de metas. Os fatos são dados sobre os quais é possível efetuar uma busca por meio de unificação de literais. As cláusulas representam a forma como os elementos de dados são inter-relacionados, definem predicados, seu uso por outros predicados e a relação entre predicados e fatos. As metas definem que tipo de resultado é esperado, podendo ser um resultado booleano, um conjunto de valores possíveis para uma variável, etc. 
+
+Para este exercício não será utilizada a linguagem Prolog completa, apenas um subconjunto bastante limitado e simplificado denominado \emph{SimpPro}. 
+
+A sintaxe de SimpPro fornecida em BNF foi a seguinte: 
+
+\lstinputlisting[frame=single,breaklines=true,morekeywords={not,or,eps},basicstyle=\tiny]{files/sintaxe.txt}
+
+Considerando que a unificação é feita através de uma busca em base dados (cuja implementação é conhecida e acessível) e que haverá apenas uma meta por programa, cujo resultado será booleano, ou seja, cada programa retornará verdadeiro (1) ou falso (0) para a meta (que será uma cláusula completa), pede-se para construir um reconhecedor determinístico, baseado no autômato de pilha estruturado, que aceite como entrada válida um programa escrito em \emph{SimpPro}.
+
+Além disso, deve-se construir o sistema de programação para a linguagem \emph{SimpPro}, que terá um compilador para a linguagem \emph{RNA} com um ambiente de execução e uma função de busca para a meta definida. Deve ser usado a implementação de \emph{RNA} feita em linguagem C para validar o código gerado pelo compilador, aceitando ou não a meta como inferência lógica dos fatos e das cláusulas. 

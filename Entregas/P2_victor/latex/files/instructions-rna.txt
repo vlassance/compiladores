@@ -1,0 +1,16 @@
+AUG: int main() {
+UAA: } // end_main
+UGG: strg=0;
+AAA: ++strg;
+AAC: --strg;
+GCA: strg=*ptr;
+ACA: ptr=&memory[strg];
+CCA: scanf(“%d”, ptr);
+CUA: printf(“%c”, *ptr);
+AGA: *ptr+=memory[strg];
+AGC: *ptr*=memory[strg];
+CAA: *ptr-=memory[strg];
+CAC: *ptr/=memory[strg];
+GAA: *ptr=*ptr==memory[strg]?1:0;
+GAC: while(*ptr) {
+UAC: } // end_while

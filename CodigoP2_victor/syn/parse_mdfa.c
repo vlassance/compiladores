@@ -549,7 +549,8 @@ void generate_facts_from_rules() {
 }
 
 void semantico_desempilha() {
-    generate_rna_file(meta, size_lista_fatos, lista_fatos);
+    // AS 11
+	generate_rna_file(meta, size_lista_fatos, lista_fatos);
 	
 	int i;
 	printf("\n>> Lista de constantes:\n");

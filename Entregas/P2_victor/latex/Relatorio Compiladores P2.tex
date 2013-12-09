@@ -1,0 +1,98 @@
+% verso e anverso:
+% \documentclass[12pt,openright,twoside,a4paper,english]{abntex2}
+% apenas verso:	
+\documentclass[12pt,oneside,a4paper,english]{abntex2} 
+
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+\usepackage{listings}
+\usepackage{float}
+\usepackage{cmap}				% Mapear caracteres especiais no PDF
+\usepackage{lmodern}			% Usa a fonte Latin Modern			
+\usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{lastpage}			% Usado pela Ficha catalográfica
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{pdfpages}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+\usepackage{mathtools}
+
+\definecolor{blue}{RGB}{41,5,195} % alterando o aspecto da cor azul
+
+\makeatletter
+\hypersetup{
+    %pagebackref=true,
+    pdftitle={\@title}, 
+    pdfauthor={\@author},
+    pdfsubject={\@title},
+    pdfcreator={\imprimirpreambulo},
+    pdfkeywords={Linguagens}{Compiladores}{Tradução dos Comandos}, 
+    colorlinks=true,       		% false: boxed links; true: colored links
+    linkcolor=blue,          	% color of internal links
+    citecolor=blue,        		% color of links to bibliography
+    filecolor=magenta,      		% color of file links
+    urlcolor=blue,
+    bookmarksdepth=4
+}
+\makeatother
+
+\autor{Victor Lassance (6431325)}
+\title{Relatório de Compiladores\\Segunda Prova\\Compilador de \emph{SimpPro} para \emph{RNA}}
+\orientador[Professor:]{Ricardo Luis de Azevedo da Rocha}
+\preambulo{Texto apresentado à Escola Politécnica da Universidade de São Paulo como requisito para a aprovação na disciplina Linguagens e Compiladores no quinto módulo acadêmico do curso de graduação em Engenharia de Computação, junto ao Departamento de Engenharia de Computação e Sistemas Digitais (PCS).}
+\instituicao{%
+	Universidade de São Paulo
+	\par
+	Escola Politécnica
+	\par
+	Engenharia de Computação - Curso Cooperativo}
+\local{São Paulo}
+\data{2013}
+\tipotrabalho{PCS2056 - Linguagens e Compiladores}
+
+\setlength{\parindent}{1.3cm} % O tamanho do parágrafo
+\setlength{\parskip}{0.2cm}  % Controle do espaçamento entre um parágrafo e outro
+\lstset{basicstyle=\footnotesize\ttfamily}
+\makeindex
+
+\begin{document}
+
+\frenchspacing % Retira espaço extra obsoleto entre as frases.
+
+\imprimirfolhaderosto
+
+\tableofcontents
+
+\textual
+
+\chapter{Apresentação da linguagem \emph{SimpPro} e enunciado}
+\label{chap:linguagem-simppro}
+	\input{chapters/1-linguagem-simppro}
+	
+\chapter{Apresentação da linguagem \emph{RNA}}
+\label{chap:linguagem-rna}
+	\input{chapters/2-linguagem-rna}
+
+\chapter{Analisador léxico}
+\label{chap:lexico}
+	\input{chapters/3-lexico}
+	
+\chapter{Analisador sintático}
+\label{chap:sintatico}
+	\input{chapters/4-sintatico}
+
+\chapter{Analisador semântico}
+\label{chap:semantico}
+	\input{chapters/5-semantico}
+
+\chapter{Realização de testes}
+\label{chap:testes}
+	\input{chapters/6-testes}
+
+\chapter{Exemplo de execução}
+\label{chap:exemplo}
+	\input{chapters/7-exemplo}
+
+\end{document}

@@ -1,0 +1,19 @@
+<PROGRAMA> ::= <FATOS> <CLÁUSULAS> <METAS> 
+<FATOS> ::= ( <FATO> ) <FATOS> | ( <FATO> ) 
+<CLÁUSULAS> ::= ( <CLÁUSULA> ) <CLÁUSULAS> | ( <CLÁUSULA> ) 
+<METAS> ::= ( ?- <PRED> <DADO> )
+<FATO> ::= <NOME> :- <DADO> 
+<DADO> ::= <NOME> , <DADO> | <NUM> , <DADO> | <NOME> | <NUM> 
+<CLÁUSULA> ::= <PRED> <ARGS> :- ( <LCLÁUSULA> ) | <PRED> <ARGS> :- <DADO>
+
+<LCLÁUSULA> ::= <OP U> ( <INF> <DADO> ) <OP B> <LCLÁUSULA> | <OP U> ( <INF> <DADO> ) 
+<ARGS> ::= <INF> , <ARGS> | <NOME> , <ARGS> | <NUM> , <ARGS> | <INF> 
+<PRED> ::= <NOME>
+ 
+<INF> ::= <NOME> // INF inicia por letra maiuscula 
+<NOME> ::= <LETRA> | <DIGITO> <NOME> | <LETRA> <NOME> 
+<NUM> ::= <DIGITO> | <DIGITO> <NUM> 
+<OP B> ::= & | or 
+<OP U> ::= not | eps
+<LETRA> ::= A | B | ... | Z | a | b | ... | z 
+<DIGITO> ::= 0 | 1 | ... | 9 
