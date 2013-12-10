@@ -1,6 +1,34 @@
 % !TEX encoding = UTF-8 Unicode
 
+Para executar o código \emph{RNA} produzido pelo compilador, não foi necessário criar nenhuma função extra do lado do interpretador, somente fazer a correção do que não funcionava, como mencionado no Capítulo~\ref{chap:linguagem-rna}. O código gerado em \emph{RNA} realiza os seguintes passos:
+
 \begin{itemize}
-	\item falar sobre como testar (README e make) e como eu testei: teste compilertest e runrna
-	\item relembrar a alteração no interpretador
+	\item Organiza a memória da seguinte forma:
+	
+	\begin{itemize}
+		\item Posição 0: 1
+		\item Posição 1: 0
+		\item Posição 2: posição inicializada com zero, reservada para a meta.
+		\item Posição 3: posição inicializada com zero, reservada para o resultado do while, se continua a buscar a meta na lista de fatos ou não.
+		\item Posição 4: posição inicializada com zero, reservada para saber se a meta foi encontrada ou não na lista de fatos. É a célula que retorna o resultado.
+		\item Posição 5: posicão inicializada com zero, reservada para saber se a lista de fatos já foi inspecionada completamente.
+		\item Posição 6: posição inicializada com a posição anterior a lista de fatos, reservada para ser o iterador que guarda o índice da lista de fatos que está sendo analisado.
+		\item Posições 7..7+(f-1): sendo f o número de fatos da lista de fatos, guarda a lista de fatos.
+		\item Posição 8+(f-1): sendo f o número de fatos da lista de fatos, sinaliza com o valor 0 que a lista de fatos acabou.
+	\end{itemize}
+	
+	\item Adiciona a meta.
+	\item Adiciona a lista de fatos.
+	\item Imprime o valor das variáveis antes da busca (para facilitar o \emph{debug}).
+	\item Adiciona o código de busca que funciona com um loop que a cada rodada:
+	
+	\begin{itemize}
+		\item Incrementa o iterador da posição 6.
+		\item Verifica se o valor inspecionado da lista de fatos é igual a 0 (o que significa que a lista já foi toda percorrida) e coloca o resultado da verificação na posição 5.
+		\item Verifica se o valor inspecionado da lista de fatos é igual a meta e coloca a o resultado da verificação na posição 4.
+		\item Coloca o valor da expressão \verb$continue = !found && !is_over$ na posição 3, para ser usada como expressão de continuação do while.
+	\end{itemize}
+	
+	\item Ao sair do while, imprime os valores da memória depois da busca (para facilitar o \emph{debug}).
+	\item Imprime o resultado do programa, 0 caso a meta não possa ser inferida da lista de fatos e cláusulas, 1 para o caso positivo.
 \end{itemize}

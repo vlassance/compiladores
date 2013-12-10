@@ -1,0 +1,3 @@
+Memoria antes (a partir da posicao 1): 0=000612345>?@A0
+Memoria depois (a partir da posicao 1): 0=000@12345>?@A0
+Resultado da query: 0

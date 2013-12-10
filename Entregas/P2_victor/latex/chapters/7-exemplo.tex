@@ -1,6 +1,27 @@
 % !TEX encoding = UTF-8 Unicode
 
-\begin{itemize}
-	\item files/simprolog.pro
-	\item exemplos de execução do lextest, compilertest e runrna
-\end{itemize}
+Para realizar o teste do compilador e verificar sua execução, foi criado um arquivo README, adicionado ao código, que explica como testar o léxico somente, o compilador completo e o compilador com a execução no interpretador \emph{RNA}. Para cada um deles, basta rodar \textbf{make clean} e \textbf{make <comando>}, <comando> = lextest, compilertest e runrna. Todos executarão tendo como base o arquivo examples/simprolog.pro.
+
+Também cabe relembrar que deve ser utilizada a versão do interpretador \emph{RNA} que está anexada ao código, com as mudanças propostas no Capítulo~\ref{chap:linguagem-rna}.
+
+Segue abaixo dois exemplos de programas executados e seus respectivos resultados.
+
+\section{Programa 1}
+
+Abaixo, segue um exemplo de programa rodado:
+
+\lstinputlisting[frame=single,breaklines=true,morekeywords={not,or,eps},basicstyle=\tiny,numbers=left]{files/simprolog.pro}
+
+O resultado do código executado pelo interpretador \emph{RNA} segue abaixo:
+
+\lstinputlisting[frame=single,breaklines=true]{files/res_simprolog.txt}
+
+\section{Programa 2}
+
+Abaixo, segue um exemplo de programa rodado:
+
+\lstinputlisting[frame=single,breaklines=true,morekeywords={not,or,eps},basicstyle=\tiny,numbers=left]{files/simprolog_2.pro}
+
+O resultado do código executado pelo interpretador \emph{RNA} segue abaixo:
+
+\lstinputlisting[frame=single,breaklines=true]{files/res_simprolog_2.txt}
