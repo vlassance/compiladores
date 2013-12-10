@@ -1,0 +1,21 @@
+% !TEX encoding = UTF-8 Unicode
+
+A fim de demonstrar tudo o que foi pensado como a maneira de traduzir os comandos de alto nível da nossa linguagem CZAR, nós traduzimos um programa simples de fatorial que permite visualizar e testar a nossa tradução.
+
+Para isso, apresentamos o exemplo de programa escrito em três diferentes linguagens: (i) na nossa linguagem de alto nível CZAR; (ii) tradução para linguagem de máquina, utilizando as bibliotecas complementares \emph{std} e \emph{stdio}; (iii) tradução para linguagem de saída MVN.
+
+\section{Exemplo de programa fatorial na linguagem de alto nível}
+\label{sec:alto-nivel}
+
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={main,const,int,char,string,void,return,for,struct,if,ref,float,else,and,or,not,true,false,%
+    meth, decl, call, set}]{example_compiled/exemplo_fatorial.czar}
+
+\section{Tradução do programa fatorial para linguagem de máquina}
+\label{sec:traducao-asm}
+
+\lstinputlisting[frame=single,numbers=left,breaklines=true,morekeywords={JP,JZ,JN,LV,LD,MM,SC,RS,HM,GD,PD,OS}]{example_compiled/exemplo_fatorial_gen.asm}
+
+\section{Tradução do programa fatorial para linguagem de saída MVN}
+\label{sec:traducao-mvn}
+
+\lstinputlisting[frame=single,numbers=left,breaklines=true]{example_compiled/exemplo_fatorial_gen.mvn}
